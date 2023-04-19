@@ -11,7 +11,10 @@
 	display: flex;
 	justify-content: center;
 	align-items: center;
-	background: #dde5f4;
+	background-image: linear-gradient(0deg, rgba(0,0,0,0.8), rgba(0,0,0,0.8) ), url(/img/okOyMxX.jpeg);
+	background-position: center center;
+	background-repeat: no-repeat;
+	background-size: cover;
 	height: 100vh;
   }
   
@@ -25,7 +28,9 @@
 	gap: 2em;
   }
   .screen-1 .logo {
-	margin-top: -3em;
+	margin-top: center;
+	
+	
   }
   .screen-1 .email {
 	background: white;
