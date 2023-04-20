@@ -1,13 +1,14 @@
 *{
 	font-family: "Poppins";
   }
+
   
   body {
 	-webkit-user-select: none;
 	   -moz-user-select: none;
 		-ms-user-select: none;
 			user-select: none;
-	overflow-y: hidden;
+	overflow-y: auto;
 	display: flex;
 	justify-content: center;
 	align-items: center;
@@ -118,3 +119,55 @@
   button {
 	cursor: pointer;
   }
+  
+  .container {
+	background: #f1f7fe;
+	padding: 2em;
+	display: flex;
+	flex-direction: column;
+	border-radius: 30px;
+	box-shadow: 0 0 2em #e6e9f9;
+	gap: 2em;
+	width: 38%;
+	margin: 0 auto;
+	margin-top: 2em;
+	margin-bottom: 2em;
+}
+
+h1, h2 {
+	text-align: center;
+}
+
+form {
+	display: flex;
+	flex-direction: column;
+	gap: 1em;
+}
+
+label {
+	color: #4d4d4d;
+}
+
+input[type="text"], input[type="email"], input[type="password"], select {
+	background: white;
+	box-shadow: 0 0 2em #e6e9f9;
+	padding: 1em;
+	border: none;
+	border-radius: 20px;
+	color: #4d4d4d;
+}
+
+select option {
+	color: black;
+}
+
+button[type="submit"] {
+	padding: 1em;
+	background: #3e4684;
+	color: white;
+	border: none;
+	border-radius: 30px;
+	font-weight: 600;
+	align-self: center;
+	margin-top: 2em;
+}
