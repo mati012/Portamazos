@@ -4,11 +4,48 @@
   <meta charset="UTF-8">
   <script type="module" ></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/skeleton/2.0.4/skeleton.min.css">
   <meta http-equiv="X-UA-Compatible" content="ie=edege">
+
   <title>Document</title>     
 </head>
 <body>
-    <h1>login</h1>
+    <h1>Iniciar sesion</h1>
+
+    <ul>
+      <% if(messages.success_msg) { %>
+      <li><%= messages.success_msg %></li>
+      <% } %>
+    </ul>
+ 
+
+    <ul>
+      <% if (messages.error) { %>
+      <li><%= messages.error %></li>
+      <% } %>
+    </ul>
+
+
+
+
+    <form action="/login" method="POST">
+ 
+    <div>
+        <input type="email"  id="email" name="email"   placeholder="Email"  required>
+
+
+    </div>
+    <div>
+        <input type="password"  id="contrasena" name="contrasena"   placeholder="Contrasena"  required>
+
+
+    </div>
+
+    <div>
+        <input type="submit"    value="Login">
+    </div>   
+    <a href="/registro">Registrarse</a>
+    </form>
 
   
 </body>
