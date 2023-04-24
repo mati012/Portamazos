@@ -52,7 +52,7 @@ function initialize(passport) {
 
 
 
-  passport.deserializeUser((id, done) => {
+  passport.deserializeUser(function(id, done) { 
     pool.query(`SELECT * FROM usuarios WHERE id = $1`, [id], (err, results) => {
       if (err) {
         return done(err);

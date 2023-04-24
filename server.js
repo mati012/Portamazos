@@ -5,6 +5,7 @@ const bcrypt =  require("bcrypt");
 const session = require("express-session");
 const flash = require("express-flash");
 const passport = require ('passport');
+const path = require('path');
 
 const initializePassport = require("./passportConfig");
 
@@ -13,8 +14,8 @@ initializePassport(passport);
 const PORT = process.env.PORT || 4000;
 // aqui se declaran o se usan las extensiones
 app.set("view engine", "ejs");
-app.use(express.urlencoded({ extended: false })) 
-
+app.use(express.urlencoded({ extended: false }));
+app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
     secret: 'secret',
     resave: false,
@@ -36,10 +37,12 @@ app.get("/home", checkNotAuthenticated, (req, res)=>{
 app.get("/login", checkAuthenticated, (req, res)=>{
     res.render("login");
 });
-app.get("/logout",(req,res)=>{
-    req.logOut();
-    req.flash("success_msg","hasta la proxima" );
-    res.redirect("login");
+app.get("/logout",(req, res)=>{
+    req.logOut(function(err) {
+        if (err) { return next(err); }
+        res.redirect('/login');
+      });;
+   
 })
 // esto sirve para obtener los datos del registro y pasarlos a la base de datos
 app.post('/registro', async (req, res)=>{
