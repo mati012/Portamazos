@@ -2,40 +2,50 @@
 <html lang="en" >
 <head>
   <meta charset="UTF-8">
-  <title>Inicio de sesion
-  </title>
-  <title>Portamazos</title>
   <script type="module" ></script>
-<script nomodule src="https://unpkg.com/ionicons@5.5.2/dist/ionicons/ionicons.js"></script><link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/normalize/5.0.0/normalize.min.css">
-<link rel='stylesheet' href='https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&amp;display=swap'><link rel="stylesheet" href="/css/style.css">
-<link rel="stylesheet" href="/css/styles.css">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel='stylesheet' type="text/css"><link rel="stylesheet" href="/css/style.css" >
+  <meta http-equiv="X-UA-Compatible" content="ie=edege">
+
+  <title>Document</title>     
 </head>
 <body>
-<!-- partial:index.partial.html -->
-<div class="screen-1">
-  <svg class="logo"  width="10 0" height="30" viewbox="0 0 640 480"  >
-     
-   </svg>
-  <div class="email">
-    <label for="email">Usuario</label>
-    <div class="sec-2">
-      <ion-icon name="mail-outline"></ion-icon>
-      <input type="email" name="email" placeholder="Usuario@gmail.com"/>
-    </div>
-  </div>
-  <div class="password">
-    <label for="password">Clave</label>
-    <div class="sec-2">
-      <ion-icon name="lock-closed-outline"></ion-icon>
-      <input class="pas" type="password" name="password" placeholder="············"/>
-      <ion-icon class="show-hide" name="eye-outline"></ion-icon>
-    </div>
-  </div>
-  <button class="login" onclick="login()"> Login </button>
-  <div class="footer"><a href="registrar.ejs">Registrarse</a><span>Olvido contrasena?</span></div>
-</div>
-<!-- partial -->
+    
+
+    <ul>
+      <% if(messages.success_msg) { %>
+      <li><%= messages.success_msg %></li>
+      <% } %>
+    </ul>
+ 
+
+    <ul>
+      <% if (messages.error) { %>
+      <li><%= messages.error %></li>
+      <% } %>
+    </ul>
+
+
+
+
+    <form action="/login" method="POST">
+      
+      <section class="form-login">
+        <img src="/public/img/logo.png" width="300" alt="">
+        <div class="email">  
+        <input class="controls" id="email" type="email" name="email"  placeholder="email" required>
+      </div>
+      <div class="password">
+        <input class="controls" id="contrasena" type="password" name="password"  placeholder="Contraseña" required>
+      </div>
+        <input class="buttons" type="submit"  value="login">
+        <p><a href="#">¿Olvidastes tu Contraseña?</a>
+            <br>
+            <a href="/registro">Registrarse</a></p>
+      </section>
+    
+    </form>
+
   
 </body>
 </html>
-
