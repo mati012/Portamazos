@@ -17,7 +17,7 @@
 	width: 400px;
 	height: 340px;
 	background: #4e4d4d;
-	margin: auto;
+	margin: left;
 	margin-top: 180px;
 	box-shadow: 7px 13px 37px #000;
 	padding: 20px 30px;
@@ -67,4 +67,106 @@
   
   .form-login a:hover {
 	text-decoration: underline;
+  }
+  body {
+	width: 100%;
+	align-items : center;
+	height: 100%;
+	 
+
+	/* Background image is centered vertically and horizontally at all times */
+	background-position: center center;
+
+	/* Background image doesn't tile */
+	background-repeat: no-repeat;
+
+	/* Background image is fixed in the viewport so that it doesn't move when 
+	the content's height is greater than the image's height */
+	background-attachment: fixed;
+
+	/* This is what makes the background image rescale based
+	on the container's size */
+	background-size: cover;
+
+	/* Set a background color that will be displayed
+	while the background image is loading */
+	background-color: green;
+	overflow: hidden;
+
+	/* Location of the image */
+	background-image:url('/img/fondo.jpeg') ;
+} 
+a {
+	display: inline-block;
+	z-index: 10;
+	width: 20%;
+	padding: 1em 0;
+	text-align: center;
+	cursor: pointer;
+}
+
+
+:root {
+	--underline-height: .5em;
+	--transition-duration : .5s;
+}
+
+
+nav {
+	position: relative;
+	white-space: nowrap;
+	background: white;
+	padding: var(--underline-height) 0;
+	margin: 2em 0;
+	box-shadow: 0 1em 2em rgba(black, .05);
+}
+
+.underline {
+	display: block;
+	position: absolute;
+	z-index: 0;
+	bottom: 0;
+	left: 0;
+	height: var(--underline-height);
+	width: 20%;
+	background: black;
+	pointer-events: none;
+	mix-blend-mode: multiply;
+	transition: transform var(--transition-duration) ease-in-out;
+	
+
+}
+
+a {
+	display: inline-block;
+	z-index: 10;
+	width: 20%;
+	padding: 1em 0;
+	text-align: center;
+	cursor: pointer;
+}
+
+ul {
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: #333;
+  }
+  
+  li {
+	float: left;
+  }
+  
+  li a {
+	display: block;
+	color: white;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+  }
+  
+  /* Change the link color to #111 (black) on hover */
+  li a:hover {
+	background-color: #111;
   }
