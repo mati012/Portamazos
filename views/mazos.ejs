@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    
+    <link rel='stylesheet' type="text/css"><link rel="stylesheet" href="/css/estilos.css" >"
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Dashboard</title>
+    <ul>
+      <li><a href="#home">mazos</a></li>
+      <li><a href="#news">buscador</a></li>
+      <li><a href="#contact">info</a></li>
+      <li style="float:right"><a class="active" href="/logout">logout</a></li>
+    </ul>
+  </head>
+  <body>
+    <!-- <div class="container">
+      <ul class="tilesWrap">
+     
+          <li>
+            <a href="/creador"> mazos</a>
+          
+          </li>
+      </ul> 
+    </div> -->
+    <div class="container">
+      <h1>Crear nuevo mazo</h1>
+      <form action="/mazos" method="POST">
+        <div>
+          <label for="nombre">Nombre:</label>
+          <input type="text" id="nombre" name="nombre" required>
+        </div>
+        <div>
+          <label for="tipo">Tipo:</label>
+          <select id="tipo_mazo" name="tipo_mazo" required>
+            <option value="1">Mazo principal</option>
+            <option value="2">Mazo de reserva</option>
+          </select>
+        </div>
+        <button type="submit">Crear mazo</button>
+      </form>
+    </div>
+  </body>
+</html>

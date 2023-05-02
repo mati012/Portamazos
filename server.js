@@ -7,9 +7,11 @@ const flash = require("express-flash");
 const passport = require ('passport');
 const path = require('path');
 
+
 const initializePassport = require("./passportConfig");
 
 initializePassport(passport);
+app.use(express.json());
 
 const PORT = process.env.PORT || 4000;
 // aqui se declaran o se usan las extensiones
@@ -25,9 +27,7 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 // rutas 
-app.get("/", (req, res)=>{
-    res.render('index');
-});
+
 app.get("/registro", checkAuthenticated, (req, res)=>{
     res.render("registro");
 });
@@ -37,6 +37,9 @@ app.get("/home", checkNotAuthenticated, (req, res)=>{
 app.get("/login", checkAuthenticated, (req, res)=>{
     res.render("login");
 });
+app.get("", checkAuthenticated, (req, res)=>{
+  res.render("login");
+});
 app.get("/logout",(req, res)=>{
     req.logOut(function(err) {
         if (err) { return next(err); }
@@ -44,6 +47,27 @@ app.get("/logout",(req, res)=>{
       });;
    
 })
+app.get("/mazos", checkAuthenticated, (req, res)=>{
+    res.render("mazos");
+});
+app.get("/creador", checkAuthenticated, (req, res)=>{
+  res.render("creador");
+});
+app.get("/mazoCreado", checkAuthenticated, (req, res)=>{
+  res.render("mazoCreado");
+});
+
+
+app.get('/Jugador', (req, res)=>{
+  pool.query("SELECT * FROM Jugador", (err,results) => {
+  if(err){
+    throw err;
+  }
+  res.status(200).json(results.rows
+    )
+ })
+})
+
 // esto sirve para obtener los datos del registro y pasarlos a la base de datos
 app.post('/registro', async (req, res)=>{
     let { nombre, email, contrasena, contrasena2 }= req.body;
@@ -74,7 +98,7 @@ app.post('/registro', async (req, res)=>{
        console.log(hashedPassword);
 
        pool.query(
-        'SELECT * FROM usuarios WHERE email =$1 ', 
+        'SELECT * FROM Jugador WHERE email =$1 ', 
         [email], (err, results)=>{
             if (err){
                 throw err
@@ -87,7 +111,7 @@ app.post('/registro', async (req, res)=>{
             res.render('registro', {errors});
            } else {
             pool.query(
-                'INSERT INTO usuarios (nombre, email, contrasena) VALUES ($1, $2, $3) RETURNING id, contrasena',
+                'INSERT INTO Jugador (nombre, email, contrasena) VALUES ($1, $2, $3) RETURNING id_jugador, contrasena',
                 [nombre, email, hashedPassword ],
                 (err, results)=>{
                     if (err){
@@ -128,8 +152,49 @@ app.post(
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
+// OBTENER CARTAS 
+app.get('/cartas-disponibles', async (req, res) => {
+  try {
+    const result = await pool.query('SELECT * FROM carta');
+    res.json(result.rows);
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ error: 'Error al obtener las cartas disponibles' });
+  }
+});
+// Ruta para crear un mazo nuevo
+app.post('/crear-mazo', async (req, res) => {
+  // Lógica para crear un nuevo mazo en la base de datos
+});
+
+// Ruta para obtener la lista de cartas de un mazo
+app.get('/cartas-mazo/:id_Mazo', async (req, res) => {
+  // Lógica para obtener la lista de cartas de un mazo en la base de datos
+});
+
+// Ruta para añadir una carta a un mazo
+app.post('/anadir-carta-mazo/:id_Mazo/:id_Carta', async (req, res) => {
+  // Lógica para añadir una carta a un mazo en la base de datos
+});
+
+// Ruta para quitar una carta de un mazo
+app.post('/quitar-carta-mazo/:idMazo/:idCarta', async (req, res) => {
+  // Lógica para quitar una carta de un mazo en la base de datos
+});
 
 
+app.post('/mazos', async (req, res) => {
+  const { nombre, tipo } = req.body;
+  try {
+    const client = await pool.connect();
+    const result = await client.query('INSERT INTO mazo (nombre, tipo_mazo) VALUES ($1, $2) RETURNING id_mazo', [nombre, tipo]);
+    const mazoId = result.rows[0].id;
+    res.redirect(`/mazos/${mazoId}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al crear el mazo');
+  }
+});
   function ul(index) {
 	console.log('click!' + index)
 	
