@@ -48,7 +48,7 @@ app.get("/logout",(req, res)=>{
    
 })
 app.get("/mazos", checkNotAuthenticated, (req, res)=>{
-    res.render("mazos");
+    res.render("mazos", {user: req.user.id_jugador});
 });
 app.get("/creador", checkNotAuthenticated, (req, res)=>{
   res.render("creador");
@@ -183,10 +183,11 @@ app.post('/quitar-carta-mazo/:idMazo/:idCarta', async (req, res) => {
 
 app.post('/mazos', async (req, res) => {
   const { nombre, tipo_mazo } = req.body;
+  const id_jugador = req.user.id_jugador;
   try {
     const client = await pool.connect();
-    const result = await client.query('INSERT INTO mazo (nombre, tipo_mazo) VALUES ($1, $2) RETURNING id_mazo', [nombre, tipo_mazo]);
-    const mazoId = result.rows[0].id;
+    const result = await client.query('INSERT INTO mazo (nombre, tipo_mazo, id_jugador) VALUES ($1, $2, $3) RETURNING id_mazo', [nombre, tipo_mazo, id_jugador]);
+    const mazoId = result.rows[0].id_mazo; // obtener el id del mazo insertado
     res.redirect(`/mazos/${mazoId}`);
   } catch (err) {
     console.error(err);
