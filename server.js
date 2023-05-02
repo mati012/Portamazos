@@ -184,7 +184,7 @@ app.post('/quitar-carta-mazo/:idMazo/:idCarta', async (req, res) => {
 
 
 app.post('/mazos', async (req, res) => {
-  const { nombre, tipo } = req.body;
+  const { nombre, tipo_mazo } = req.body;
   try {
     const client = await pool.connect();
     const result = await client.query('INSERT INTO mazo (nombre, tipo_mazo) VALUES ($1, $2) RETURNING id_mazo', [nombre, tipo_mazo]);
