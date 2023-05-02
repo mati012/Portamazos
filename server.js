@@ -47,13 +47,13 @@ app.get("/logout",(req, res)=>{
       });;
    
 })
-app.get("/mazos", checkAuthenticated, (req, res)=>{
+app.get("/mazos", checkNotAuthenticated, (req, res)=>{
     res.render("mazos");
 });
-app.get("/creador", checkAuthenticated, (req, res)=>{
+app.get("/creador", checkNotAuthenticated, (req, res)=>{
   res.render("creador");
 });
-app.get("/mazoCreado", checkAuthenticated, (req, res)=>{
+app.get("/mazoCreado", checkNotAuthenticated, (req, res)=>{
   res.render("mazoCreado");
 });
 
@@ -187,7 +187,7 @@ app.post('/mazos', async (req, res) => {
   const { nombre, tipo } = req.body;
   try {
     const client = await pool.connect();
-    const result = await client.query('INSERT INTO mazo (nombre, tipo_mazo) VALUES ($1, $2) RETURNING id_mazo', [nombre, tipo]);
+    const result = await client.query('INSERT INTO mazo (nombre, tipo_mazo) VALUES ($1, $2) RETURNING id_mazo', [nombre, tipo_mazo]);
     const mazoId = result.rows[0].id;
     res.redirect(`/mazos/${mazoId}`);
   } catch (err) {

@@ -27,13 +27,13 @@ function initialize(passport) {
               return done(null, user);
             } else {
               //password is incorrect
-              return done(null, false, { message: "Password is incorrect" });
+              return done(null, false, { message: "Clave erronea" });
             }
           });
         } else {
-          // No user
+         
           return done(null, false, {
-            message: "No user with that email address"
+            message: "No hay usuario con ese gmail"
           });
         }
       }
@@ -57,7 +57,7 @@ function initialize(passport) {
       if (err) {
         return done(err);
       }
-      console.log(`ID is ${results.rows[0].id}`);
+      console.log(`ID is ${results.rows[0].id_jugador}`);
       return done(null, results.rows[0]);
     });
   });
