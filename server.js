@@ -163,9 +163,7 @@ app.get('/cartas-disponibles', async (req, res) => {
   }
 });
 // Ruta para crear un mazo nuevo
-app.post('/crear-mazo', async (req, res) => {
-  // Lógica para crear un nuevo mazo en la base de datos
-});
+
 
 // Ruta para obtener la lista de cartas de un mazo
 app.get('/cartas-mazo/:id_Mazo', async (req, res) => {
