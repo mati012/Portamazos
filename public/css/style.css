@@ -6,12 +6,12 @@
   
   body {
 	font-family: arial;
-	background-image: url('/public/img/fondo.jpeg');
-	background-position: center center;
+	background-image: url('/img/fondo.jpeg');
+	background-position: center centpublicer;
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 	background-size: cover;
-	
+	background-color: #017bab;
   }
   
   .form-login {
