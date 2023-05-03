@@ -1,24 +1,46 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
   <head>
-    <meta charset="UTF-8" />
-    
-    <link rel='stylesheet' type="text/css"><link rel="stylesheet" href="/css/style.css" >"
-    
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    <title>Dashboard</title>
-    <ul>
-      <li><a href="/mazos">mazos</a></li>
-      <li><a href="#news">buscador</a></li>
-      <li><a href="#contact">info</a></li>
-      <li style="float:right"><a class="active" href="/logout">logout</a></li>
-    </ul>
+    <meta charset="UTF-8">
+    <title>Constructor de Mazos</title>
+    <link rel="stylesheet" href="/css/estilos.css">
   </head>
   <body>
-
-
-
-
-  </body>
-</html>
+    <div class="container">
+      <h1>Detalles del mazo</h1>
+      <div>
+        <strong>Nombre:</strong> <%= mazo.nombre %>
+      </div>
+      <div>
+        <strong>Tipo:</strong> <%= mazo.tipo === 1 ? 'Mazo de construcción' : 'Mazo preconstruido' %>
+    </div>
+    <div>
+    <strong>Jugador:</strong> <%= mazo.jugador.nombre %>
+    </div>
+    <div class="cards-container">
+    <% mazo.cartas.forEach(function(carta) { %>
+    <div class="card">
+    <div class="card-img">
+    <img src="<%= carta.imagen %>" alt="<%= carta.nombre %>">
+    </div>
+    <div class="card-details">
+    <h2><%= carta.nombre %></h2>
+    <ul>
+    <li><strong>Código:</strong> <%= carta.codigo %></li>
+    <li><strong>Tipo:</strong> <%= carta.tipo %></li>
+    <li><strong>Coste:</strong> <%= carta.coste %></li>
+    <li><strong>Habilidad:</strong> <%= carta.habilidad %></li>
+    <li><strong>Fuerza:</strong> <%= carta.fuerza %></li>
+    <li><strong>Raza:</strong> <%= carta.raza %></li>
+    </ul>
+    </div>
+    </div>
+    <% }); %>
+    </div>
+    <div>
+    <a href="/">Volver al listado de mazos</a>
+    </div>
+    </div>
+    
+      </body>
+    </html>

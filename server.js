@@ -188,11 +188,12 @@ app.post('/mazos', async (req, res) => {
     const client = await pool.connect();
     const result = await client.query('INSERT INTO mazo (nombre, tipo_mazo, id_jugador) VALUES ($1, $2, $3) RETURNING id_mazo', [nombre, tipo_mazo, id_jugador]);
     const mazoId = result.rows[0].id_mazo; // obtener el id del mazo insertado
-    res.redirect(`/mazos/${mazoId}`);
+    res.redirect(`/creador`);
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al crear el mazo');
   }
+   
 });
   function ul(index) {
 	console.log('click!' + index)
@@ -203,3 +204,7 @@ app.post('/mazos', async (req, res) => {
 		underlines[i].style.transform = 'translate3d(' + index * 100 + '%,0,0)';
 	}
 }
+
+app.get('/creador', async (req, res)=>{
+  const {}
+})
