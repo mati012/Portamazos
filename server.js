@@ -6,13 +6,13 @@ const session = require("express-session");
 const flash = require("express-flash");
 const passport = require ('passport');
 const path = require('path');
-
+const fs = require('fs');
 
 const initializePassport = require("./passportConfig");
 
 initializePassport(passport);
 app.use(express.json());
-
+let imagenIndex = 1;
 const PORT = process.env.PORT || 4000;
 // aqui se declaran o se usan las extensiones
 app.set("view engine", "ejs");
@@ -56,7 +56,6 @@ app.get("/creador", checkNotAuthenticated, (req, res)=>{
 app.get("/mazoCreado", checkNotAuthenticated, (req, res)=>{
   res.render("mazoCreado");
 });
-
 
 app.get('/Jugador', (req, res)=>{
   pool.query("SELECT * FROM Jugador", (err,results) => {
@@ -162,23 +161,7 @@ app.get('/cartas-disponibles', async (req, res) => {
     res.status(500).json({ error: 'Error al obtener las cartas disponibles' });
   }
 });
-// Ruta para crear un mazo nuevo
 
-
-// Ruta para obtener la lista de cartas de un mazo
-app.get('/cartas-mazo/:id_Mazo', async (req, res) => {
-  // Lógica para obtener la lista de cartas de un mazo en la base de datos
-});
-
-// Ruta para añadir una carta a un mazo
-app.post('/anadir-carta-mazo/:id_Mazo/:id_Carta', async (req, res) => {
-  // Lógica para añadir una carta a un mazo en la base de datos
-});
-
-// Ruta para quitar una carta de un mazo
-app.post('/quitar-carta-mazo/:idMazo/:idCarta', async (req, res) => {
-  // Lógica para quitar una carta de un mazo en la base de datos
-});
 
 
 app.post('/mazos', async (req, res) => {
@@ -203,8 +186,55 @@ app.post('/mazos', async (req, res) => {
 	for (var i = 0; i < underlines.length; i++) {
 		underlines[i].style.transform = 'translate3d(' + index * 100 + '%,0,0)';
 	}
-}
+ }
+//      // Leer la imagen en formato bytea desde la base de datos
+//      const imagenBytea = result.rows[0].imagen;
 
-app.get('/creador', async (req, res)=>{
-  const {}
-})
+//      // Convertir la imagen a base64
+//      const imagenBase64 = Buffer.from(imagenBytea).toString('base64');
+     
+//      // Guardar la imagen como archivo temporal
+//      fs.writeFileSync('temp.png', Buffer.from(imagenBytea), 'binary');
+     
+//      // Enviar la imagen en base64 a la página HTML
+//      res.send({ imagen: `data:image/png;base64,${imagenBase64}` });
+app.get('/visualizador', (req, res) => {
+  const search = req.query.search || '';
+  const tipo = req.query.tipo || '';
+  const raza = req.query.raza || '';
+  const coste = req.query.coste || 9999;
+  const fuerza = req.query.fuerza || 0;
+
+  pool.query(`SELECT * FROM carta
+              WHERE nombre ILIKE '%${search}%'
+              ${tipo ? `AND tipo = '${tipo}'` : ''}
+              ${raza ? `AND raza = '${raza}'` : ''}
+              AND coste <= ${coste}
+              AND fuerza >= ${fuerza}
+              ORDER BY nombre ASC
+              LIMIT 5`, (error, results) => {
+    if (error) {
+      throw error;
+    }
+    res.render('visualizador', { user: req.user, cartas: results.rows, search: search, tipo: tipo, raza: raza, coste: coste, fuerza: fuerza });
+  });
+});
+
+app.get('/carta/:codigo', (req, res) => {
+  const codigo = req.params.codigo;
+
+  pool.query('SELECT * FROM carta WHERE codigo = $1', [codigo], (error, result) => {
+    if (error) {
+      throw error;
+    }
+    if (result.rows.length === 0) {
+      res.status(404).send('No se encontró la carta');
+    } else {
+      const carta = result.rows[0];
+      const imagenPath = `/img/${imagenIndex.toString().padStart(3, '0')}.png`;
+      imagenIndex++;
+
+      res.render('carta', { user: req.user, carta: carta, imagenPath: imagenPath });
+    }
+  });
+});

@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <head>
+      <meta charset="UTF-8" />
+      
+      <link rel='stylesheet' type="text/css"><link rel="stylesheet" href="/css/estilos.css" >"
+      
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+      <ul>
+        <li><a href="/mazos">mazos</a></li>
+        <li><a href="/visualizador">buscador</a></li>
+        <li><a href="#contact">info</a></li>
+        <li style="float:right"><a class="active" href="/logout">logout</a></li>
+      </ul>
+    </head>
+  
+    <title>Visualizador de Cartas</title>
+  </head>
+  <body>
+    <h1>Cartas</h1>
+    <form action="/visualizador" method="GET">
+      <div class="form-group">
+        <input type="text" name="search" placeholder="Buscar por nombre...">
+      </div>
+      <div class="form-group">
+        <label for="tipo">Tipo:</label>
+        <select id="tipo" name="tipo">
+          <option value="">Todos</option>
+          <option value="oro">Oro</option>
+          <option value="Aliado">Aliado</option>
+          <option value="Talismán">Talisman</option>
+          <option value="Totem">Totem</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="raza">Raza:</label>
+        <select id="raza" name="raza">
+          <option value="">Todas</option>
+          <option value="Eterno">Eterno</option>
+          <option value="Bestia">Bestia</option>
+          <option value="Caballero">Caballero</option>
+          <option value="Sacerdote">Sacerdote</option>
+          <option value="Sombra">Sombra</option>
+          <option value="Faerie">Faerie</option>
+          <option value="Guerrero">Guerrero</option>
+          <option value="Heroe">Heroe</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="coste">Coste:</label>
+        <input type="number" id="coste" name="coste" min="0" max="5">
+      </div>
+      <div class="form-group">
+        <label for="fuerza">Fuerza:</label>
+        <input type="number" id="fuerza" name="fuerza"  min="0" max="5">
+      </div>
+      <div class="form-group">
+        <button type="submit">Buscar</button>
+      </div>
+    </form>
+    <ul>
+      <% for (var i = 0; i < cartas.length; i++) { %>
+        <li><a href="/carta/<%= cartas[i].codigo %>"><%= cartas[i].nombre %></a></li>
+      <% } %>
+    </ul>
+  </body>
+</html>

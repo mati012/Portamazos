@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="UTF-8" />
+    
+    <link rel='stylesheet' type="text/css"><link rel="stylesheet" href="/css/estilos.css" >"
+    
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <ul>
+      <li><a href="/mazos">mazos</a></li>
+      <li><a href="/visualizador">buscador</a></li>
+      <li><a href="#contact">info</a></li>
+      <li style="float:right"><a class="active" href="/logout">logout</a></li>
+    </ul>
+  </head>
+  </head>
+  <body>
+    <h1><%= carta.nombre %></h1>
+    <img src="/img/<%= ('00' + carta.id).slice(-3) %>.png" alt="Imagen de <%= carta.nombre %>">
+    <p><strong>Tipo:</strong> <%= carta.tipo %></p>
+    <p><strong>Coste:</strong> <%= carta.coste %></p>
+    <p><strong>Habilidad:</strong> <%= carta.habilidad %></p>
+    <p><strong>Fuerza:</strong> <%= carta.fuerza %></p>
+    <p><strong>Raza:</strong> <%= carta.raza %></p>
+  </body>
+</html>
