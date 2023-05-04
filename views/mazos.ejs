@@ -18,8 +18,8 @@
   <body>
 
     <div class="container">
-      <h1>Crear nuevo mazo</h1>
       <form action="/mazos" method="POST">
+        <h1>Crear nuevo mazo</h1>
         <div>
           <label for="nombre">Nombre:</label>
           <input type="text" id="nombre" name="nombre" required>
@@ -32,6 +32,7 @@
           </select>
         </div>
         <button type="submit">Crear mazo</button>
+        <a href="/lista_mazos">mazos Creados</a>
       </form>
     </div>
   </body>
