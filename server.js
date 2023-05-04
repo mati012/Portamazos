@@ -9,6 +9,7 @@ const path = require('path');
 const fs = require('fs');
 
 const initializePassport = require("./passportConfig");
+const { error } = require('console');
 
 initializePassport(passport);
 app.use(express.json());
@@ -56,16 +57,6 @@ app.get("/creador", checkNotAuthenticated, (req, res)=>{
 app.get("/mazoCreado", checkNotAuthenticated, (req, res)=>{
   res.render("mazoCreado");
 });
-
-app.get('/Jugador', (req, res)=>{
-  pool.query("SELECT * FROM Jugador", (err,results) => {
-  if(err){
-    throw err;
-  }
-  res.status(200).json(results.rows
-    )
- })
-})
 
 // esto sirve para obtener los datos del registro y pasarlos a la base de datos
 app.post('/registro', async (req, res)=>{
@@ -151,16 +142,6 @@ app.post(
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
-// OBTENER CARTAS 
-app.get('/cartas-disponibles', async (req, res) => {
-  try {
-    const result = await pool.query('SELECT * FROM carta');
-    res.json(result.rows);
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ error: 'Error al obtener las cartas disponibles' });
-  }
-});
 
 
 
@@ -171,12 +152,43 @@ app.post('/mazos', async (req, res) => {
     const client = await pool.connect();
     const result = await client.query('INSERT INTO mazo (nombre, tipo_mazo, id_jugador) VALUES ($1, $2, $3) RETURNING id_mazo', [nombre, tipo_mazo, id_jugador]);
     const mazoId = result.rows[0].id_mazo; // obtener el id del mazo insertado
-    res.redirect(`/creador`);
+    res.redirect(`/mazos/${mazoId}/${id_jugador}`);
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al crear el mazo');
   }
    
+});
+// 
+// app.get('/lista_mazos', async (req, res) => {
+//   const id_jugador = req.user;
+//   try {
+//     const client = await pool.connect();
+//     const mazosResult = await client.query('SELECT * FROM mazo WHERE id_jugador = $1', [id_jugador]);
+//     const mazos = mazosResult.rows;
+//     res.render('lista_mazos', { mazos });
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send('Error al obtener los mazos');
+//   }
+// });
+
+
+app.get('/mazos/:id', async (req, res) => {
+  const id_mazo = req.params.id_mazo;
+  try {
+    const client = await pool.connect();
+    const mazoResult = await client.query('SELECT * FROM mazo WHERE id_mazo = $1', [id_mazo]);
+    const mazo = mazoResult.rows[0];
+    const jugadorResult = await client.query('SELECT * FROM jugador WHERE id_jugador = $1', [mazo.id_jugador]);
+    const jugador = jugadorResult.rows[0];
+    const cartasResult = await client.query('SELECT * FROM carta WHERE id_mazo = $1', [id_mazo]);
+    const cartas = cartasResult.rows;
+    res.render('detalles_mazo', { mazo, jugador, cartas });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al obtener los detalles del mazo');
+  }
 });
   function ul(index) {
 	console.log('click!' + index)
@@ -187,17 +199,51 @@ app.post('/mazos', async (req, res) => {
 		underlines[i].style.transform = 'translate3d(' + index * 100 + '%,0,0)';
 	}
  }
-//      // Leer la imagen en formato bytea desde la base de datos
-//      const imagenBytea = result.rows[0].imagen;
+ 
 
-//      // Convertir la imagen a base64
-//      const imagenBase64 = Buffer.from(imagenBytea).toString('base64');
-     
-//      // Guardar la imagen como archivo temporal
-//      fs.writeFileSync('temp.png', Buffer.from(imagenBytea), 'binary');
-     
-//      // Enviar la imagen en base64 a la página HTML
-//      res.send({ imagen: `data:image/png;base64,${imagenBase64}` });
+// app.get('/visualizador', (req, res) => {
+//   let query = 'SELECT * FROM carta';
+//   const queryParams = [];
+//   const search = req.query.search;
+//   if (search) {
+//     query += ` WHERE nombre ILIKE '%${filtro}%'`;
+//   }
+//   // agregar filtro por tipo
+//   const tipo = req.query.tipo;
+//   if (tipo) {
+//     query += ' WHERE tipo = $1';
+//     queryParams.push(tipo);
+//   }
+//   // agregar filtro por raza
+//   const raza = req.query.raza;
+//   if (raza) {
+//     query += query.includes('WHERE') ? ' AND' : ' WHERE';
+//     query += ' raza = $2';
+//     queryParams.push(raza);
+//   }
+//   // agregar filtro por coste
+//   const coste = req.query.coste;
+//   if (coste) {
+//     query += query.includes('WHERE') ? ' AND' : ' WHERE';
+//     query += ' coste = $3';
+//     queryParams.push(parseInt(coste));
+//   }
+//   // agregar filtro por fuerza
+//   const fuerza = req.query.fuerza;
+//   if (fuerza) {
+//     query += query.includes('WHERE') ? ' AND' : ' WHERE';
+//     query += ' fuerza = $4';
+//     queryParams.push(parseInt(fuerza));
+//   }
+//   // limitar la cantidad de resultados a 5
+//   query += ' LIMIT 5';
+//   pool.query(query, queryParams, (error, results) => {
+//     if (error) {
+//       throw error;
+//     }
+//     res.render('visualizador', { user: req.user, cartas: results.rows });
+//   });
+// });
 app.get('/visualizador', (req, res) => {
   const search = req.query.search || '';
   const tipo = req.query.tipo || '';
@@ -219,7 +265,6 @@ app.get('/visualizador', (req, res) => {
     res.render('visualizador', { user: req.user, cartas: results.rows, search: search, tipo: tipo, raza: raza, coste: coste, fuerza: fuerza });
   });
 });
-
 app.get('/carta/:codigo', (req, res) => {
   const codigo = req.params.codigo;
 
@@ -231,10 +276,23 @@ app.get('/carta/:codigo', (req, res) => {
       res.status(404).send('No se encontró la carta');
     } else {
       const carta = result.rows[0];
-      const imagenPath = `/img/${imagenIndex.toString().padStart(3, '0')}.png`;
-      imagenIndex++;
+      const imagenBytea = result.rows[0].imagen;
+      const imagenBase64 = Buffer.from(imagenBytea).toString('base64');
+      fs.writeFileSync('temp.png', Buffer.from(imagenBytea), 'binary');
 
-      res.render('carta', { user: req.user, carta: carta, imagenPath: imagenPath });
+      res.set('Content-Type', 'text/html');
+      res.render('carta', { user: req.user, carta: carta, imagenBase64: imagenBase64 });
+    }
+  });
+});
+app.get('/lista_mazos', (req, res) => {
+  const id_jugador = req.user.id_jugador;
+  pool.query('SELECT * FROM mazo WHERE id_jugador = $1', [id_jugador], (error, result) => {
+    if (error) {
+      throw error;
+    } else {
+      const mazo = result.rows;
+      res.render('lista_mazos', { mazo });
     }
   });
 });
