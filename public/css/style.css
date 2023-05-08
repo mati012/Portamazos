@@ -11,7 +11,7 @@
 	background-repeat: no-repeat;
 	background-attachment: fixed;
 	background-size: cover;
-	background-color: #333;
+
   }
   
   .form-login {
@@ -119,7 +119,16 @@ a {
 	text-align: center;
 	cursor: pointer;
 }
-
+ul#listaHeader {
+	position: fixed;
+	top: 0;
+  
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	overflow: hidden;
+	background-color: black;
+  }
 ul {
 	list-style-type: none;
 	margin: 0;

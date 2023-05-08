@@ -159,19 +159,7 @@ app.post('/mazos', async (req, res) => {
   }
    
 });
-// 
-// app.get('/lista_mazos', async (req, res) => {
-//   const id_jugador = req.user;
-//   try {
-//     const client = await pool.connect();
-//     const mazosResult = await client.query('SELECT * FROM mazo WHERE id_jugador = $1', [id_jugador]);
-//     const mazos = mazosResult.rows;
-//     res.render('lista_mazos', { mazos });
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).send('Error al obtener los mazos');
-//   }
-// });
+app.get
 
 
 app.get('/mazos/:id', async (req, res) => {
@@ -201,49 +189,8 @@ app.get('/mazos/:id', async (req, res) => {
  }
  
 
-// app.get('/visualizador', (req, res) => {
-//   let query = 'SELECT * FROM carta';
-//   const queryParams = [];
-//   const search = req.query.search;
-//   if (search) {
-//     query += ` WHERE nombre ILIKE '%${filtro}%'`;
-//   }
-//   // agregar filtro por tipo
-//   const tipo = req.query.tipo;
-//   if (tipo) {
-//     query += ' WHERE tipo = $1';
-//     queryParams.push(tipo);
-//   }
-//   // agregar filtro por raza
-//   const raza = req.query.raza;
-//   if (raza) {
-//     query += query.includes('WHERE') ? ' AND' : ' WHERE';
-//     query += ' raza = $2';
-//     queryParams.push(raza);
-//   }
-//   // agregar filtro por coste
-//   const coste = req.query.coste;
-//   if (coste) {
-//     query += query.includes('WHERE') ? ' AND' : ' WHERE';
-//     query += ' coste = $3';
-//     queryParams.push(parseInt(coste));
-//   }
-//   // agregar filtro por fuerza
-//   const fuerza = req.query.fuerza;
-//   if (fuerza) {
-//     query += query.includes('WHERE') ? ' AND' : ' WHERE';
-//     query += ' fuerza = $4';
-//     queryParams.push(parseInt(fuerza));
-//   }
-//   // limitar la cantidad de resultados a 5
-//   query += ' LIMIT 5';
-//   pool.query(query, queryParams, (error, results) => {
-//     if (error) {
-//       throw error;
-//     }
-//     res.render('visualizador', { user: req.user, cartas: results.rows });
-//   });
-// });
+
+
 app.get('/visualizador', (req, res) => {
   const search = req.query.search || '';
   const tipo = req.query.tipo || '';
@@ -285,6 +232,7 @@ app.get('/carta/:codigo', (req, res) => {
     }
   });
 });
+// AQUI SE ENLISTAN LOS MAZOS PROPIOS YA SEAN PUBLICOS O PRIVADOS
 app.get('/lista_mazos', (req, res) => {
   const id_jugador = req.user.id_jugador;
   pool.query('SELECT * FROM mazo WHERE id_jugador = $1', [id_jugador], (error, result) => {
@@ -293,6 +241,30 @@ app.get('/lista_mazos', (req, res) => {
     } else {
       const mazo = result.rows;
       res.render('lista_mazos', { mazo });
+    }
+  });
+});
+// AQUI SE DA LA OPCION PARA ELIMINAR EL MAZO CREADO DENTRO DEL LISTADO ANTERIOR 
+app.post('/eliminar_mazo', (req, res) => {
+  const id_mazo = req.body.id_mazo;
+  pool.query('DELETE FROM mazo WHERE id_mazo = $1', [id_mazo], (error, result) => {
+    if (error) {
+      throw error;
+    } else {
+      res.redirect('/lista_mazos');
+    }
+  });
+});
+
+// OBTENER MAZOS PUBLICOS
+app.get('/mazos_publicos', (req, res) => {
+
+  pool.query('SELECT * FROM mazo WHERE tipo_mazo = 2', (error, result)=> {
+    if (error){
+      throw error;
+    } else {
+      const mazo = result.rows;
+      res.render('mazos_publicos', { mazo });
     }
   });
 });
