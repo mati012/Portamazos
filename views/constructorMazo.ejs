@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		
+		<link rel='stylesheet' type="text/css"><link rel="stylesheet" href="/css/estilos.css" >"
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<ul>
+		  <li><a href="/mazos">mazos</a></li>
+		  <li><a href="/visualizador">buscador</a></li>
+		  <li><a href="mazos_publicos">Mazos publicos</a></li>
+		  <li style="float:right"><a class="active" href="/logout">logout</a></li>
+		</ul>
+	  </head>
+    <body>
+      <div class="container">
+        <h1>Lista de cartas</h1>
+        <div class="card-list">
+          <% cartas.forEach(function(carta) { %>
+            <div class="card">
+              <img src="<%= carta.imagen %>">
+              <h2><%= carta.nombre %></h2>
+              <p><%= carta.descripcion %></p>
+              <p><%= carta.cantidad_disponible %> disponibles</p>
+              <form action="/agregar_carta" method="post">
+                <input type="hidden" name="codigo_carta" value="<%= carta.codigo %>">
+                <input type="number" name="cantidad" min="1" max="3" value="1">
+                <input type="submit" value="Agregar al carrito">
+              </form>
+            </div>
+          <% }); %>
+        </div>
+        <div class="cart">
+          <h2>Carrito de compras</h2>
+          <ul>
+            <% cart.forEach(function(item) { %>
+              <li><%= item.cantidad %> x <%= item.nombre %></li>
+            <% }); %>
+          </ul>
+          <form action="/comprar" method="post">
+            <input type="submit" value="Comprar">
+          </form>
+        </div>
+      </div>
+    </body>
+</html>
