@@ -10,7 +10,7 @@
 		<ul>
 		  <li><a href="/mazos">mazos</a></li>
 		  <li><a href="/visualizador">buscador</a></li>
-		  <li><a href="mazos_publicos">Mazos publicos</a></li>
+		  <li><a href="/mazos_publicos">Mazos publicos</a></li>
 		  <li style="float:right"><a class="active" href="/logout">logout</a></li>
 		</ul>
 	  </head>
@@ -31,17 +31,6 @@
               </form>
             </div>
           <% }); %>
-        </div>
-        <div class="cart">
-          <h2>Carrito de compras</h2>
-          <ul>
-            <% cart.forEach(function(item) { %>
-              <li><%= item.cantidad %> x <%= item.nombre %></li>
-            <% }); %>
-          </ul>
-          <form action="/comprar" method="post">
-            <input type="submit" value="Comprar">
-          </form>
         </div>
       </div>
     </body>

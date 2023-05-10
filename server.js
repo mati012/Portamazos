@@ -160,10 +160,42 @@ app.post('/mazos', async (req, res) => {
    
 });
 
+async function obtenerCartasMazo(idMazo) {
+  try {
+    const client = await pool.connect();
+    const cartaMazoResult = await client.query('SELECT codigo_carta FROM carta_mazo WHERE id_mazo = $1', [idMazo]);
+    const codigosCartas = cartaMazoResult.rows.map(row => row.codigo);
 
+    const cartas = [];
+
+    for (const codigoCarta of codigosCartas) {
+      const cartaResult = await client.query('SELECT * FROM carta WHERE codigo_carta = $1', [codigoCarta]);
+      const carta = cartaResult.rows[0];
+      cartas.push(carta);
+    }
+
+    client.release();
+
+    return cartas;
+  } catch (err) {
+    console.error(err);
+    throw new Error('Error al obtener las cartas por mazo');
+  }
+};
+
+app.get('/constructorMazo/:mazoId/:id_jugador', async (req, res) => {
+  const mazoId = req.params.mazoId;
+  try {
+    const cartas = await obtenerCartasMazo(mazoId);
+    res.render('constructorMazo', { cartas, mazoId });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al obtener los detalles del mazo');
+  }
+});
 
 app.get('/mazos/:id', async (req, res) => {
-  const id_mazo = req.params.id_mazo;
+  const id_mazo = req.params.id;
   try {
     const client = await pool.connect();
     const mazoResult = await client.query('SELECT * FROM mazo WHERE id_mazo = $1', [id_mazo]);
@@ -172,7 +204,7 @@ app.get('/mazos/:id', async (req, res) => {
     const jugador = jugadorResult.rows[0];
     const cartasResult = await client.query('SELECT * FROM carta WHERE id_mazo = $1', [id_mazo]);
     const cartas = cartasResult.rows;
-    res.render('detalles_mazo', { mazo, jugador, cartas });
+    res.render('mazos', { mazo, jugador, cartas });
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al obtener los detalles del mazo');
@@ -279,14 +311,18 @@ function agregarCarta(codigo, mazoId) {
       // Si la carta ya está en el mazo, actualizar la cantidad
       if (result.rows.length > 0) {
         const cartaMazo = result.rows[0];
-        const nuevaCantidad = cartaMazo.cantidad + 1;
-        pool.query('UPDATE Carta_Mazo SET cantidad = $1 WHERE codigo_carta = $2 AND id_mazo = $3', [nuevaCantidad, codigo, mazoId], (error, result) => {
-          if (error) {
-            throw error;
-          } else {
-            console.log(`Se ha actualizado la cantidad de la carta ${codigo} en el mazo ${mazoId}`);
-          }
-        });
+        if (cartaMazo.cantidad < 3) { // validacion cantidad maxima
+          const nuevaCantidad = cartaMazo.cantidad + 1;
+          pool.query('UPDATE Carta_Mazo SET cantidad = $1 WHERE codigo_carta = $2 AND id_mazo = $3', [nuevaCantidad, codigo, mazoId], (error, result) => {
+            if (error) {
+              throw error;
+            } else {
+              console.log(`Se ha actualizado la cantidad de la carta ${codigo} en el mazo ${mazoId}`);
+            }
+          });
+        } else { 
+          return 'cantidad maxima de esta carta en el mazo'
+        }
       } else {
         // Si la carta no está en el mazo, agregar un nuevo registro
         pool.query('INSERT INTO Carta_Mazo (codigo_carta, id_mazo, cantidad) VALUES ($1, $2, $3)', [codigo, mazoId, 1], (error, result) => {
@@ -296,9 +332,33 @@ function agregarCarta(codigo, mazoId) {
             console.log(`Se ha agregado la carta ${codigo} al mazo ${mazoId}`);
           }
         });
-      } 
+      }
+
     }
   });
+
+  async function obtenerCartasMazo(idMazo) {
+    try {
+      const client = await pool.connect();
+      const cartaMazoResult = await client.query('SELECT codigo_carta FROM carta_mazo WHERE id_mazo = $1', [idMazo]);
+      const codigosCartas = cartaMazoResult.rows.map(row => row.codigo);
+  
+      const cartas = [];
+  
+      for (const codigoCarta of codigosCartas) {
+        const cartaResult = await client.query('SELECT * FROM carta WHERE codigo_carta = $1', [codigoCarta]);
+        const carta = cartaResult.rows[0];
+        cartas.push(carta);
+      }
+  
+      client.release();
+  
+      return cartas;
+    } catch (err) {
+      console.error(err);
+      throw new Error('Error al obtener las cartas por mazo');
+    }
+  };
 }
 
 //
