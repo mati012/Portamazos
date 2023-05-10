@@ -336,29 +336,6 @@ function agregarCarta(codigo, mazoId) {
 
     }
   });
-
-  async function obtenerCartasMazo(idMazo) {
-    try {
-      const client = await pool.connect();
-      const cartaMazoResult = await client.query('SELECT codigo_carta FROM carta_mazo WHERE id_mazo = $1', [idMazo]);
-      const codigosCartas = cartaMazoResult.rows.map(row => row.codigo);
-  
-      const cartas = [];
-  
-      for (const codigoCarta of codigosCartas) {
-        const cartaResult = await client.query('SELECT * FROM carta WHERE codigo_carta = $1', [codigoCarta]);
-        const carta = cartaResult.rows[0];
-        cartas.push(carta);
-      }
-  
-      client.release();
-  
-      return cartas;
-    } catch (err) {
-      console.error(err);
-      throw new Error('Error al obtener las cartas por mazo');
-    }
-  };
 }
 
 //
