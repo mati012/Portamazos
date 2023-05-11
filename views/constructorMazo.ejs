@@ -30,7 +30,7 @@
       <div class="container">
         <h1>Lista de cartas</h1>
         <div class="card-list">
-          <% cartas.forEach(function(carta) { %>
+          <% cartasMazo.forEach(function(carta) { %>
             <div class="card">
               <img src="<%= carta.imagen %>">
               <h2><%= carta.nombre %></h2>
@@ -45,5 +45,10 @@
           <% }); %>
         </div>
       </div>
+      <select>
+        <% cartas.forEach(function(carta) { %>
+          <option><%= carta[0] %></option>
+        <% }); %>
+      </select>
     </body>
 </html>

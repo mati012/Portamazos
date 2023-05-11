@@ -165,9 +165,11 @@ app.post('/mazos', async (req, res) => {
 app.get('/constructorMazo/:mazoId/:id_jugador', async (req, res) => {
   const mazoId = req.params.mazoId;
   try {
-    const cartas = await obtenerCartasMazo(mazoId);
+    const cartas = await obtenerCartas();
+    const cartasMazo = await obtenerCartasMazo(mazoId);
     const mensajeExito = req.flash('mensajeExito')[0];
-    res.render('constructorMazo', { cartas, mazoId, mensajeExito});
+    console.log(cartas);
+    res.render('constructorMazo', { cartas, cartasMazo, mazoId, mensajeExito});
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al obtener los detalles del mazo');
@@ -282,7 +284,7 @@ app.get('/mazos_publicos', (req, res) => {
 });
 
 // constructorMazo usa esta func
-async function obtenerCartasMazo(idMazo) {
+async function obtenerCartasMazo(idMazo) { //dejar solo obtener codigos de cartas, los valores de las cartas se obtendran en el get constructorMazo
   try {
     const client = await pool.connect();
     const cartaMazoResult = await client.query('SELECT codigo_carta FROM carta_mazo WHERE id_mazo = $1', [idMazo]);
@@ -302,6 +304,20 @@ async function obtenerCartasMazo(idMazo) {
   } catch (err) {
     console.error(err);
     throw new Error('Error al obtener las cartas por mazo');
+  }
+};
+
+async function obtenerCartas() {
+  try {
+    const client = await pool.connect();
+    const result = await client.query('SELECT * FROM CARTA');
+    const cartas = result.rows
+    client.release();
+
+    return cartas;
+  } catch (err) {
+    console.log(err);
+    throw new Error('Error al obtener cartas');
   }
 };
 
