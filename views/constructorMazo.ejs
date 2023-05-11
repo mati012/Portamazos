@@ -13,8 +13,20 @@
 		  <li><a href="/mazos_publicos">Mazos publicos</a></li>
 		  <li style="float:right"><a class="active" href="/logout">logout</a></li>
 		</ul>
+    <script>
+      function cerrarMensajeExito() {
+        var mensajeExito = document.getElementById('mensaje-exito');
+        mensajeExito.style.display = 'none';
+      }
+    </script>
 	  </head>
     <body>
+      <% if (mensajeExito) { %>
+        <div id="mensaje-exito" class="mensaje">
+          <span class="cerrar" onclick="cerrarMensajeExito()"> &nbsp; x</span>
+          <%= mensajeExito %>
+        </div>
+      <% } %>
       <div class="container">
         <h1>Lista de cartas</h1>
         <div class="card-list">

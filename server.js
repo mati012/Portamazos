@@ -11,6 +11,7 @@ const fs = require('fs');
 const initializePassport = require("./passportConfig");
 const { error } = require('console');
 
+
 initializePassport(passport);
 app.use(express.json());
 let imagenIndex = 1;
@@ -152,6 +153,7 @@ app.post('/mazos', async (req, res) => {
     const client = await pool.connect();
     const result = await client.query('INSERT INTO mazo (nombre, tipo_mazo, id_jugador) VALUES ($1, $2, $3) RETURNING id_mazo', [nombre, tipo_mazo, id_jugador]);
     const mazoId = result.rows[0].id_mazo; // obtener el id del mazo insertado
+    req.flash('mensajeExito', '¡Mazo creado exitosamente!');
     res.redirect(`/constructorMazo/${mazoId}/${id_jugador}`);
   } catch (err) {
     console.error(err);
@@ -160,34 +162,12 @@ app.post('/mazos', async (req, res) => {
    
 });
 
-async function obtenerCartasMazo(idMazo) {
-  try {
-    const client = await pool.connect();
-    const cartaMazoResult = await client.query('SELECT codigo_carta FROM carta_mazo WHERE id_mazo = $1', [idMazo]);
-    const codigosCartas = cartaMazoResult.rows.map(row => row.codigo);
-
-    const cartas = [];
-
-    for (const codigoCarta of codigosCartas) {
-      const cartaResult = await client.query('SELECT * FROM carta WHERE codigo_carta = $1', [codigoCarta]);
-      const carta = cartaResult.rows[0];
-      cartas.push(carta);
-    }
-
-    client.release();
-
-    return cartas;
-  } catch (err) {
-    console.error(err);
-    throw new Error('Error al obtener las cartas por mazo');
-  }
-};
-
 app.get('/constructorMazo/:mazoId/:id_jugador', async (req, res) => {
   const mazoId = req.params.mazoId;
   try {
     const cartas = await obtenerCartasMazo(mazoId);
-    res.render('constructorMazo', { cartas, mazoId });
+    const mensajeExito = req.flash('mensajeExito')[0];
+    res.render('constructorMazo', { cartas, mazoId, mensajeExito});
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al obtener los detalles del mazo');
@@ -301,6 +281,30 @@ app.get('/mazos_publicos', (req, res) => {
   });
 });
 
+// constructorMazo usa esta func
+async function obtenerCartasMazo(idMazo) {
+  try {
+    const client = await pool.connect();
+    const cartaMazoResult = await client.query('SELECT codigo_carta FROM carta_mazo WHERE id_mazo = $1', [idMazo]);
+    const codigosCartas = cartaMazoResult.rows.map(row => row.codigo);
+
+    const cartas = [];
+
+    for (const codigoCarta of codigosCartas) {
+      const cartaResult = await client.query('SELECT * FROM carta WHERE codigo_carta = $1', [codigoCarta]);
+      const carta = cartaResult.rows[0];
+      cartas.push(carta);
+    }
+
+    client.release();
+
+    return cartas;
+  } catch (err) {
+    console.error(err);
+    throw new Error('Error al obtener las cartas por mazo');
+  }
+};
+
 // EDITOR DE MAZOS 
 function agregarCarta(codigo, mazoId) {
   // Comprobar si la carta ya está en el mazo
@@ -336,6 +340,10 @@ function agregarCarta(codigo, mazoId) {
 
     }
   });
-}
+};
+
+
+
+
 
 //
