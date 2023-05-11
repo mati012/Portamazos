@@ -11,7 +11,6 @@ const fs = require('fs');
 const initializePassport = require("./passportConfig");
 const { error } = require('console');
 
-
 initializePassport(passport);
 app.use(express.json());
 let imagenIndex = 1;
@@ -52,11 +51,12 @@ app.get("/logout",(req, res)=>{
 app.get("/mazos", checkNotAuthenticated, (req, res)=>{
     res.render("mazos", {user: req.user.id_jugador});
 });
-app.get("/creador", checkNotAuthenticated, (req, res)=>{
-  res.render("creador");
-});
+
 app.get("/mazoCreado", checkNotAuthenticated, (req, res)=>{
   res.render("mazoCreado");
+});
+app.get("/constructor", checkNotAuthenticated, (req, res)=>{
+  res.render("constructor");
 });
 
 // esto sirve para obtener los datos del registro y pasarlos a la base de datos
@@ -145,7 +145,7 @@ app.post(
   });
 
 
-
+//CREADOR DE MAZO 
 app.post('/mazos', async (req, res) => {
   const { nombre, tipo_mazo } = req.body;
   const id_jugador = req.user.id_jugador;
@@ -153,8 +153,7 @@ app.post('/mazos', async (req, res) => {
     const client = await pool.connect();
     const result = await client.query('INSERT INTO mazo (nombre, tipo_mazo, id_jugador) VALUES ($1, $2, $3) RETURNING id_mazo', [nombre, tipo_mazo, id_jugador]);
     const mazoId = result.rows[0].id_mazo; // obtener el id del mazo insertado
-    req.flash('mensajeExito', '¡Mazo creado exitosamente!');
-    res.redirect(`/constructorMazo/${mazoId}/${id_jugador}`);
+    res.redirect(`/constructor`);
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al crear el mazo');
@@ -226,6 +225,8 @@ app.get('/visualizador', (req, res) => {
     res.render('visualizador', { user: req.user, cartas: results.rows, search: search, tipo: tipo, raza: raza, coste: coste, fuerza: fuerza });
   });
 });
+
+// RESULTADO BUSQUEDA
 app.get('/carta/:codigo', (req, res) => {
   const codigo = req.params.codigo;
 
@@ -328,38 +329,59 @@ function agregarCarta(codigo, mazoId) {
     if (error) {
       throw error;
     } else {
-      // Si la carta ya está en el mazo, actualizar la cantidad
+      console.log(`Resultados de la consulta SELECT: ${JSON.stringify(result.rows)}`);
+
       if (result.rows.length > 0) {
         const cartaMazo = result.rows[0];
-        if (cartaMazo.cantidad < 3) { // validacion cantidad maxima
-          const nuevaCantidad = cartaMazo.cantidad + 1;
-          pool.query('UPDATE Carta_Mazo SET cantidad = $1 WHERE codigo_carta = $2 AND id_mazo = $3', [nuevaCantidad, codigo, mazoId], (error, result) => {
-            if (error) {
-              throw error;
-            } else {
-              console.log(`Se ha actualizado la cantidad de la carta ${codigo} en el mazo ${mazoId}`);
-            }
-          });
-        } else { 
-          return 'cantidad maxima de esta carta en el mazo'
-        }
-      } else {
-        // Si la carta no está en el mazo, agregar un nuevo registro
-        pool.query('INSERT INTO Carta_Mazo (codigo_carta, id_mazo, cantidad) VALUES ($1, $2, $3)', [codigo, mazoId, 1], (error, result) => {
+        const nuevaCantidad = cartaMazo.cantidad + 1;
+        console.log(`La carta ${codigo_carta} ya está en el mazo ${id_mazo}. Actualizando cantidad a ${nuevaCantidad}`);
+
+        pool.query('UPDATE CartaMazo SET cantidad = $1 WHERE codigo_carta = $2 AND id_mazo = $3', [nuevaCantidad, codigo_carta, id_mazo], (error, result) => {
           if (error) {
             throw error;
           } else {
-            console.log(`Se ha agregado la carta ${codigo} al mazo ${mazoId}`);
+            console.log(`Se ha actualizado la cantidad de la carta ${codigo_carta} en el mazo ${id_mazo}`);
+          }
+        });
+      } else {
+        console.log(`La carta ${codigo_carta} no está en el mazo ${id_mazo}. Agregando nueva carta`);
+
+        pool.query('INSERT INTO CartaMazo (codigo_carta, id_mazo, cantidad) VALUES ($1, $2, $3)', [codigo_carta, id_mazo, 1], (error, result) => {
+          if (error) {
+            throw error;
+          } else {
+            console.log(`Se ha agregado la carta ${codigo_carta} al mazo ${id_mazo}`);
           }
         });
       }
-
     }
   });
-};
+}
+// Eliminar una carta de un mazo
+function eliminarCarta(codigo_carta, id_mazo) {
+  pool.query('DELETE FROM CartaMazo WHERE codigo_carta = $1 AND id_mazo = $2', [codigo_carta, id_mazo], (error, result) => {
+    if (error) {
+      throw error;
+    } else {
+      console.log(`Se ha eliminado la carta ${codigo_carta} del mazo ${id_mazo}`);
+    }
+  });
+}
 
+// Obtener las cartas de un mazo
+function obtenerCartasMazo(id_mazo) {
+  pool.query('SELECT * FROM CartaMazo JOIN Carta ON CartaMazo.codigo_carta = Carta.codigo WHERE id_mazo = $1', [id_mazo], (error, result) => {
+    if (error) {
+      throw error;
+    } else {
+      // Mostrar las cartas del mazo en una lista
+      const cartasMazo = result.rows;
+      let listaCartasMazo = "";
+      cartasMazo.forEach((cartaMazo) => {
+        listaCartasMazo += `<li>${cartaMazo.nombre} x${cartaMazo.cantidad} <button onclick="eliminarCarta('${cartaMazo.codigo_carta}', ${id_mazo})">Eliminar</button></li>`;
+      });
+      document.getElementById("cartas-mazo").innerHTML = listaCartasMazo;
+    }
+  });
+}
 
-
-
-
-//
