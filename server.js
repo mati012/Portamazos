@@ -153,7 +153,8 @@ app.post('/mazos', async (req, res) => {
     const client = await pool.connect();
     const result = await client.query('INSERT INTO mazo (nombre, tipo_mazo, id_jugador) VALUES ($1, $2, $3) RETURNING id_mazo', [nombre, tipo_mazo, id_jugador]);
     const mazoId = result.rows[0].id_mazo; // obtener el id del mazo insertado
-    res.redirect(`/constructor`);
+    req.flash('mensajeExito', '¡Mazo creado exitosamente!');
+    res.redirect(`/constructorMazo/${mazoId}/${id_jugador}`);
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al crear el mazo');
@@ -369,19 +370,33 @@ function eliminarCarta(codigo_carta, id_mazo) {
 }
 
 // Obtener las cartas de un mazo
-function obtenerCartasMazo(id_mazo) {
-  pool.query('SELECT * FROM CartaMazo JOIN Carta ON CartaMazo.codigo_carta = Carta.codigo WHERE id_mazo = $1', [id_mazo], (error, result) => {
-    if (error) {
-      throw error;
-    } else {
-      // Mostrar las cartas del mazo en una lista
-      const cartasMazo = result.rows;
-      let listaCartasMazo = "";
-      cartasMazo.forEach((cartaMazo) => {
-        listaCartasMazo += `<li>${cartaMazo.nombre} x${cartaMazo.cantidad} <button onclick="eliminarCarta('${cartaMazo.codigo_carta}', ${id_mazo})">Eliminar</button></li>`;
-      });
-      document.getElementById("cartas-mazo").innerHTML = listaCartasMazo;
-    }
-  });
-}
+// function obtenerCartasMazo(id_mazo) {
+//   pool.query('SELECT * FROM carta_mazo JOIN Carta ON CartaMazo.codigo_carta = Carta.codigo WHERE id_mazo = $1', [id_mazo], (error, result) => {
+//     if (error) {
+//       throw error;
+//     } else {
+//       // Mostrar las cartas del mazo en una lista
+//       const cartasMazo = result.rows;
+//       let listaCartasMazo = "";
+//       cartasMazo.forEach((cartaMazo) => {
+//         listaCartasMazo += `<li>${cartaMazo.nombre} x${cartaMazo.cantidad} <button onclick="eliminarCarta('${cartaMazo.codigo_carta}', ${id_mazo})">Eliminar</button></li>`;
+//       });
+//       document.getElementById("cartas-mazo").innerHTML = listaCartasMazo;
+//     }
+//   });
+// }
+
+async function obtenerCartas() {
+  try {
+    const client = await pool.connect();
+    const result = await client.query('SELECT * FROM CARTA');
+    const cartas = result.rows
+    client.release();
+
+    return cartas;
+  } catch (err) {
+    console.log(err);
+    throw new Error('Error al obtener cartas');
+  }
+};
 
