@@ -169,7 +169,7 @@ app.get('/constructorMazo/:mazoId/:id_jugador', async (req, res) => {
     const cartasMazo = await obtenerCartasMazo(mazoId);
     const mensajeExito = req.flash('mensajeExito')[0];
     console.log(cartas);
-    res.render('constructorMazo', { cartas, cartasMazo, mazoId, mensajeExito});
+    res.render('constructorMazo', { cartas: cartas, cartasMazo: cartasMazo, mazoId: mazoId, mensajeExito: mensajeExito});
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al obtener los detalles del mazo');
