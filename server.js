@@ -48,8 +48,8 @@ app.get("/logout",(req, res)=>{
       });;
    
 })
-app.get("/guia_productos", checkNotAuthenticated, (req, res)=>{
-    res.render("guia_productos", {user: req.user.id_jugador});
+app.get("/mazos", checkNotAuthenticated, (req, res)=>{
+    res.render("mazos", {user: req.user.id_jugador});
 });
 
 app.get("/mazoCreado", checkNotAuthenticated, (req, res)=>{
@@ -57,9 +57,6 @@ app.get("/mazoCreado", checkNotAuthenticated, (req, res)=>{
 });
 app.get("/constructor", checkNotAuthenticated, (req, res)=>{
   res.render("constructor");
-});
-app.get("/mazos", checkNotAuthenticated, (req, res)=>{
-  res.render("mazos", {user: req.user.id_jugador});
 });
 
 
@@ -148,21 +145,6 @@ app.post(
     console.log(`Server running on port ${PORT}`);
   });
 
-//CREADOR DE PRODUCTO
-app.post('/creador_productos', async (req,res) => {
-  const {nombre, precio, descripcion}= req.body;
-  const id_empresa = 1;
-  try{
-    const client = await pool.connect();
-    const result = await client.query('INSERT INTO producto (nombre, precio, descripcion) VALUES ($1, $2, $3) RETURNING id_producto', [nombre, precio, descripcion]);
-    const productoid = result.rows[0].id_producto; // obtener el id del producto insertado
-    res.redirect('/home');
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al crear el producto');
-  }
-});
-
 
 //CREADOR DE MAZO 
 app.post('/mazos', async (req, res) => {
@@ -172,7 +154,8 @@ app.post('/mazos', async (req, res) => {
     const client = await pool.connect();
     const result = await client.query('INSERT INTO mazo (nombre, tipo_mazo, id_jugador) VALUES ($1, $2, $3) RETURNING id_mazo', [nombre, tipo_mazo, id_jugador]);
     const mazoId = result.rows[0].id_mazo; // obtener el id del mazo insertado
-    res.redirect(`/constructor`);
+    req.flash('mensajeExito', '¡Mazo creado exitosamente!');
+    res.redirect(`/constructorMazo/${mazoId}/${id_jugador}`);
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al crear el mazo');
@@ -210,7 +193,19 @@ app.get('/mazos/:id', async (req, res) => {
     res.status(500).send('Error al obtener los detalles del mazo');
   }
 });
-// visualizador de mazo 
+  function ul(index) {
+	console.log('click!' + index)
+	
+	var underlines = document.querySelectorAll(".underline");
+
+	for (var i = 0; i < underlines.length; i++) {
+		underlines[i].style.transform = 'translate3d(' + index * 100 + '%,0,0)';
+	}
+ }
+ 
+
+
+
 app.get('/visualizador', (req, res) => {
   const search = req.query.search || '';
   const tipo = req.query.tipo || '';
@@ -277,7 +272,6 @@ app.post('/eliminar_mazo', (req, res) => {
     }
   });
 });
-
 // OBTENER MAZOS PUBLICOS
 app.get('/mazos_publicos', (req, res) => {
 
@@ -290,39 +284,6 @@ app.get('/mazos_publicos', (req, res) => {
     }
   });
 });
-// BUSCAR MAZO PUBLICO
-app.post('/buscar_mazo', (req, res) => {
-  const busqueda = req.body.busqueda;
-
-  pool.query('SELECT * FROM Mazo WHERE nombre ILIKE $1 AND tipo_mazo =2', [`%${busqueda}%`], (error, result) => {
-    if (error) {
-      console.error(error);
-      res.sendStatus(500);
-    } else {
-      const mazo = result.rows;
-      res.render('mazos_publicos', { mazo });
-    }
-  });
-});
-// Guardar un mazo que este publico que no pertenezca al usuario 
-app.post('/guardar_mazo_publico', (req, res) => {
-  const id_jugador = req.user.id_jugador;
-
-  pool.query('INSERT INTO Mazo (nombre, id_jugador, tipo_mazo) SELECT nombre, $1, 2 FROM Mazo WHERE id_mazo = $2 AND tipo_mazo = 2 AND id_jugador != $1 RETURNING id_mazo', [id_jugador, req.params.id_mazo], (error, result) => {
-    if (error) {
-      console.error(error);
-      res.sendStatus(500);
-    } else if (result.rows.length > 0) {
-      console.log(result.rows);
-      req.flash("success_msg", "Se ha guardado el mazo correctamente");
-      res.redirect('/mazos_publicos');
-    } else {
-      req.flash("error_msg", "No se puede guardar el mazo");
-      res.redirect('/mazos_publicos');
-    }
-  });
-});
-
 
 // constructorMazo usa esta func
 async function obtenerCartasMazo(idMazo) { //dejar solo obtener codigos de cartas, los valores de las cartas se obtendran en el get constructorMazo
@@ -362,78 +323,131 @@ async function obtenerCartas() {
   }
 };
 
-app.post('/mazo/:idMazo', (req, res) => {
-  const codigo_carta = req.body.codigo_carta;
+// EDITOR DE MAZOS 
+function agregarCarta(codigo, mazoId) {
+  // Comprobar si la carta ya está en el mazo
+  pool.query('SELECT * FROM Carta_Mazo WHERE codigo_carta = $1 AND id_mazo = $2', [codigo, mazoId], (error, result) => {
+    if (error) {
+      throw error;
+    } else {
+      console.log(`Resultados de la consulta SELECT: ${JSON.stringify(result.rows)}`);
 
-  // Verificar si la carta ya está en el mazo
-  pool.query('SELECT * FROM CartaMazo WHERE codigo_carta = $1 AND id_mazo = $2', [codigo_carta, req.params.idMazo], (error, result) => {
+      if (result.rows.length > 0) {
+        const cartaMazo = result.rows[0];
+        const nuevaCantidad = cartaMazo.cantidad + 1;
+        console.log(`La carta ${codigo_carta} ya está en el mazo ${id_mazo}. Actualizando cantidad a ${nuevaCantidad}`);
+
+        pool.query('UPDATE CartaMazo SET cantidad = $1 WHERE codigo_carta = $2 AND id_mazo = $3', [nuevaCantidad, codigo_carta, id_mazo], (error, result) => {
+          if (error) {
+            throw error;
+          } else {
+            console.log(`Se ha actualizado la cantidad de la carta ${codigo_carta} en el mazo ${id_mazo}`);
+          }
+        });
+      } else {
+        console.log(`La carta ${codigo_carta} no está en el mazo ${id_mazo}. Agregando nueva carta`);
+
+        pool.query('INSERT INTO CartaMazo (codigo_carta, id_mazo, cantidad) VALUES ($1, $2, $3)', [codigo_carta, id_mazo, 1], (error, result) => {
+          if (error) {
+            throw error;
+          } else {
+            console.log(`Se ha agregado la carta ${codigo_carta} al mazo ${id_mazo}`);
+          }
+        });
+      }
+    }
+  });
+}
+// Eliminar una carta de un mazo
+function eliminarCarta(codigo_carta, id_mazo) {
+  pool.query('DELETE FROM CartaMazo WHERE codigo_carta = $1 AND id_mazo = $2', [codigo_carta, id_mazo], (error, result) => {
+    if (error) {
+      throw error;
+    } else {
+      console.log(`Se ha eliminado la carta ${codigo_carta} del mazo ${id_mazo}`);
+    }
+  });
+}
+// BUSCAR MAZO PUBLICO
+app.post('/buscar_mazo', (req, res) => {
+  const busqueda = req.body.busqueda;
+
+  pool.query('SELECT * FROM Mazo WHERE nombre ILIKE $1 AND tipo_mazo =2', [`%${busqueda}%`], (error, result) => {
     if (error) {
       console.error(error);
       res.sendStatus(500);
     } else {
-      if (result.rows.length > 0) {
-        const cartaMazo = result.rows[0];
-        const nuevaCantidad = cartaMazo.cantidad + 1;
-        if (nuevaCantidad > 3) {
-          res.status(400).send(`La carta ${codigo_carta} ya tiene el máximo de copias permitidas (3)`);
-        } else {
-          pool.query('UPDATE carta_mazo  SET cantidad = $1 WHERE codigo_carta = $2 AND id_mazo = $3', [nuevaCantidad, codigo_carta, req.params.idMazo], (error, result) => {
-            if (error) {
-              console.error(error);
-              res.sendStatus(500);
-            } else {
-              res.sendStatus(200);
-            }
-          });
-        }
-      } else { pool.query('INSERT INTO carta_mazo (codigo_carta, id_mazo, cantidad) VALUES ($1, $2, $3)', [codigo_carta, req.params.idMazo, 1], (error, result) => {
-        if (error) {
-          console.error(error);
-          res.sendStatus(500);
-        } else {
-          res.sendStatus(200);
-        }
-      });
-      }}})});
+      const mazo = result.rows;
+      res.render('mazos_publicos', { mazo });
+    }
+  });
+});
+// Guardar un mazo que este publico que no pertenezca al usuario 
+app.post('/guardar_mazo_publico', (req, res) => {
+  const id_jugador = req.user.id_jugador;
 
-      app.get('/mazo/:idMazo/cartas', (req, res) => {
-        pool.query('SELECT c.*, cm.cantidad FROM Carta c JOIN carta_mazo cm ON c.codigo = cm.codigo_carta WHERE cm.id_mazo = $1', [req.params.idMazo], (error, result) => {
-          if (error) {
-            console.error(error);
-            res.sendStatus(500);
-          } else {
-            const cartas = result.rows;
-            res.render('cartas-mazo', { cartas });
-          }
-        });
-      });
+  pool.query('INSERT INTO Mazo (nombre, id_jugador, tipo_mazo) SELECT nombre, $1, 2 FROM Mazo WHERE id_mazo = $2 AND tipo_mazo = 2 AND id_jugador != $1 RETURNING id_mazo', [id_jugador, req.params.id_mazo], (error, result) => {
+    if (error) {
+      console.error(error);
+      res.sendStatus(500);
+    } else if (result.rows.length > 0) {
+      console.log(result.rows);
+      req.flash("success_msg", "Se ha guardado el mazo correctamente");
+      res.redirect('/mazos_publicos');
+    } else {
+      req.flash("error_msg", "No se puede guardar el mazo");
+      res.redirect('/mazos_publicos');
+    }
+  });
+});
+//CREADOR DE PRODUCTO
+app.post('/creador_productos', async (req,res) => {
+  const {nombre, precio, descripcion}= req.body;
+  try{
+    const client = await pool.connect();
+    const result = await client.query('INSERT INTO producto (nombre, precio, descripcion, id_empresa, disponible) VALUES ($1, $2, $3, $4, $5) RETURNING id_producto', [nombre, precio, descripcion, 1, true]);
+    const productoid = result.rows[0].id_producto; // obtener el id del producto insertado
+    res.redirect('/home');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al crear el producto');
+  }
+});
+// visualizador de productos 
+app.get('/guiaProductos', (req, res) => {
 
-      app.post('/mazo/:idMazo/carta/:codigoCarta/eliminar', (req, res) => {
-        pool.query('SELECT * FROM carta_mazo  WHERE id_mazo = $1 AND codigo_carta = $2', [req.params.idMazo, req.params.codigoCarta], (error, result) => {
-          if (error) {
-            console.error(error);
-            res.sendStatus(500);
-          } else {
-            const cartaMazo = result.rows[0];
-            if (cartaMazo.cantidad > 1) {
-              pool.query('UPDATE carta_mazo  SET cantidad = $1 WHERE id_mazo = $2 AND codigo_carta = $3', [cartaMazo.cantidad - 1, req.params.idMazo, req.params.codigoCarta], (error, result) => {
-                if (error) {
-                  console.error(error);
-                  res.sendStatus(500);
-                } else {
-                  res.redirect(`/mazo/${req.params.idMazo}`);
-                }
-              });
-            } else {
-              pool.query('DELETE FROM carta_mazo  WHERE id_mazo = $1 AND codigo_carta = $2', [req.params.idMazo, req.params.codigoCarta], (error, result) => {
-                if (error) {
-                  console.error(error);
-                  res.sendStatus(500);
-                } else {
-                  res.redirect(`/mazo/${req.params.idMazo}`);
-                }
-              });
-            }
-          }
-        });
-      });
+  pool.query('SELECT * FROM producto WHERE disponible = true; ', (error, result)=> {
+    if (error){
+      throw error;
+    } else {
+      const producto = result.rows;
+      res.render('guiaProductos', { producto });
+    }
+  });
+});
+// RENDERIZA Y OBTIENE LA PAGINA CREADOR PRODUCTO
+app.get('/creadorProducto', async (req, res) => {
+  try {
+    const client = await pool.connect();
+    const result = await client.query('SELECT * FROM producto WHERE id_empresa = $1', [1]); // Seleccionamos sólo los productos de la empresa con id 1
+    const producto = result.rows;
+    res.render('creadorProducto', { producto });
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al obtener los productos');
+  }
+});
+app.post('/actualizar', (req, res) => {
+  const id_producto = req.body.id_producto;
+  const nuevoEstado = req.body.disponible === 'true' ? true : false; // Obtener el nuevo estado de disponibilidad del combobox
+  
+  // Actualizar la columna de disponibilidad en la tabla producto
+  pool.query('UPDATE producto SET disponible = $1 WHERE id_producto =$2 ', [nuevoEstado, id_producto], (error, result) => {
+    if (error) {
+      console.error(error);
+      res.status(500).send('Error al actualizar la disponibilidad');
+    } else {
+      res.redirect('/creadorProducto');
+    }
+  });
+});

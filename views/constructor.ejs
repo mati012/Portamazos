@@ -1,31 +1,22 @@
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8" />
-		
-		<link rel='stylesheet' type="text/css"><link rel="stylesheet" href="/css/estilos.css" >"
-		
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-		<ul>
-		  <li><a href="/mazos">mazos</a></li>
-		  <li><a href="/visualizador">buscador</a></li>
-		  <li><a href="mazos_publicos">Mazos publicos</a></li>
-		  <li style="float:right"><a class="active" href="/logout">logout</a></li>
-		</ul>
-    <script>
-      document.addEventListener("DOMContentLoaded", () => {
-  const form = document.getElementById("agregarCarta");
-
-  form.addEventListener("submit", (event) => {
-    event.preventDefault();
-    const codigoCarta = document.getElementById("codigo-carta").value;
-    const cantidad = document.getElementById("cantidad").value;
-    agregarCarta(codigoCarta, cantidad);
-  });
-});
-    </script>
-	  </head>
+  <head>
+    <meta charset="utf-8">
+    <head>
+      <meta charset="UTF-8" />
+      
+      <link rel='stylesheet' type="text/css"><link rel="stylesheet" href="/css/estilos.css" >"
+      
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+      <ul>
+        <li><a href="/mazos">mazos</a></li>
+        <li><a href="/visualizador">buscador</a></li>
+        <li><a href="mazos_publicos">Mazos publicos</a></li>
+            <li><a href="/guiaProductos">Guia productos</a></li>
+        <li style="float:right"><a class="active" href="/logout">logout</a></li>
+      </ul>
+      </head>
     <body>
  
     

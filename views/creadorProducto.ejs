@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8">
+    <head>
+      <meta charset="UTF-8" />
+      
+      <link rel='stylesheet' type="text/css"><link rel="stylesheet" href="/css/estilos.css" >"
+      
+      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+      <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+      <ul>
+        <li><a href="/mazos">mazos</a></li>
+        <li><a href="/visualizador">buscador</a></li>
+        <li><a href="mazos_publicos">Mazos publicos</a></li>
+            <li><a href="/guiaProductos">Guia productos</a></li>
+        <li style="float:right"><a class="active" href="/logout">logout</a></li>
+      </ul>
+      </head>
+  <body>
+
+    <div class="container">
+      <form action="/creador_productos" method="POST">
+        <h1>Producto</h1>
+        <div>
+          <label for="nombre">Nombre:</label>
+          <input type="text" id="nombre" name="nombre" required>
+        </div>
+        <div>
+          <label for="precio">precio:</label>
+          <input type="text" id="precio" name="precio" required>
+        </div>
+        <div>
+            <label for="descripcion">descripcion producto:</label>
+            <input type="text" id="descripcion" name="descripcion" required>
+        </div>
+          <br>
+        <button type="submit">Crear Producto</button>        
+      </form>
+      <form>
+        <div class="container">
+          <h1>Productos</h1>
+          <ol>
+            <% producto.forEach(function(producto) { %>
+              <li>
+                <h2><%= producto.nombre %></h2>
+                <p><%= producto.descripcion %></p>
+                <p>Precio: <%= producto.precio %></p>
+                <form action="/actualizar" method="POST">
+                  <div>
+                    <label for="disponible">Disponible:</label>
+                    <select id="disponible" name="disponible">
+                      <option value="true" <% if (producto.disponible) { %>selected<% } %>>Disponible</option>
+                      <option value="false" <% if (!producto.disponible) { %>selected<% } %>>No disponible</option>
+                    </select>
+                    <button type="submit">Guardar</button>  
+                </form>
+              </li>
+            <% }); %>
+          </ol>
+        </div>
+        </form>
+    
+    </div>
+  </body>
+</html>
