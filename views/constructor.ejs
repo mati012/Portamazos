@@ -30,53 +30,53 @@
     <body>
  
     
-    
-
-      <!-- Mostrar la lista de cartas en el mazo -->
-      <ul>
-        <h1>Mazo {{ mazo.nombre }}</h1>
-        {{#each cartasMazo}}
-          <li>
-            {{this.nombre}} ({{this.cantidad}})
-            <form method="post" action="/mazo/{{../mazo.id}}/carta/{{this.codigo}}/eliminar">
-              <button type="submit">Eliminar</button>
-            </form>
-          </li>
-        {{/each}}
-      </ul>
-      
-      <!-- Agregar formulario para agregar cartas al mazo -->
-      <form method="post" action="/mazo/{{mazo.id}}/agregar-carta">
-        <label for="codigo_carta">Código de carta:</label>
-        <input type="text" name="codigo_carta" id="codigo_carta">
-        <button type="submit">Agregar</button>
-      </form>
-      
-      <!-- Mostrar la lista de cartas disponibles -->
-      <h2>Cartas disponibles</h2>
-      
-      <form method="get" action="/mazo/{{mazo.id}}">
-        <label for="filtro_nombre">Filtrar por nombre:</label>
-        <input type="text" name="filtro_nombre" id="filtro_nombre" value="">
+      <!-- Filtro de búsqueda -->
+      <form>
+        <h1>Visualizador de cartas</h1>
+        <label for="filtro">Filtro:</label>
+        <input type="text" id="filtro" name="filtro">
         <button type="submit">Buscar</button>
       </form>
-      
-      <ul>
-        {{#each cartasDisponibles}}
-          <li>
-            {{this.nombre}} <a href="/carta/{{this.codigo}}">Ver detalles</a>
-            {{#if this.enMazo}}
-              (En mazo: {{this.cantidad}})
-            {{else}}
-              <form method="post" action="/mazo/{{mazo.id}}/agregar-carta">
-                <input type="hidden" name="codigo_carta" value="{{this.codigo}}">
-                <button type="submit">Agregar al mazo</button>
-          </form>
-          {{/if}}
-          </li>
-          {{/each}}
+    
+      <!-- Visualizador de cartas -->
+      <div id="visualizador">
+        <!-- Aquí se cargará el listado de cartas -->
+      </div>
+    
+      <!-- Listado de cartas en el mazo -->
 
-          </ul>
-                
+    
+    
+      <!-- Formulario para agregar cartas al mazo -->
+      <form id="agregarCarta" name="agregarCarta">
+        <h2>Agregar carta al mazo</h2>
+        <label for="codigo-carta">Código de la carta:</label>
+        <input type="text" id="codigo-carta" name="codigo-carta" required>
+        <label for="cantidad">Cantidad:</label>
+        <input type="number" id="cantidad" name="cantidad" value="1" min="1" max="3" required>
+        <button type="submit">Agregar</button>
+      </form>
+    
+      <!-- Formulario para eliminar cartas del mazo -->
+      <form id="eliminar-carta-form">
+        <h2>Eliminar carta del mazo</h2>
+        <label for="codigo-carta-eliminar">Código de la carta:</label>
+        <input type="text" id="codigo-carta-eliminar" name="codigo-carta-eliminar" required>
+        <button type="submit">Eliminar</button>
+      </form>
+
+      <table id="cartas-mazo">
+        <h2>Listado de cartas en el mazo</h2>
+        <thead>
+          <tr>
+            <th>Nombre de la carta</th>
+            <th>Cantidad</th>
+          </tr>
+        </thead>
+        <tbody>
+          <!-- Aquí se cargarán las cartas del mazo -->
+        </tbody>
+      </table>
+    
     </body>
 </html>

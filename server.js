@@ -370,6 +370,7 @@ function eliminarCarta(codigo_carta, id_mazo) {
 }
 
 // Obtener las cartas de un mazo
+<<<<<<< HEAD
 // function obtenerCartasMazo(id_mazo) {
 //   pool.query('SELECT * FROM carta_mazo JOIN Carta ON CartaMazo.codigo_carta = Carta.codigo WHERE id_mazo = $1', [id_mazo], (error, result) => {
 //     if (error) {
@@ -399,4 +400,21 @@ async function obtenerCartas() {
     throw new Error('Error al obtener cartas');
   }
 };
+=======
+function obtenerCartasMazo(id_mazo) {
+  pool.query('SELECT * FROM CartaMazo JOIN Carta ON CartaMazo.codigo_carta = Carta.codigo WHERE id_mazo = $1', [id_mazo], (error, result) => {
+    if (error) {
+      throw error;
+    } else {
+      // Mostrar las cartas del mazo en una lista
+      const cartasMazo = result.rows;
+      let listaCartasMazo = "";
+      cartasMazo.forEach((cartaMazo) => {
+        listaCartasMazo += `<li>${cartaMazo.nombre} x${cartaMazo.cantidad} <button onclick="eliminarCarta('${cartaMazo.codigo_carta}', ${id_mazo})">Eliminar</button></li>`;
+      });
+      document.getElementById("cartas-mazo").innerHTML = listaCartasMazo;
+    }
+  });
+}
+>>>>>>> parent of 2e12230 (a)
 

@@ -20,30 +20,13 @@
 	<title>Lista de mazos</title>
 </head>
 <body>
-	<form action="/buscar_mazo" method="POST">
-		<label for="busqueda">Buscar mazo:</label>
-		<input type="text" name="busqueda" id="busqueda">
-		<button type="submit">Buscar</button>
-		<div class="container">
-			<% if (typeof mazo !== 'undefined' && mazo.length > 0) { %>
-			  <h1>Resultados de la búsqueda</h1>
-			  <ol id="lista3">
-				<% mazo.forEach(function(mazo) { %>
-				  <li>
-					<a href="/mazo/<%= mazo.id_mazo %>"><%= mazo.nombre %></a>
-					<form action="/guardar_mazo_publico" method="POST">
-					  <input type="hidden" name="id_mazo" value="<%= mazo.id_mazo %>">
-					  <button type="submit">Guardar Mazo</button>
-					</form>
-				  </li>
-				<% }); %>
-			  </ol>
-			<% } else { %>
-			  <h1>No se encontraron resultados</h1>
-			<% } %>
-		  </div>
-		
-	  </form>
-
+	<div class="container">
+		<h1>Lista de mazos</h1>
+		<ol id="lista3">
+			<% mazo.forEach(function(mazo) { %>
+				<li><a href="/mazo/<%= mazo.id_mazo %>"><%= mazo.nombre %></a></li>
+			<% }); %>
+		</ol>
+	</div>
 </body>
 </html>
