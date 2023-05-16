@@ -25,7 +25,7 @@
 	  <h1>Lista de mazos</h1>
 	  <ol id="lista2">
 		<% mazo.forEach(function(mazo) { %>
-		  <li><a href="/constructor"><%= mazo.nombre %></a>
+		  <li><a href="/mazo/<%= mazo.id_mazo %>"><%= mazo.nombre %></a>
 			<form action="/eliminar_mazo" method="POST" style="display:inline-block;">
 			  <input type="hidden" name="id_mazo" value="<%= mazo.id_mazo %>">
 			  <input type="submit" value="Eliminar">
