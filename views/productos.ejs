@@ -10,11 +10,10 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 		<ul>
-			<li><a href="/home">Inicio</a></li>
-			<li><a href="/mazos">Mazos</a></li>
-			<li><a href="/visualizador">Buscador</a></li>
-			<li><a href="mazos_publicos">Mazos publicos</a></li>
-			<li style="float:right"><a class="active" href="/logout">Salir</a></li>
+		  <li><a href="/mazos">mazos</a></li>
+		  <li><a href="/visualizador">buscador</a></li>
+		  <li><a href="mazos_publicos">Mazos publicos</a></li>
+		  <li style="float:right"><a class="active" href="/logout">logout</a></li>
 		</ul>
 	  </head>
 	<title>Lista de mazos</title>
@@ -22,7 +21,7 @@
 
 <body>
 	<div class="container2">
-	  <h1>Lista de mazos</h1>
+	  <h1>Lista de productos</h1>
 	  <ol id="lista2">
 		<% mazo.forEach(function(mazo) { %>
 		  <li><a href="/constructor"><%= mazo.nombre %></a>
