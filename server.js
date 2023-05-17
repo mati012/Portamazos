@@ -241,11 +241,11 @@ app.get('/carta/:codigo', (req, res) => {
     } else {
       const carta = result.rows[0];
       const imagenBytea = result.rows[0].imagen;
-      //const imagenBase64 = Buffer.from(imagenBytea).toString('base64');
-      //fs.writeFileSync('temp.png', Buffer.from(imagenBytea), 'binary');
+      const imagenBase64 = Buffer.from(imagenBytea).toString('base64');
+      fs.writeFileSync('temp.png', Buffer.from(imagenBytea), 'binary');
 
       res.set('Content-Type', 'text/html');
-      res.render('carta', { user: req.user, carta: carta, /*imagenBase64: imagenBase64*/ });
+      res.render('carta', { user: req.user, carta: carta, imagenBase64: imagenBase64 });
     }
   });
 });
@@ -454,16 +454,31 @@ app.post('/actualizar', (req, res) => {
     }
   });
 });
-app.get('/buscar_producto', async (req, res) => {
-  const busqueda = req.query.busqueda; // Obtener el valor de búsqueda ingresado por el usuario
+// BUSCAR PRODUCTO
+// app.get('/buscar_producto', async (req, res) => {
+//   const busqueda = req.query.busqueda; // Obtener el valor de búsqueda ingresado por el usuario
 
-  try {
-    const client = await pool.connect();
-    const result = await client.query('SELECT * FROM producto WHERE nombre ILIKE $1', [`%${busqueda}%`]); // Realizar la búsqueda en la base de datos por nombre
-    const productoEncontrados = result.rows;
-    res.render('guiaProducto', { producto: productoEncontrados }); // Corregir el nombre de la variable a 'producto'
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al buscar productos');
-  }
+//   try {
+//     const client = await pool.connect();
+//     const result = await client.query('SELECT * FROM producto WHERE nombre ILIKE $1', [`%${busqueda}%`], (error, )); // Realizar la búsqueda en la base de datos por nombre
+//     const productoEncontrados = result.rows;
+//     res.render('guiaProducto', { producto: productoEncontrados }); 
+//   } catch (err) {
+//     console.error(err);
+//     res.status(500).send('Error al buscar productos');
+//   }
+// });
+// BUSCAR MAZO PUBLICO
+app.post('/buscar_producto', (req, res) => {
+  const busqueda = req.body.busqueda;
+
+  pool.query('SELECT * FROM producto WHERE nombre ILIKE $1', [`%${busqueda}%`], (error, result) => {
+    if (error) {
+      console.error(error);
+      res.sendStatus(500);
+    } else {
+      const producto = result.rows;
+      res.render('guiaProducto', { producto });
+    }
+  });
 });
