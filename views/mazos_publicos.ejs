@@ -30,9 +30,9 @@
 				  <li>
 					<a href="/mazo/<%= mazo.id_mazo %>"><%= mazo.nombre %></a>
 					<form action="/guardar_mazo_publico" method="POST">
-					  <input type="hidden" name="id_mazo" value="<%= mazo.id_mazo %>">
-					  <button type="submit">Guardar Mazo</button>
-					</form>
+						<input type="hidden" name="id_mazo" value="<%= mazo.id_mazo %>">
+						<button type="submit" value="<%= mazo.id_mazo %>">Guardar Mazo</button>
+					  </form>
 				  </li>
 				<% }); %>
 			  </ol>

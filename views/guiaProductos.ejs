@@ -23,8 +23,14 @@
 <body>
 	<form>
     <div class="container">
-        <h1>Guía de productos</h1>
-        <ol>
+      <h1>Guía de productos</h1>
+      <form action="/buscar_producto" method="GET">
+        <label for="busqueda">Buscar producto:</label>
+        <input type="text" name="busqueda" id="busqueda">
+        <button type="submit">Buscar</button>
+      </form>
+      <ol>
+        <% if (producto && producto.length > 0) { %>
           <% producto.forEach(function(producto) { %>
             <li>
               <h2><%= producto.nombre %></h2>
@@ -32,8 +38,11 @@
               <p>Precio: <%= producto.precio %></p>
             </li>
           <% }); %>
-        </ol>
-      </div>
+        <% } else { %>
+          <li>No se encontraron productos</li>
+        <% } %>
+      </ol>
+    </div>
     </form>
   </body>
 </html>

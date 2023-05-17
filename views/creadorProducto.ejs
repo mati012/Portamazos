@@ -53,7 +53,9 @@
                       <option value="true" <% if (producto.disponible) { %>selected<% } %>>Disponible</option>
                       <option value="false" <% if (!producto.disponible) { %>selected<% } %>>No disponible</option>
                     </select>
-                    <button type="submit">Guardar</button>  
+                    <input type="hidden" name="id_producto" value="<%= producto.id_producto %>"> <!-- Agregar campo oculto para enviar el id_producto -->
+                    <button type="submit">Guardar</button>
+                  </div>
                 </form>
               </li>
             <% }); %>

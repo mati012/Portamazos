@@ -385,8 +385,9 @@ app.post('/buscar_mazo', (req, res) => {
 // Guardar un mazo que este publico que no pertenezca al usuario 
 app.post('/guardar_mazo_publico', (req, res) => {
   const id_jugador = req.user.id_jugador;
+  const id_mazo = req.body.id_mazo; // Obtener el id_mazo desde req.body
 
-  pool.query('INSERT INTO Mazo (nombre, id_jugador, tipo_mazo) SELECT nombre, $1, 2 FROM Mazo WHERE id_mazo = $2 AND tipo_mazo = 2 AND id_jugador != $1 RETURNING id_mazo', [id_jugador, req.params.id_mazo], (error, result) => {
+  pool.query('INSERT INTO Mazo (nombre, id_jugador, tipo_mazo) SELECT nombre, $1, 2 FROM Mazo WHERE id_mazo = $2 AND tipo_mazo = 2 AND id_jugador != $1 RETURNING id_mazo', [id_jugador, id_mazo], (error, result) => {
     if (error) {
       console.error(error);
       res.sendStatus(500);
@@ -437,6 +438,8 @@ app.get('/creadorProducto', async (req, res) => {
     res.status(500).send('Error al obtener los productos');
   }
 });
+
+// ACTUALIZAR LA DISPONIBILIDAD DE UN PRODUCTO ( ES DECIR SU CORRESPONDIENTE ELIMINACION )
 app.post('/actualizar', (req, res) => {
   const id_producto = req.body.id_producto;
   const nuevoEstado = req.body.disponible === 'true' ? true : false; // Obtener el nuevo estado de disponibilidad del combobox
@@ -447,7 +450,20 @@ app.post('/actualizar', (req, res) => {
       console.error(error);
       res.status(500).send('Error al actualizar la disponibilidad');
     } else {
-      res.redirect('/creadorProducto');
+      res.redirect('/guia de productos');
     }
   });
+});
+app.get('/buscar_producto', async (req, res) => {
+  const busqueda = req.query.busqueda; // Obtener el valor de búsqueda ingresado por el usuario
+
+  try {
+    const client = await pool.connect();
+    const result = await client.query('SELECT * FROM producto WHERE nombre ILIKE $1', [`%${busqueda}%`]); // Realizar la búsqueda en la base de datos por nombre
+    const productoEncontrados = result.rows;
+    res.render('guiaProducto', { producto: productoEncontrados }); // Corregir el nombre de la variable a 'producto'
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al buscar productos');
+  }
 });
