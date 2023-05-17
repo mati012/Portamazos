@@ -241,11 +241,11 @@ app.get('/carta/:codigo', (req, res) => {
     } else {
       const carta = result.rows[0];
       const imagenBytea = result.rows[0].imagen;
-      const imagenBase64 = Buffer.from(imagenBytea).toString('base64');
-      fs.writeFileSync('temp.png', Buffer.from(imagenBytea), 'binary');
+      //const imagenBase64 = Buffer.from(imagenBytea).toString('base64');
+      //fs.writeFileSync('temp.png', Buffer.from(imagenBytea), 'binary');
 
       res.set('Content-Type', 'text/html');
-      res.render('carta', { user: req.user, carta: carta, imagenBase64: imagenBase64 });
+      res.render('carta', { user: req.user, carta: carta, /*imagenBase64: imagenBase64*/ });
     }
   });
 });
