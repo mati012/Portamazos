@@ -17,6 +17,7 @@
   </head>
   </head>
   <body>
+    <form>
     <h1><%= carta.nombre %></h1>
     <img src="/img/<%= ('00' + carta.id).slice(-3) %>.png" alt="Imagen de <%= carta.nombre %>">
     <p><strong>Tipo:</strong> <%= carta.tipo %></p>
@@ -24,5 +25,6 @@
     <p><strong>Habilidad:</strong> <%= carta.habilidad %></p>
     <p><strong>Fuerza:</strong> <%= carta.fuerza %></p>
     <p><strong>Raza:</strong> <%= carta.raza %></p>
+  </form>
   </body>
 </html>

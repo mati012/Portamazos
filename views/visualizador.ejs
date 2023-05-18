@@ -64,10 +64,12 @@
         <button type="submit">Buscar</button>
       </div>
     </form>
-    <ul>
+    <form>
+    <ol id="lista3">
       <% for (var i = 0; i < cartas.length; i++) { %>
         <li><a href="/carta/<%= cartas[i].codigo %>"><%= cartas[i].nombre %></a></li>
       <% } %>
-    </ul>
+      </ol>
+    </form>
   </body>
 </html>

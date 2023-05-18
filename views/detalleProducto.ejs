@@ -20,28 +20,14 @@
 	<title>Lista de mazos</title>
 </head>
 
-<body>
-  <div class="container">
-   
-    <form action="/buscar_producto" method="GET">
-      <h1>Guía de productos</h1>
-      <label for="busqueda">Buscar producto:</label>
-      <input type="text" name="busqueda" id="busqueda">
-      <button type="submit">Buscar</button>
-    </form>
-    <form>
-    <ol id="lista3">
-      <% if (producto && producto.length > 0) { %>
-        <% producto.forEach(function(prod) { %>
-          <li>
-            <h2><%= prod.nombre %></h2>
-          </li>
-        <% }); %>
-      <% } else { %>
-        <li>No se encontraron productos</li>
-      <% } %>
-    </ol>
-  </form>
-  </div>
-</body>
+    <body>
+        <div class="container">
+          <h1>Detalles del producto</h1>
+          <h2><%= producto.nombre %></h2>
+          <p><%= producto.descripcion %></p>
+          <p>Precio: <%= producto.precio %></p>
+          <!-- Agrega aquí cualquier otra información adicional del producto -->
+        </div>
+      </body>
+
 </html>

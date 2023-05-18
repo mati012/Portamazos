@@ -454,31 +454,21 @@ app.post('/actualizar', (req, res) => {
     }
   });
 });
+
+
+
+
 // BUSCAR PRODUCTO
-// app.get('/buscar_producto', async (req, res) => {
-//   const busqueda = req.query.busqueda; // Obtener el valor de búsqueda ingresado por el usuario
+app.get('/buscar_producto', (req, res) => {
+  const busqueda = req.query.busqueda;
 
-//   try {
-//     const client = await pool.connect();
-//     const result = await client.query('SELECT * FROM producto WHERE nombre ILIKE $1', [`%${busqueda}%`], (error, )); // Realizar la búsqueda en la base de datos por nombre
-//     const productoEncontrados = result.rows;
-//     res.render('guiaProducto', { producto: productoEncontrados }); 
-//   } catch (err) {
-//     console.error(err);
-//     res.status(500).send('Error al buscar productos');
-//   }
-// });
-// BUSCAR MAZO PUBLICO
-app.post('/buscar_producto', (req, res) => {
-  const busqueda = req.body.busqueda;
-
-  pool.query('SELECT * FROM producto WHERE nombre ILIKE $1', [`%${busqueda}%`], (error, result) => {
+  pool.query('SELECT * FROM producto WHERE nombre ILIKE $1  AND disponible = true', [`%${busqueda}%`], (error, result) => {
     if (error) {
       console.error(error);
       res.sendStatus(500);
     } else {
-      const producto = result.rows;
-      res.render('guiaProducto', { producto });
+      const productos = result.rows;
+      res.render('guiaProductos', { producto: productos }); // El nombre de la variable en la vista debe ser 'producto' en lugar de 'productos'
     }
   });
 });
