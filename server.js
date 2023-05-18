@@ -450,7 +450,7 @@ app.post('/actualizar', (req, res) => {
       console.error(error);
       res.status(500).send('Error al actualizar la disponibilidad');
     } else {
-      res.redirect('/guia de productos');
+      res.redirect('/guiaProductos');
     }
   });
 });
