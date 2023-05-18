@@ -166,16 +166,58 @@ app.post('/mazos', async (req, res) => {
 app.get('/constructorMazo/:mazoId/:id_jugador', async (req, res) => {
   const mazoId = req.params.mazoId;
   try {
+    // console.log('constructorMazo GET')
     const cartas = await obtenerCartas();
     const cartasMazo = await obtenerCartasMazo(mazoId);
     const mensajeExito = req.flash('mensajeExito')[0];
-    console.log(cartas);
+    // console.log(cartas);
+    console.log('[GET constructorMazo] cartas mazo: ', cartasMazo);
     res.render('constructorMazo', { cartas, cartasMazo, mazoId, mensajeExito});
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al obtener los detalles del mazo');
   }
 });
+
+app.post('/agregarcarta', async (req, res) => {
+  const { codigo_carta, mazoId } = req.body;
+  const id_jugador = req.user.id_jugador;
+  try {
+    await agregarCarta(codigo_carta, mazoId); 
+    req.flash('mensajeExito', '¡Carta agregada exitosamente!');
+    res.redirect(`/constructorMazo/${mazoId}/${id_jugador}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al agregar la carta al mazo');
+  }
+});
+
+app.post('/eliminarCarta', async (req, res) => {
+  console.log('entro a eliminar carta');
+  const { codigo_carta, mazoId } = req.body;
+  const id_jugador = req.user.id_jugador;
+  try {
+    await eliminarCarta(codigo_carta, mazoId); 
+    req.flash('mensajeExito', '¡Carta eliminada exitosamente!');
+    res.redirect(`/constructorMazo/${mazoId}/${id_jugador}`);
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al eliminar la carta al mazo');
+  }
+});
+
+
+app.get('/misMazos/:id_jugador', async (req, res) => {
+  const id_jugador = req.params.id_jugador;
+  pool.query('SELECT * FROM mazo WHERE id_jugador = $1', [id_jugador] , (error, result)=> {
+    if (error){
+      throw error;
+    } else {
+      const mazo = result.rows;
+      res.render('misMazos', { mazo });
+    }
+  });
+})
 
 app.get('/mazos/:id', async (req, res) => {
   const id_mazo = req.params.id;
@@ -241,11 +283,11 @@ app.get('/carta/:codigo', (req, res) => {
     } else {
       const carta = result.rows[0];
       const imagenBytea = result.rows[0].imagen;
-      const imagenBase64 = Buffer.from(imagenBytea).toString('base64');
-      fs.writeFileSync('temp.png', Buffer.from(imagenBytea), 'binary');
+      //const imagenBase64 = Buffer.from(imagenBytea).toString('base64');
+      //fs.writeFileSync('temp.png', Buffer.from(imagenBytea), 'binary');
 
       res.set('Content-Type', 'text/html');
-      res.render('carta', { user: req.user, carta: carta, imagenBase64: imagenBase64 });
+      res.render('carta', { user: req.user, carta: carta, /*imagenBase64: imagenBase64*/ });
     }
   });
 });
@@ -290,12 +332,13 @@ async function obtenerCartasMazo(idMazo) { //dejar solo obtener codigos de carta
   try {
     const client = await pool.connect();
     const cartaMazoResult = await client.query('SELECT codigo_carta FROM carta_mazo WHERE id_mazo = $1', [idMazo]);
-    const codigosCartas = cartaMazoResult.rows.map(row => row.codigo);
+    const codigosCartas = cartaMazoResult.rows.map(row => row.codigo_carta);
+    console.log(codigosCartas);
 
     const cartas = [];
 
     for (const codigoCarta of codigosCartas) {
-      const cartaResult = await client.query('SELECT * FROM carta WHERE codigo_carta = $1', [codigoCarta]);
+      const cartaResult = await client.query('SELECT * FROM carta WHERE codigo = $1', [codigoCarta]);
       const carta = cartaResult.rows[0];
       cartas.push(carta);
     }
@@ -324,34 +367,36 @@ async function obtenerCartas() {
 };
 
 // EDITOR DE MAZOS 
-function agregarCarta(codigo, mazoId) {
+async function agregarCarta(codigo_carta, mazoId) {
   // Comprobar si la carta ya está en el mazo
-  pool.query('SELECT * FROM Carta_Mazo WHERE codigo_carta = $1 AND id_mazo = $2', [codigo, mazoId], (error, result) => {
+
+  console.log('codigo carta a agregar: ',codigo_carta);
+  pool.query('SELECT * FROM Carta_Mazo WHERE codigo_carta = $1 AND id_mazo = $2', [codigo_carta, mazoId], (error, result) => {
     if (error) {
       throw error;
     } else {
-      console.log(`Resultados de la consulta SELECT: ${JSON.stringify(result.rows)}`);
+      //console.log(`Resultados de la consulta SELECT: ${JSON.stringify(result.rows)}`);
 
       if (result.rows.length > 0) {
         const cartaMazo = result.rows[0];
         const nuevaCantidad = cartaMazo.cantidad + 1;
-        console.log(`La carta ${codigo_carta} ya está en el mazo ${id_mazo}. Actualizando cantidad a ${nuevaCantidad}`);
+        console.log(`La carta ${codigo_carta} ya está en el mazo ${mazoId}. Actualizando cantidad a ${nuevaCantidad}`);
 
-        pool.query('UPDATE CartaMazo SET cantidad = $1 WHERE codigo_carta = $2 AND id_mazo = $3', [nuevaCantidad, codigo_carta, id_mazo], (error, result) => {
+        pool.query('UPDATE carta_mazo SET cantidad = $1 WHERE codigo_carta = $2 AND id_mazo = $3', [nuevaCantidad, codigo_carta, mazoId], (error, result) => {
           if (error) {
             throw error;
           } else {
-            console.log(`Se ha actualizado la cantidad de la carta ${codigo_carta} en el mazo ${id_mazo}`);
+            console.log(`Se ha actualizado la cantidad de la carta ${codigo_carta} en el mazo ${mazoId}`);
           }
         });
       } else {
-        console.log(`La carta ${codigo_carta} no está en el mazo ${id_mazo}. Agregando nueva carta`);
+        console.log(`La carta ${codigo_carta} no está en el mazo ${mazoId}. Agregando nueva carta`);
 
-        pool.query('INSERT INTO CartaMazo (codigo_carta, id_mazo, cantidad) VALUES ($1, $2, $3)', [codigo_carta, id_mazo, 1], (error, result) => {
+        pool.query('INSERT INTO carta_mazo (codigo_carta, id_mazo, cantidad) VALUES ($1, $2, $3)', [codigo_carta, mazoId, 1], (error, result) => {
           if (error) {
             throw error;
           } else {
-            console.log(`Se ha agregado la carta ${codigo_carta} al mazo ${id_mazo}`);
+            console.log(`Se ha agregado la carta ${codigo_carta} al mazo ${mazoId}`);
           }
         });
       }
@@ -360,7 +405,7 @@ function agregarCarta(codigo, mazoId) {
 }
 // Eliminar una carta de un mazo
 function eliminarCarta(codigo_carta, id_mazo) {
-  pool.query('DELETE FROM CartaMazo WHERE codigo_carta = $1 AND id_mazo = $2', [codigo_carta, id_mazo], (error, result) => {
+  pool.query('DELETE FROM carta_mazo WHERE codigo_carta = $1 AND id_mazo = $2', [codigo_carta, id_mazo], (error, result) => {
     if (error) {
       throw error;
     } else {
@@ -378,6 +423,7 @@ app.post('/buscar_mazo', (req, res) => {
       res.sendStatus(500);
     } else {
       const mazo = result.rows;
+      //console.log(mazo);
       res.render('mazos_publicos', { mazo });
     }
   });
@@ -387,7 +433,7 @@ app.post('/guardar_mazo_publico', (req, res) => {
   const id_jugador = req.user.id_jugador;
   const id_mazo = req.body.id_mazo; // Obtener el id_mazo desde req.body
 
-  pool.query('INSERT INTO Mazo (nombre, id_jugador, tipo_mazo) SELECT nombre, $1, 2 FROM Mazo WHERE id_mazo = $2 AND tipo_mazo = 2 AND id_jugador != $1 RETURNING id_mazo', [id_jugador, id_mazo], (error, result) => {
+  pool.query('INSERT INTO Mazo (nombre, id_jugador, tipo_mazo) SELECT nombre, $1, 2 FROM Mazo WHERE id_mazo = $2 AND tipo_mazo = 2 AND id_jugador != $1 RETURNING id_mazo', [id_jugador, req.params.id_mazo], (error, result) => {
     if (error) {
       console.error(error);
       res.sendStatus(500);
