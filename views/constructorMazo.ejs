@@ -28,26 +28,38 @@
         </div>
       <% } %>
       <div class="container">
-        <h1>Lista de cartas</h1>
-        <div class="card-list">
+        <h1>Lista de cartas</h1><div class="card-list">
           <% cartasMazo.forEach(function(carta) { %>
             <div class="card">
-              <img src="<%= carta.imagen %>">
               <h2><%= carta.nombre %></h2>
-              <p><%= carta.descripcion %></p>
-              <p><%= carta.cantidad_disponible %> disponibles</p>
-              <form action="/agregar_carta" method="post">
+              <p>Código: <%= carta.codigo %></p>
+              <p>Tipo: <%= carta.tipo %></p>
+              <p>Coste: <%= carta.coste %></p>
+              <p>Habilidad: <%= carta.habilidad %></p>
+              <p>Fuerza: <%= carta.fuerza %></p>
+              <p>Raza: <%= carta.raza %></p>
+              <% if (carta.imagen) { %>
+                <img src="<%= carta.imagen %>">
+              <% } %>
+              <form action="/eliminarCarta" method="POST">
+                <input type="hidden" name="mazoId" value="<%= mazoId %>">
                 <input type="hidden" name="codigo_carta" value="<%= carta.codigo %>">
-                <input type="number" name="cantidad" min="1" max="3" value="1">
-                <input type="submit" value="Agregar al carrito">
+                <button type="submit">Eliminar Carta</button>
               </form>
             </div>
           <% }); %>
         </div>
-        <select>
-          <% cartas.forEach(function(carta) { %>
-            <option style="background-color: black;"><%= carta[1] %></option>
-          <% }); %>
-        </select>
+        <form action="/agregarCarta" method="POST">
+          <input type="hidden" name="mazoId" value="<%= mazoId %>">
+          <select id="carta_agregar" name="codigo_carta">
+            <% cartas.forEach(function(carta) { %>
+              <option value="<%= carta.codigo %>"><%= carta.nombre%></option>
+            <% }); %>
+          </select>
+          <button type="submit">Agregar Carta</button>
+        </form>
+        
+
+      
     </body>
 </html>

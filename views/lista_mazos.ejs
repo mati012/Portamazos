@@ -28,6 +28,10 @@
 			  <input type="hidden" name="id_mazo" value="<%= mazo.id_mazo %>">
 			  <input type="submit" value="Eliminar">
 			</form>
+			<form action="/eliminar_mazo" method="POST" style="display:inline-block;">
+				<input type="hidden" name="id_mazo" value="<%= mazo.id_mazo %>">
+				<input type="submit" value="Eliminar">
+			  </form>
 		  </li>
 		<% }); %>
 	  </ol>

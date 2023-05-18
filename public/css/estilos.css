@@ -8,6 +8,7 @@ body {
 
   margin: 0;
   padding: 0;
+
   }
   h1, h2 {
     text-align: center;
@@ -24,6 +25,10 @@ body {
     margin-bottom: 10px;
     font-size: 24px;
   }
+  select {
+    background-color: #f8f8f8;
+    color:rgba(0, 0, 0, 0.3)
+  }
   form {
     max-width: 1000px;
     background-color: #ffffff;
@@ -34,6 +39,12 @@ body {
     align-items: center;
     justify-content: center;
     min-height: 50vh;
+  }
+
+  .form-container {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
   }
   
   label {
@@ -296,3 +307,15 @@ h1 {
   font-weight: bold;
   line-height: 1;
 }
+
+.card {
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  display: inline-block;
+  width: 48%;
+  margin: 1%;
+  padding: 20px;
+  box-sizing: border-box;
+}
+
