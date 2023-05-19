@@ -20,14 +20,20 @@
 	<title>Lista de mazos</title>
 </head>
 
-    <body>
-        <div class="container">
-          <h1>Detalles del producto</h1>
-          <h2><%= producto.nombre %></h2>
-          <p><%= producto.descripcion %></p>
-          <p>Precio: <%= producto.precio %></p>
-          <!-- Agrega aquí cualquier otra información adicional del producto -->
-        </div>
-      </body>
+<body>
+	<form>
+	<div class="container">
+	  <% if (producto) { %>
+		<h1>Detalles del producto</h1>
+		<h2><%= producto.nombre %></h2>
+		<p><%= producto.descripcion %></p>
+		<p>Precio: <%= producto.precio %></p>
+		<!-- Agrega aquí más detalles del producto -->
+	  <% } else { %>
+		<p>No se encontraron detalles del producto</p>
+	  <% } %>
+	</div>
+</form>
+  </body>
 
 </html>

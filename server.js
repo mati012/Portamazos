@@ -282,12 +282,17 @@ app.get('/carta/:codigo', (req, res) => {
       res.status(404).send('No se encontró la carta');
     } else {
       const carta = result.rows[0];
-      const imagenBytea = result.rows[0].imagen;
-      //const imagenBase64 = Buffer.from(imagenBytea).toString('base64');
-      //fs.writeFileSync('temp.png', Buffer.from(imagenBytea), 'binary');
 
-      res.set('Content-Type', 'text/html');
-      res.render('carta', { user: req.user, carta: carta, /*imagenBase64: imagenBase64*/ });
+      // Obtener los productos que contienen "valhalla" en su nombre
+      pool.query('SELECT * FROM producto WHERE nombre ILIKE $1  AND disponible = true', ['%valhalla%'], (error, result) => {
+        if (error) {
+          throw error;
+        } else {
+          const productos = result.rows;
+          res.set('Content-Type', 'text/html');
+          res.render('carta', { user: req.user, carta: carta, productos: productos });
+        }
+      });
     }
   });
 });
@@ -460,6 +465,21 @@ app.post('/creador_productos', async (req,res) => {
     res.status(500).send('Error al crear el producto');
   }
 });
+// Ruta para mostrar los detalles del producto
+app.get('/producto/:id', (req, res) => {
+  const productoId = req.params.id;
+
+  // Obtener los detalles del producto desde la base de datos utilizando el ID
+  pool.query('SELECT * FROM producto WHERE id_producto = $1', [productoId], (error, result) => {
+    if (error) {
+      console.error(error);
+      res.status(500).send('Error al obtener los detalles del producto');
+    } else {
+      const producto = result.rows[0];
+      res.render('producto', { producto: producto }); // Renderizar la vista de detalles del producto
+    }
+  });
+})
 // visualizador de productos 
 app.get('/guiaProductos', (req, res) => {
 
@@ -472,6 +492,22 @@ app.get('/guiaProductos', (req, res) => {
     }
   });
 });
+// BUSCAR PRODUCTO
+app.get('/buscar_producto', (req, res) => {
+  const busqueda = req.query.busqueda;
+
+  pool.query('SELECT * FROM producto WHERE nombre ILIKE $1  AND disponible = true', [`%${busqueda}%`], (error, result) => {
+    if (error) {
+      console.error(error);
+      res.sendStatus(500);
+    } else {
+      const productos = result.rows;
+      res.render('guiaProductos', { producto: productos }); // El nombre de la variable en la vista debe ser 'producto' en lugar de 'productos'
+    }
+  });
+});
+
+
 // RENDERIZA Y OBTIENE LA PAGINA CREADOR PRODUCTO
 app.get('/creadorProducto', async (req, res) => {
   try {
@@ -497,24 +533,6 @@ app.post('/actualizar', (req, res) => {
       res.status(500).send('Error al actualizar la disponibilidad');
     } else {
       res.redirect('/guiaProductos');
-    }
-  });
-});
-
-
-
-
-// BUSCAR PRODUCTO
-app.get('/buscar_producto', (req, res) => {
-  const busqueda = req.query.busqueda;
-
-  pool.query('SELECT * FROM producto WHERE nombre ILIKE $1  AND disponible = true', [`%${busqueda}%`], (error, result) => {
-    if (error) {
-      console.error(error);
-      res.sendStatus(500);
-    } else {
-      const productos = result.rows;
-      res.render('guiaProductos', { producto: productos }); // El nombre de la variable en la vista debe ser 'producto' en lugar de 'productos'
     }
   });
 });
