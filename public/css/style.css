@@ -15,15 +15,22 @@
   }
   
   .form-login {
-	width: 400px;
-	height: 340px;
-	background: #4e4d4d;
-	margin: left;
-	margin-top: 180px;
+	position: absolute;
+	top: 0;
+	left: 0;
+	right: 0;
+	bottom: 0;
+	margin: auto;
+	width: 450px;
+	height: 400px;
+	background: rgb(180, 180, 180);
+
 	box-shadow: 7px 13px 37px #000;
 	padding: 20px 30px;
 	border-top: 4px solid #017bab;
 	color: white;
+	border-radius:30px;
+
   }
   
   .form-login h5 {
@@ -43,6 +50,7 @@
 	background: #252323;
 	font-size: 14px;
 	font-weight: bold;
+	border-radius: 10px;
   }
   
   .buttons {
@@ -50,8 +58,10 @@
 	height: 40px;
 	background: #017bab;
 	border: none;
-	color: white;
+	color: rgb(0, 0, 0);
 	margin-bottom: 16px;
+	font-weight: bold;
+	border-radius: 15px;
   }
   
   .form-login p{
@@ -64,6 +74,11 @@
 	color: white;
 	text-decoration: none;
 	font-size: 14px;
+	font-weight: bold;
+	margin-left: 10px;
+	display: inline-block;
+
+
   }
   
   .form-login a:hover {
@@ -89,7 +104,6 @@ a {
 nav {
 	position: relative;
 	white-space: nowrap;
-	background: white;
 	padding: var(--underline-height) 0;
 	margin: 2em 0;
 	box-shadow: 0 1em 2em rgba(black, .05);
@@ -147,9 +161,15 @@ ul {
 	text-align: center;
 	padding: 14px 16px;
 	text-decoration: none;
+	font-weight: bold;
   }
   
- 
+  nav li:not(:last-child) a::after {
+	content: "|"; /* Separador visual */
+	margin-left: 15px; /* Espacio entre el separador y el texto del enlace */
+	margin-right: 5px; /* Espacio entre el separador y el texto del enlace */
+	color: white; /* Color del separador */
+  }
   :root {
 	--rad: .7rem;
 	--dur: .3s;
@@ -224,3 +244,20 @@ ul {
     left: -.5em;
     border-left-color: #fa8072;             
 }
+.titulo{
+	font-weight: bold;
+	text-align: center;
+	font-family: Arial, Helvetica, sans-serif;
+	padding:10px;
+	padding-bottom: 30px;
+	color:black;
+	font-size:x-large;
+
+
+}	
+.separator {
+	margin: 10px 90px; /* Ajusta el margen horizontal para la separación */
+	display: inline-block;
+	height: 10px; /* Altura del separador */
+	background-color: #000; /* Color del separador */
+  }
