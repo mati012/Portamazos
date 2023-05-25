@@ -465,4 +465,20 @@ h1 {
   border-radius: 30px;
   overflow: auto;
 }
+input[type="number"] {
+  /* Estilos personalizados */
+  width: 10%;
+  height: 20px;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 14px;
+	background: #252323;
+  color: white;
+}
 
+input[type="number"]:focus {
+  /* Estilos al enfocar */
+  border-color: #007bff;
+  outline: none;
+}
