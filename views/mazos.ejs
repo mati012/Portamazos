@@ -20,12 +20,12 @@
       </head>
   <body>
 
-    <div class="container">
+    <section class="crear_mazo">
       <form action="/mazos" method="POST">
         <h1>Crear nuevo mazo</h1>
         <div>
           <label for="nombre">Nombre:</label>
-          <input type="text" id="nombre" name="nombre" required>
+          <input class="nombre_mazo" id="nombre" name="nombre" required>
         </div>
         <div>
           <label for="tipo_mazo">Tipo:</label>
@@ -34,9 +34,10 @@
             <option value="2">Mazo Publico</option>
           </select>
         </div>
-        <button type="submit">Crear mazo</button>
-        <a href="/lista_mazos">mazos Creados</a>
+        <button type="submit" id="crear_mazo">Crear mazo</button>
+        <a href="/lista_mazos">Mazos Creados</a>
+
       </form>
-    </div>
+    </section>
   </body>
 </html>
