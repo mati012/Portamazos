@@ -322,7 +322,7 @@ h1 {
 }
 .crear_mazo {
 	position: absolute;
-	top: 0;
+	top: 200px;
 	left: 0;
 	right: 0;
 	bottom: 0;
@@ -389,7 +389,7 @@ h1 {
 }
 .buscador {
 	position: absolute;
-	top: 0;
+	top: 200px;
 	left: 0;
 	right: 0;
 	bottom: 0;
@@ -406,7 +406,7 @@ h1 {
 }
 .mazo_publico {
 	position: absolute;
-	top: 0;
+	top: 200px;
 	left: 0;
 	right: 0;
 	bottom: 0;
