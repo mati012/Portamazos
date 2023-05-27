@@ -39,7 +39,7 @@
               <p>Fuerza: <%= carta.fuerza %></p>
               <p>Raza: <%= carta.raza %></p>
               <% if (carta.imagen) { %>
-                <img src="<%= carta.imagen %>">
+          <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>">
               <% } %>
               <form action="/eliminarCarta" method="POST">
                 <input type="hidden" name="mazoId" value="<%= mazoId %>">
