@@ -10,16 +10,17 @@
 			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 			<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 			<ul>
-			  <li><a href="/mazos">mazos</a></li>
-			  <li><a href="/visualizador">buscador</a></li>
-			  <li><a href="/mazos_publicos">Mazos publicos</a></li>
-			  <li><a href="/guiaProductos">Guia productos</a></li>
+				<li><a href="/home">Inicio</a></li>
+				<li><a href="/mazos">Mazos</a></li>
+				<li><a href="/visualizador">Buscador</a></li>
+				<li><a href="/mazos_publicos">Mazos publicos</a></li>
+					<li><a href="/guiaProductos">Guia productos</a></li>
 			  <li style="float:right"><a class="active" href="/logout">logout</a></li>
 			</ul>
 		  </head>
 
 <body>
-	<div class="container2">
+	<section class="lista_mazos">
 	  <h1>Lista de mazos</h1>
 	  <ol id="lista2">
 		<% mazo.forEach(function(mazo) { %>
@@ -28,13 +29,13 @@
 			  <input type="hidden" name="id_mazo" value="<%= mazo.id_mazo %>">
 			  <input type="submit" value="Eliminar">
 			</form>
-			<form action="/eliminar_mazo" method="POST" style="display:inline-block;">
+			<!-- <form action="/eliminar_mazo" method="POST" style="display:inline-block;">
 				<input type="hidden" name="id_mazo" value="<%= mazo.id_mazo %>">
 				<input type="submit" value="Eliminar">
-			  </form>
+			  </form> -->
 		  </li>
 		<% }); %>
 	  </ol>
-	</div>
+	</section>
   </body>
 </html>

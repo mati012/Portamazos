@@ -17,12 +17,34 @@
   </head>
   </head>
   <body>
-    <h1><%= carta.nombre %></h1>
-    <img src="/img/<%= ('00' + carta.id).slice(-3) %>.png" alt="Imagen de <%= carta.nombre %>">
-    <p><strong>Tipo:</strong> <%= carta.tipo %></p>
-    <p><strong>Coste:</strong> <%= carta.coste %></p>
-    <p><strong>Habilidad:</strong> <%= carta.habilidad %></p>
-    <p><strong>Fuerza:</strong> <%= carta.fuerza %></p>
-    <p><strong>Raza:</strong> <%= carta.raza %></p>
+    <form>
+    <div class="container">
+      <h1>Detalles de la carta</h1>
+      <h2><%= carta.nombre %></h2>
+      <img src="/img/<%= ('00' + carta.id).slice(-3) %>.png" alt="Imagen de <%= carta.nombre %>">
+      <p><strong>Tipo:</strong> <%= carta.tipo %></p>
+      <p><strong>Coste:</strong> <%= carta.coste %></p>
+      <p><strong>Habilidad:</strong> <%= carta.habilidad %></p>
+      <p><strong>Fuerza:</strong> <%= carta.fuerza %></p>
+      <p><strong>Raza:</strong> <%= carta.raza %></p>
+    </form>
+    
+      <form>
+      <% if (productos && productos.length > 0) { %>
+          <h2>Productos relacionados:</h2>
+          <% productos.forEach(function(prod) { %>
+            <li>
+              <h3><%= prod.nombre %></h3>
+              <p><%= prod.descripcion %></p>
+              <p>Precio: <%= prod.precio %></p>
+            </li>
+          <% }); %>
+        
+      <% } else { %>
+        <p>No se encontraron productos relacionados.</p>
+      <% } %>
+    </div>
+    
+  </form>
   </body>
 </html>

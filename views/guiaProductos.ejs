@@ -10,10 +10,11 @@
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
 		<ul>
-		  <li><a href="/mazos">mazos</a></li>
-		  <li><a href="/visualizador">buscador</a></li>
-		  <li><a href="/mazos_publicos">Mazos publicos</a></li>
-          <li><a href="/guiaProductos">Guia productos</a></li>
+      <li><a href="/home">Inicio</a></li>
+      <li><a href="/mazos">Mazos</a></li>
+      <li><a href="/visualizador">Buscador</a></li>
+      <li><a href="/mazos_publicos">Mazos publicos</a></li>
+        <li><a href="/guiaProductos">Guia productos</a></li>
 		  <li style="float:right"><a class="active" href="/logout">logout</a></li>
 		</ul>
 	  </head>
@@ -21,28 +22,27 @@
 </head>
 
 <body>
-	<form>
-    <div class="container">
+  <div class="container">
+   
+    <form action="/buscar_producto" method="GET">
       <h1>Guía de productos</h1>
-      <form action="/buscar_producto" method="POST">
-        <label for="busqueda">Buscar producto:</label>
-        <input type="text" name="busqueda" id="busqueda">
-        <button type="submit">Buscar</button>
-      </form>
-      <ol>
+      <label for="busqueda">Buscar producto:</label>
+      <input type="text" name="busqueda" id="busqueda">
+      <button type="submit">Buscar</button>
+    </form>
+    <form>
+      <ol id="lista3">
         <% if (producto && producto.length > 0) { %>
           <% producto.forEach(function(producto) { %>
             <li>
-              <h2><%= producto.nombre %></h2>
-              <p><%= producto.descripcion %></p>
-              <p>Precio: <%= producto.precio %></p>
+              <h2><a href="/producto/<%= producto.id_producto %>"><%= producto.nombre %></a></h2>
             </li>
           <% }); %>
         <% } else { %>
           <li>No se encontraron productos</li>
         <% } %>
       </ol>
-    </div>
-    </form>
-  </body>
+  </form>
+  </div>
+</body>
 </html>

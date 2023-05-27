@@ -11,10 +11,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <meta http-equiv="X-UA-Compatible" content="ie=edge" />
         <ul>
-          <li><a href="/mazos">mazos</a></li>
-          <li><a href="/visualizador">buscador</a></li>
+          <li><a href="/home">Inicio</a></li>
+          <li><a href="/mazos">Mazos</a></li>
+          <li><a href="/visualizador">Buscador</a></li>
           <li><a href="/mazos_publicos">Mazos publicos</a></li>
-              <li><a href="/guiaProductos">Guia productos</a></li>
+            <li><a href="/guiaProductos">Guia productos</a></li>
           <li style="float:right"><a class="active" href="/logout">logout</a></li>
         </ul>
         </head>
@@ -22,15 +23,15 @@
     <title>Visualizador de Cartas</title>
   </head>
   <body>
-    
+    <section class="buscador">  
     <form action="/visualizador" method="GET">
       <h1>Cartas</h1>
       <div class="form-group">
-        <input type="text" name="search" placeholder="Buscar por nombre...">
+        <input class="nombre_mazo" name="search" placeholder="Buscar por nombre...">
       </div>
       <div class="form-group">
         <label for="tipo">Tipo:</label>
-        <select id="tipo" name="tipo">
+        <select id="tipo_mazo" name="tipo">
           <option value="">Todos</option>
           <option value="oro">Oro</option>
           <option value="Aliado">Aliado</option>
@@ -40,7 +41,7 @@
       </div>
       <div class="form-group">
         <label for="raza">Raza:</label>
-        <select id="raza" name="raza">
+        <select id="tipo_mazo" name="raza">
           <option value="">Todas</option>
           <option value="Eterno">Eterno</option>
           <option value="Bestia">Bestia</option>
@@ -64,10 +65,13 @@
         <button type="submit">Buscar</button>
       </div>
     </form>
-    <ul>
+    <form>
+    <ol id="lista3">
       <% for (var i = 0; i < cartas.length; i++) { %>
         <li><a href="/carta/<%= cartas[i].codigo %>"><%= cartas[i].nombre %></a></li>
       <% } %>
-    </ul>
+      </ol>
+    </form>
+  </section>  
   </body>
 </html>
