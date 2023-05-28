@@ -22,11 +22,17 @@
         var mensajeExito = document.getElementById('mensaje-exito');
         mensajeExito.style.display = 'none';
       }
+
+      function cerrarMensajeError() {
+        var mensajeError = document.getElementById('mensaje-error');
+        mensajeError.style.display = 'none';
+      }
     </script>
 	  </head>
     <body>
       <% if (mensajeError) { %>
-        <div class="mensaje mensaje_error">
+        <div id="mensaje-error" class="mensaje mensaje_error">
+          <span class="cerrar" onclick="cerrarMensajeError()"> &nbsp; x</span>
           <%= mensajeError %>
         </div>
       <% } %>
