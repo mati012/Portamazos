@@ -304,7 +304,7 @@ app.get('/lista_mazos', (req, res) => {
       throw error;
     } else {
       const mazo = result.rows;
-      res.render('lista_mazos', { mazo });
+      res.render('lista_mazos', { mazo , id_jugador});
     }
   });
 });
