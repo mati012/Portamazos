@@ -21,7 +21,9 @@
     <div class="container">
       <h1>Detalles de la carta</h1>
       <h2><%= carta.nombre %></h2>
-      <img src="/img/<%= ('00' + carta.id).slice(-3) %>.png" alt="Imagen de <%= carta.nombre %>">
+      <% if (carta.imagen) { %>
+        <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-imagen">
+            <% } %>
       <p><strong>Tipo:</strong> <%= carta.tipo %></p>
       <p><strong>Coste:</strong> <%= carta.coste %></p>
       <p><strong>Habilidad:</strong> <%= carta.habilidad %></p>
