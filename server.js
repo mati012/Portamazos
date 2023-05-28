@@ -288,6 +288,9 @@ app.get('/visualizadorParaMazo', async (req, res) => {
   const coste = req.query.coste || 9999;
   const fuerza = req.query.fuerza || 0;
   const cartasMazo = await obtenerCartasMazo(mazoId);
+  const cantidades = await obtenerCantidadesCartasMazo(mazoId);
+
+  
 
   pool.query(`SELECT * FROM carta
               WHERE nombre ILIKE '%${search}%'
@@ -303,7 +306,20 @@ app.get('/visualizadorParaMazo', async (req, res) => {
       throw error;
     }
     // res.render('constructorMazo', { mazoId, user: req.user, cartasMazo, mensajeExito: null, cartas: results.rows, search: search, tipo: tipo, raza: raza, coste: coste, fuerza: fuerza });
-    res.redirect(`/constructorMazo/${mazoId}/${id_jugador}`),  { mazoId, user: req.user, cartasMazo, mensajeExito: null, cartas: results.rows, search: search, tipo: tipo, raza: raza, coste: coste, fuerza: fuerza };
+    res.render('constructorMazo', {
+      mazoId,
+      user: req.user,
+      cartasMazo,
+      mensajeExito: null,
+      mensajeError: null,
+      cartas: results.rows,
+      search: search,
+      tipo: tipo,
+      raza: raza,
+      coste: coste,
+      fuerza: fuerza,
+      cantidades
+    });
   });
 });
 
@@ -430,7 +446,6 @@ async function obtenerCartas() {
 // EDITOR DE MAZOS 
 async function agregarCarta(codigo_carta, mazoId, req) {
   // Comprobar si la carta ya está en el mazo
-
   console.log('codigo carta a agregar: ', codigo_carta);
   return new Promise((resolve, reject) => {
     pool.query('SELECT * FROM carta_mazo WHERE codigo_carta = $1 AND id_mazo = $2', [codigo_carta, mazoId], (error, result) => {
