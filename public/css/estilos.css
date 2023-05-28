@@ -482,3 +482,21 @@ input[type="number"]:focus {
   border-color: #007bff;
   outline: none;
 }
+.card-list {
+  display: flex; /* Utilizamos flexbox para alinear las imágenes en línea */
+  background-color: lightblue;
+  border-radius: 15px;
+	border: 4px solid black;
+}
+
+.carta-imagen {
+  width: 150px; /* Ajusta el ancho de la imagen según sea necesario */
+  height: auto; /* Altura automática para mantener la proporción */
+  margin: 10px; /* Agrega un margen derecho para separar las imágenes */
+}
+.card-list button{
+  border-radius: 15px;
+  background-color: black;
+  color: red;
+  font-weight: bold;
+}
