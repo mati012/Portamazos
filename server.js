@@ -280,7 +280,6 @@ app.get('/visualizadorParaMazo', async (req, res) => {
   const raza = req.query.raza || '';
   const coste = req.query.coste || 9999;
   const fuerza = req.query.fuerza || 0;
-  console.log(mazoId);
   const cartasMazo = await obtenerCartasMazo(mazoId);
 
   pool.query(`SELECT * FROM carta
@@ -291,6 +290,8 @@ app.get('/visualizadorParaMazo', async (req, res) => {
               AND fuerza >= ${fuerza}
               ORDER BY nombre ASC
               LIMIT 5`, (error, results) => {
+                console.log("--------------------------------------------")
+                console.log(results.rows);
     if (error) {
       throw error;
     }

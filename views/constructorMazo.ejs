@@ -32,12 +32,8 @@
         </div>
       <% } %>
       <div class="container">
-<<<<<<< HEAD
         <h1> Mazo <%= mazoId %></h1>
         <h1>Lista de cartas</h1><div class="card-list">
-=======
-        <h1>Cartas</h1><section class="card-list">
->>>>>>> b34f3aa593e7be95b0c150e1da7c719e290ed39a
           <% cartasMazo.forEach(function(carta) { %>
             <!-- <div class="card"> -->
               <!-- <h2><%= carta.nombre %></h2> -->
@@ -57,15 +53,8 @@
               </form>
             <!-- </div> -->
           <% }); %>
-<<<<<<< HEAD
         </div>
-      </div>
         <!-- <form action="/agregarCarta" method="POST">
-=======
-            </section>
-        <h1> </h1>
-        <form action="/agregarCarta" method="POST">
->>>>>>> b34f3aa593e7be95b0c150e1da7c719e290ed39a
           <input type="hidden" name="mazoId" value="<%= mazoId %>">
           <select id="carta_agregar" name="codigo_carta">
             <% cartas.forEach(function(carta) { %>
@@ -73,7 +62,7 @@
             <% }); %>
           </select>
           <button type="submit">Agregar Carta</button>
-        </form> -->
+        </form>  -->
 
         <section class="buscador">
           <form action="/visualizadorParaMazo" method="GET">
