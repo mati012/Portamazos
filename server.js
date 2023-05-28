@@ -169,10 +169,12 @@ app.get('/constructorMazo/:mazoId/:id_jugador', async (req, res) => {
     // console.log('constructorMazo GET')
     const cartas = await obtenerCartas();
     const cartasMazo = await obtenerCartasMazo(mazoId);
+    const cantidades = await obtenerCantidadesCartasMazo(mazoId);
     const mensajeExito = req.flash('mensajeExito')[0];
+    const mensajeError = req.flash('mensajeError')[0];
     // console.log(cartas);
     console.log('[GET constructorMazo] cartas mazo: ', cartasMazo);
-    res.render('constructorMazo', { cartas, cartasMazo, mazoId, mensajeExito});
+    res.render('constructorMazo', { cartas, cartasMazo, mazoId, mensajeExito, cantidades, mensajeError});
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al obtener los detalles del mazo');
@@ -180,19 +182,24 @@ app.get('/constructorMazo/:mazoId/:id_jugador', async (req, res) => {
 });
 
 app.post('/agregarcarta', async (req, res) => {
-  const { codigo_carta} = req.body;
+  const { codigo_carta } = req.body;
   const mazoId = req.body.mazoId;
   console.log("agregarCarta: " + codigo_carta, mazoId);
   const id_jugador = req.user.id_jugador;
   try {
-    await agregarCarta(codigo_carta, mazoId); 
-    req.flash('mensajeExito', '¡Carta agregada exitosamente!');
+    const cartaAgregada = await agregarCarta(codigo_carta, mazoId, req);
+    if (cartaAgregada) {
+      req.flash('mensajeExito', '¡Carta agregada exitosamente!');
+    } else {
+      req.flash('mensajeError', 'No se puede agregar más de 3 copias de esta carta al mazo');
+    }
     res.redirect(`/constructorMazo/${mazoId}/${id_jugador}`);
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al agregar la carta al mazo');
   }
 });
+
 
 app.post('/eliminarCarta', async (req, res) => {
   console.log('entro a eliminar carta');
@@ -387,6 +394,25 @@ async function obtenerCartasMazo(idMazo) { //dejar solo obtener codigos de carta
   }
 };
 
+async function obtenerCantidadesCartasMazo(idMazo) {
+  try {
+    const client = await pool.connect();
+    const cartaMazoResult = await client.query('SELECT codigo_carta, cantidad FROM carta_mazo WHERE id_mazo = $1', [idMazo]);
+    const cantidades = {};
+
+    for (const row of cartaMazoResult.rows) {
+      const { codigo_carta, cantidad } = row;
+      cantidades[codigo_carta] = cantidad;
+    }
+
+    client.release();
+    return cantidades;
+  } catch (err) {
+    console.error(err);
+    throw new Error('Error al obtener las cantidades de cartas por mazo');
+  }
+}
+
 async function obtenerCartas() {
   try {
     const client = await pool.connect();
@@ -402,42 +428,48 @@ async function obtenerCartas() {
 };
 
 // EDITOR DE MAZOS 
-async function agregarCarta(codigo_carta, mazoId) {
+async function agregarCarta(codigo_carta, mazoId, req) {
   // Comprobar si la carta ya está en el mazo
 
-  console.log('codigo carta a agregar: ',codigo_carta);
-  pool.query('SELECT * FROM Carta_Mazo WHERE codigo_carta = $1 AND id_mazo = $2', [codigo_carta, mazoId], (error, result) => {
-    if (error) {
-      throw error;
-    } else {
-      //console.log(`Resultados de la consulta SELECT: ${JSON.stringify(result.rows)}`);
-
-      if (result.rows.length > 0) {
-        const cartaMazo = result.rows[0];
-        const nuevaCantidad = cartaMazo.cantidad + 1;
-        console.log(`La carta ${codigo_carta} ya está en el mazo ${mazoId}. Actualizando cantidad a ${nuevaCantidad}`);
-
-        pool.query('UPDATE carta_mazo SET cantidad = $1 WHERE codigo_carta = $2 AND id_mazo = $3', [nuevaCantidad, codigo_carta, mazoId], (error, result) => {
-          if (error) {
-            throw error;
-          } else {
-            console.log(`Se ha actualizado la cantidad de la carta ${codigo_carta} en el mazo ${mazoId}`);
-          }
-        });
+  console.log('codigo carta a agregar: ', codigo_carta);
+  return new Promise((resolve, reject) => {
+    pool.query('SELECT * FROM carta_mazo WHERE codigo_carta = $1 AND id_mazo = $2', [codigo_carta, mazoId], (error, result) => {
+      if (error) {
+        reject(error);
       } else {
-        console.log(`La carta ${codigo_carta} no está en el mazo ${mazoId}. Agregando nueva carta`);
-
-        pool.query('INSERT INTO carta_mazo (codigo_carta, id_mazo, cantidad) VALUES ($1, $2, $3)', [codigo_carta, mazoId, 1], (error, result) => {
-          if (error) {
-            throw error;
+        if (result.rows.length > 0) {
+          const cartaMazo = result.rows[0];
+          const nuevaCantidad = cartaMazo.cantidad + 1;
+          if (nuevaCantidad <= 3) {
+            pool.query('UPDATE carta_mazo SET cantidad = $1 WHERE codigo_carta = $2 AND id_mazo = $3', [nuevaCantidad, codigo_carta, mazoId], (error, result) => {
+              if (error) {
+                reject(error);
+              } else {
+                console.log(`Se ha actualizado la cantidad de la carta ${codigo_carta} en el mazo ${mazoId}`);
+                resolve(true);
+              }
+            });
           } else {
-            console.log(`Se ha agregado la carta ${codigo_carta} al mazo ${mazoId}`);
+            console.log(`No se puede agregar más de 3 copias de la carta ${codigo_carta} al mazo ${mazoId}`);
+            resolve(false);
           }
-        });
+        } else {
+          console.log(`La carta ${codigo_carta} no está en el mazo ${mazoId}. Agregando nueva carta`);
+
+          pool.query('INSERT INTO carta_mazo (codigo_carta, id_mazo, cantidad) VALUES ($1, $2, $3)', [codigo_carta, mazoId, 1], (error, result) => {
+            if (error) {
+              reject(error);
+            } else {
+              console.log(`Se ha agregado la carta ${codigo_carta} al mazo ${mazoId}`);
+              resolve(true);
+            }
+          });
+        }
       }
-    }
+    });
   });
 }
+
 // Eliminar una carta de un mazo
 function eliminarCarta(codigo_carta, id_mazo) {
   pool.query('DELETE FROM carta_mazo WHERE codigo_carta = $1 AND id_mazo = $2', [codigo_carta, id_mazo], (error, result) => {

@@ -296,12 +296,22 @@ h1 {
   top: 20px;
   right: 20px;
   padding: 10px;
-  background-color: #dff0d8;
-  color: #3c763d;
-  border: 1px solid #d6e9c6;
   border-radius: 4px;
   z-index: 9999;
 }
+
+.mensaje_error {
+  background-color: #f2dede;
+  color: #a94442;
+  border: 1px solid #ebccd1;
+}
+
+.mensaje_exito {
+  background-color: #dff0d8;
+  color: #3c763d;
+  border: 1px solid #d6e9c6;
+}
+
 
 .cerrar {
   cursor: pointer;
