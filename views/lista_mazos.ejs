@@ -1,41 +1,73 @@
 <!DOCTYPE html>
 <html>
+
+<head>
+	<meta charset="utf-8">
+
 	<head>
-		<meta charset="utf-8">
-		<head>
-			<meta charset="UTF-8" />
+		<meta charset="UTF-8" />
+
+		<link rel='stylesheet' type="text/css">
+		<link rel="stylesheet" href="/css/estilos.css">"
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+
+		<style>
+			section.lista_mazos {
+				height: fit-content;
+				margin-top: -150px;
+			}
 			
-			<link rel='stylesheet' type="text/css"><link rel="stylesheet" href="/css/estilos.css" >"
-			
-			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-			<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-			<ul>
-				<li><a href="/home">Inicio</a></li>
-				<li><a href="/mazos">Mazos</a></li>
-				<li><a href="/visualizador">Buscador</a></li>
-				<li><a href="/mazos_publicos">Mazos publicos</a></li>
-					<li><a href="/guiaProductos">Guia productos</a></li>
-			  <li style="float:right"><a class="active" href="/logout">logout</a></li>
-			</ul>
-		  </head>
+			section.lista_mazos .btn {
+			  padding: 8px 16px;
+			  background-color: #007bff;
+			  color: #fff;
+			  border: none;
+			  cursor: pointer;
+			  width: 100px;
+              height: 40px;
+			}
+	  
+			section.lista_mazos .btn-delete {
+			  background-color: #c91c1c;
+			}
+		  </style>
+
+	</head>
 
 <body>
+	<ul>
+		<li><a href="/home">Inicio</a></li>
+		<li><a href="/mazos">Mazos</a></li>
+		<li><a href="/visualizador">Buscador</a></li>
+		<li><a href="/mazos_publicos">Mazos publicos</a></li>
+		<li><a href="/guiaProductos">Guia productos</a></li>
+		<li style="float:right"><a class="active" href="/logout">logout</a></li>
+	</ul>
 	<section class="lista_mazos">
-	  <h1>Lista de mazos</h1>
-	  <ol id="lista2">
-		<% mazo.forEach(function(mazo) { %>
-		  <li><a href="/constructor"><%= mazo.nombre %></a>
-			<form action="/eliminar_mazo" method="POST" style="display:inline-block;">
-			  <input type="hidden" name="id_mazo" value="<%= mazo.id_mazo %>">
-			  <input type="submit" value="Eliminar">
-			</form>
-			<!-- <form action="/eliminar_mazo" method="POST" style="display:inline-block;">
+		<h1>Lista de mazos</h1>
+		<ol id="lista2">
+			<% mazo.forEach(function(mazo) { %>
+				<li><a href="/constructorMazo/<%= mazo.id_mazo %>/<%= id_jugador %>">
+						<%= mazo.nombre %>
+					</a>
+					<form action="/eliminar_mazo" method="POST" style="display:inline-block;">
+						<input type="hidden" name="id_mazo" value="<%= mazo.id_mazo %>">
+						<input class="btn btn-delete" type="submit" value="Eliminar">
+					</form>
+					<form action="/constructorMazo/<%= mazo.id_mazo %>/<%= id_jugador %>" method="GET"
+						style="display:inline-block;">
+						<input class="btn" type="submit" value="Editar">
+					</form>
+					<!-- <form action="/eliminar_mazo" method="POST" style="display:inline-block;">
 				<input type="hidden" name="id_mazo" value="<%= mazo.id_mazo %>">
 				<input type="submit" value="Eliminar">
 			  </form> -->
-		  </li>
-		<% }); %>
-	  </ol>
+				</li>
+				<% }); %>
+		</ol>
 	</section>
-  </body>
+</body>
+
 </html>
