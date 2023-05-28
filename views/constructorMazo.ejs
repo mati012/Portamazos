@@ -7,6 +7,8 @@
 		
 		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
 		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    
+    
 		<ul>
       <li><a href="/home">Inicio</a></li>
       <li><a href="/mazos">Mazos</a></li>
@@ -30,6 +32,7 @@
         </div>
       <% } %>
       <div class="container">
+        <h1> Mazo <%= mazoId %></h1>
         <h1>Lista de cartas</h1><div class="card-list">
           <% cartasMazo.forEach(function(carta) { %>
             <div class="card">
@@ -51,7 +54,8 @@
             </div>
           <% }); %>
         </div>
-        <form action="/agregarCarta" method="POST">
+      </div>
+        <!-- <form action="/agregarCarta" method="POST">
           <input type="hidden" name="mazoId" value="<%= mazoId %>">
           <select id="carta_agregar" name="codigo_carta">
             <% cartas.forEach(function(carta) { %>
@@ -59,9 +63,62 @@
             <% }); %>
           </select>
           <button type="submit">Agregar Carta</button>
-        </form>
-        
+        </form> -->
 
-      
+        <section class="buscador">
+          <form action="/visualizadorParaMazo" method="GET">
+            <h1>Cartas </h1>
+            <div class="form-group">
+              <input class="nombre_mazo" name="search" placeholder="Buscar por nombre...">
+            </div>
+            <div class="form-group">
+              <label for="tipo">Tipo:</label>
+              <select id="tipo_mazo" name="tipo">
+                <option value="">Todos</option>
+                <option value="oro">Oro</option>
+                <option value="Aliado">Aliado</option>
+                <option value="Talismán">Talisman</option>
+                <option value="Totem">Totem</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="raza">Raza:</label>
+              <select id="tipo_mazo" name="raza">
+                <option value="">Todas</option>
+                <option value="Eterno">Eterno</option>
+                <option value="Bestia">Bestia</option>
+                <option value="Caballero">Caballero</option>
+                <option value="Sacerdote">Sacerdote</option>
+                <option value="Sombra">Sombra</option>
+                <option value="Faerie">Faerie</option>
+                <option value="Guerrero">Guerrero</option>
+                <option value="Heroe">Heroe</option>
+              </select>
+            </div>
+            <div class="form-group">
+              <label for="coste">Coste:</label>
+              <input type="number" id="coste" name="coste" min="0" max="5">
+            </div>
+            <div class="form-group">
+              <label for="fuerza">Fuerza:</label>
+              <input type="number" id="fuerza" name="fuerza" min="0" max="10">
+            </div>
+            <div class="form-group">
+              <input type="hidden" name="mazoId" value="<%= mazoId %>">
+              <button type="submit">Buscar</button>
+            </div>
+          </form>
+          <form action="/agregarCarta" method="POST">
+            <input type="hidden" name="mazoId" value="<%= mazoId %>"> 
+            <ol id="lista3">
+              <% for (var i = 0; i < cartas.length; i++) { %>
+                <li>
+                  <a href="/carta/<%= cartas[i].codigo %>"><%= cartas[i].nombre %></a>
+                  <button type="submit" class="agregar-carta-btn" name="codigo_carta" value="<%= cartas[i].codigo %>">Agregar</button>                </li>
+              <% } %>
+            </ol>
+          </form>
+        </section>
+        
     </body>
 </html>

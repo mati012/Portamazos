@@ -180,7 +180,9 @@ app.get('/constructorMazo/:mazoId/:id_jugador', async (req, res) => {
 });
 
 app.post('/agregarcarta', async (req, res) => {
-  const { codigo_carta, mazoId } = req.body;
+  const { codigo_carta} = req.body;
+  const mazoId = req.body.mazoId;
+  console.log("agregarCarta: " + codigo_carta, mazoId);
   const id_jugador = req.user.id_jugador;
   try {
     await agregarCarta(codigo_carta, mazoId); 
@@ -267,6 +269,33 @@ app.get('/visualizador', (req, res) => {
       throw error;
     }
     res.render('visualizador', { user: req.user, cartas: results.rows, search: search, tipo: tipo, raza: raza, coste: coste, fuerza: fuerza });
+  });
+});
+
+app.get('/visualizadorParaMazo', async (req, res) => {
+  const id_jugador = req.user.id_jugador;
+  const mazoId = req.query.mazoId;
+  const search = req.query.search || '';
+  const tipo = req.query.tipo || '';
+  const raza = req.query.raza || '';
+  const coste = req.query.coste || 9999;
+  const fuerza = req.query.fuerza || 0;
+  console.log(mazoId);
+  const cartasMazo = await obtenerCartasMazo(mazoId);
+
+  pool.query(`SELECT * FROM carta
+              WHERE nombre ILIKE '%${search}%'
+              ${tipo ? `AND tipo = '${tipo}'` : ''}
+              ${raza ? `AND raza = '${raza}'` : ''}
+              AND coste <= ${coste}
+              AND fuerza >= ${fuerza}
+              ORDER BY nombre ASC
+              LIMIT 5`, (error, results) => {
+    if (error) {
+      throw error;
+    }
+    // res.render('constructorMazo', { mazoId, user: req.user, cartasMazo, mensajeExito: null, cartas: results.rows, search: search, tipo: tipo, raza: raza, coste: coste, fuerza: fuerza });
+    res.redirect(`/constructorMazo/${mazoId}/${id_jugador}`),  { mazoId, user: req.user, cartasMazo, mensajeExito: null, cartas: results.rows, search: search, tipo: tipo, raza: raza, coste: coste, fuerza: fuerza };
   });
 });
 
