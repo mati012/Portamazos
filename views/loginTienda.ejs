@@ -39,8 +39,9 @@
     </ul>
 
     <img src="/public/img/logo.png" width="300" alt="">
-
-    <form action="/loginJugador" method="POST">
+    
+    <form action="/loginTienda" method="POST">
+      <input type="hidden" name="userType" value="tienda">
       <section class="form-login">
         <div class="titulo"> Inicia Sesión</div>
         <div class="email">
@@ -55,6 +56,7 @@
         <a href="/registro">Registrarse</a>
       </section>
     </form>
-  
+     
+ 
 </body>
 </html>

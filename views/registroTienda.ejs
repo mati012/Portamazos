@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en" >
+<head>
+  <meta charset="UTF-8">
+  <script type="module" ></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel='stylesheet' type="text/css"><link rel="stylesheet" href="/css/style.css" >
+  <meta http-equiv="X-UA-Compatible" content="ie=edege">
+
+  <title>Document</title>      
+</head>
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+  <nav>
+  <ul>
+    <li><a href="/home">Inicio</a></li>
+    <li><a href="/mazos">Mazos</a></li>
+    <li><a href="/visualizador">Buscador</a></li>
+    <li><a href="/mazos_publicos">Mazos publicos</a></li>
+      <li><a href="/guiaProductos">Guia productos</a></li>
+    <li style="float:right"><a class="active" href="/login">Iniciar sesion</a></li>
+  </ul>
+</nav>
+  </head>
+<body >
+    
+
+    <ul>
+        <% if (typeof errors != 'undefined') { %> <% errors.forEach(error => { %>
+            <li><%= error.message %></li>
+            <% }) %> <% } %>
+           
+
+    </ul>
+    <form action="/registroTienda" method="POST">
+    <section class="form-login"> 
+        <h1>Registrarse</h1>  
+        <a></a> 
+    <div>
+        <input class="controls" type="text"  id="name" name="nombre"   placeholder="Nombre"  required  >
+
+
+    </div>
+    <div>
+        <input class="controls" type="email"  id="email" name="email"   placeholder="Email"  required>
+
+
+    </div>
+    <div>
+        <input class="controls" type="password"  id="contrasena" name="contrasena"   placeholder="Contraseña"  required>
+
+
+    </div>
+    <div>
+        <input class="controls" type="password"  id="contrasena2" name="contrasena2"   placeholder="Confirme  contraseña"  required>
+
+
+    </div>
+    <div>
+        <input class="controls" type="text"  id="direccion" name="direccion"   placeholder="direccion"  required>
+
+
+    </div>
+    <div>
+        <input class="controls" type="text"  id="pagina_web" name="pagina_web"   placeholder="pagina web"  required>
+
+
+    </div>
+    
+    <div>
+        <input class="buttons" type="submit"    value="Registrarse">   
+    </div>
+    <div>  
+    <a href="/login">¿Ya estas registrado? Inicia sesion</a>
+    </div>   
+    </section>
+    </form>
+
+  
+</body>
+</html>
