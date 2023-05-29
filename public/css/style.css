@@ -5,7 +5,7 @@
   }
   
   body {
-	font-family: Montserrat, sans-serif;
+	font-family: arial;
 	background-image: url('/img/fondo.jpeg');
 	background-position: center centpublicer;
 	background-repeat: no-repeat;
@@ -104,7 +104,6 @@ a {
 nav {
 	position: relative;
 	white-space: nowrap;
-	top:50px;
 	padding: var(--underline-height) 0;
 	margin: 2em 0;
 	box-shadow: 0 1em 2em rgba(black, .05);
@@ -257,67 +256,8 @@ ul {
 
 }	
 .separator {
-	margin: 10px 100px; /* Ajusta el margen horizontal para la separación */
+	margin: 10px 90px; /* Ajusta el margen horizontal para la separación */
 	display: inline-block;
 	height: 10px; /* Altura del separador */
 	background-color: #000; /* Color del separador */
-  }
-  nav ul {
-	list-style-type: none;
-	margin: 0;
-	padding: 0;
-	display: flex;
-	justify-content: center;
-  }
-
-  
-  nav ul li {
-	display: inline-block;
-	margin: 0 10px;
-  }
-  
-  nav ul li a {
-	display: block;
-	padding: 10px;
-	text-decoration: none;
-	color: #ffffff;
-  }
-  
-  nav ul li.dropdown:hover .submenu {
-	display: block;
-  }
-  
-  nav ul .submenu {
-	display: none;
-	position: absolute;
-	background-color: #fff;
-	padding: 0;
-	border-radius: 15px;
-  }
-  
-  nav ul .submenu li {
-	display: block;
-  }
-  
-  nav ul .submenu li a {
-	padding: 8px 15px;
-	color: #000;
-  }
-  
-  nav ul .submenu li a:hover {
-	background-color: #f0f0f0;
-  }
-  header {
-	text-align: center;
-	position:relative;
-	 
-}	
-  .logo img {
-	width: 200px; /* Ajusta el ancho según tus necesidades */
-	height: auto; /* El alto se ajustará automáticamente en proporción */
-  }
-  .logo {
-	position: absolute;
-	left: 100px;
-	z-index: 999; /* Asegura que el logo esté por encima de otros elementos */
   }

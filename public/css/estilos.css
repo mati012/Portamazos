@@ -1,5 +1,5 @@
 body {
-	font-family: Montserrat, sans-serif;
+	font-family: arial;
 	background-image: url('/img/fondo.jpeg');
 	background-position: center center;
 	background-repeat: no-repeat;
@@ -527,14 +527,3 @@ input[type="number"]:focus {
 	color: black;
 	border-radius:30px;
 }
-
- 
-  .logo img {
-	width: 200px; /* Ajusta el ancho según tus necesidades */
-	height: auto; /* El alto se ajustará automáticamente en proporción */
-  }
-  .logo {
-	position: absolute;
-	left: 100px;
-	z-index: 999; /* Asegura que el logo esté por encima de otros elementos */
-  }
