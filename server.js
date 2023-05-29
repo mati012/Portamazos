@@ -40,6 +40,9 @@ app.get("/home", checkNotAuthenticated, (req, res)=>{
 app.get("/login", checkAuthenticated, (req, res)=>{
     res.render("login");
 });
+app.get("/loginTienda", checkAuthenticated, (req, res)=>{
+  res.render("loginTienda");
+});
 app.get("", checkAuthenticated, (req, res)=>{
   res.render("login");
 });
@@ -184,30 +187,39 @@ app.post('/registroTienda', async (req, res)=>{
   };
 });
 app.post(
-    "/login",
-    passport.authenticate("local", {
-      successRedirect: "/home",
-      failureRedirect: "/login",
-      failureFlash: true
-    })
-  );
-  function checkAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-      return res.redirect("/home");
-    }
-    next();
+  "/loginJugador",
+  passport.authenticate("jugadorStrategy", {
+    successRedirect: "/home",
+    failureRedirect: "/login",
+    failureFlash: true
+  })
+);
+app.post(
+  "/loginTienda",
+  passport.authenticate("tiendaStrategy", {
+    successRedirect: "/home",
+    failureRedirect: "/login",
+    failureFlash: true
+  })
+);
+
+function checkAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return res.redirect("/home");
   }
-  function checkNotAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-      return next();
-    }
-    res.redirect("/login");
+  next();
+}
+
+function checkNotAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
   }
+  res.redirect("/login");
+}
 
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
-
 
 //CREADOR DE MAZO 
 app.post('/mazos', async (req, res) => {
