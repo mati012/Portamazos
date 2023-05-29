@@ -28,7 +28,9 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 // rutas 
-
+app.get("/registroTienda", checkAuthenticated, (req, res)=>{
+  res.render("registroTienda");
+});
 app.get("/registro", checkAuthenticated, (req, res)=>{
     res.render("registro");
 });
@@ -119,6 +121,67 @@ app.post('/registro', async (req, res)=>{
         }
        )
     };
+});
+app.post('/registroTienda', async (req, res)=>{
+  let { nombre, email, contrasena, contrasena2, direccion, pagina_web }= req.body;
+
+  console.log({
+      nombre,
+      email,
+      contrasena,
+      contrasena2,
+      direccion,
+      pagina_web
+
+  });
+// en caso de error va mandar estos mensajes
+  let errors = [];
+  if (!nombre || !email || !contrasena || !contrasena2 || !direccion || !pagina_web ){
+      errors.push({ message: "falta un campo"});
+  }
+  if (contrasena.length<6){
+      errors.push({ message: "Contrasena debe ser mas larga"});
+  }
+  if (contrasena != contrasena2){
+      errors.push({ message: "contrasenas diferentes"});
+  }
+  if (errors.length >0){
+      res.render("registro", { errors });
+  }else{
+      //con la extension brcypt manda un encriptado de la base de datos de la contrasena
+     let hashedPassword = await bcrypt.hash(contrasena, 10);   
+     console.log(hashedPassword);
+
+     pool.query(
+      'SELECT * FROM tienda WHERE email =$1 ', 
+      [email], (err, results)=>{
+          if (err){
+              throw err
+          }
+
+         console.log(results.rows);
+
+         if(results.rows.length > 0){
+          errors.push({message: " El email ya esta registrado"});
+          res.render('registro', {errors});
+         } else {
+          pool.query(
+              'INSERT INTO tienda (nombre, email, contrasena, direccion, pagina_web) VALUES ($1, $2, $3, $4, $5) RETURNING id_tienda, contrasena',
+              [nombre, email, hashedPassword, direccion, pagina_web ],
+              (err, results)=>{
+                  if (err){
+                      throw err;
+                  }
+                  console.log(results.rows);
+                  req.flash("success_msg", "You are now registered. Please log in");
+                  res.redirect("/login");
+              }
+          )    
+
+         }; 
+      }
+     )
+  };
 });
 app.post(
     "/login",
