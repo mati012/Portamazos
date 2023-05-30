@@ -28,6 +28,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 // rutas 
+
+
 app.get("/registroTienda", checkAuthenticated, (req, res)=>{
   res.render("registroTienda");
 });
@@ -55,6 +57,9 @@ app.get("/logout",(req, res)=>{
 })
 app.get("/mazos", checkNotAuthenticated, (req, res)=>{
     res.render("mazos", {user: req.user.id_jugador});
+});
+app.get("/editorTienda", checkNotAuthenticated, (req, res)=>{
+  res.render("editorTienda", {user: req.user.id_tienda});
 });
 
 app.get("/mazoCreado", checkNotAuthenticated, (req, res)=>{
@@ -687,4 +692,81 @@ app.post('/actualizar', (req, res) => {
       res.redirect('/guiaProductos');
     }
   });
+});
+
+// PRODUCTOS TIENDA 
+app.get('/productosTienda', (req, res) => {
+  pool.query('SELECT * FROM producto WHERE disponible = true', (error, result) => {
+    if (error) {
+      throw error;
+    } else {
+      console.log(result); // Agrega esta línea para verificar los resultados en la consola
+      const producto = result.rows;
+      res.render('productosTienda', { producto });
+    }
+  });
+});
+
+
+app.get('/detalles_producto_tienda/:id', checkNotAuthenticated, async (req, res) => {
+  const id_producto = req.params.id;
+  const id_tienda = req.user.id_tienda;
+  try {
+    const client = await pool.connect();
+    const result = await client.query('SELECT * FROM producto_tienda WHERE id_producto = $1 AND id_tienda = $2', [id_producto, id_tienda]);
+    const productoTienda = result.rows[0];
+    if (productoTienda) {
+      res.render('detallesProductoTienda', { productoTienda: productoTienda, producto: producto });
+    } else {
+      res.redirect('/editorTienda/' + id_producto);
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al obtener los detalles del producto en la tienda');
+  }
+});
+
+app.get('/editorTienda/:id', checkNotAuthenticated, (req, res) => {
+  const productoId = req.params.id;
+  
+  // Obtener los detalles del producto desde la base de datos utilizando el ID
+  pool.query('SELECT * FROM producto WHERE id_producto = $1', [productoId], (error, result) => {
+    if (error) {
+      console.error(error);
+      res.status(500).send('Error al obtener los detalles del producto');
+    } else {
+      const producto = result.rows[0];
+      res.render('editorTienda', { producto: producto, user: req.user.id_tienda }); // Renderizar la vista de detalles del producto
+    }
+  });
+});
+
+
+
+app.post('/guardar_producto_tienda', async (req, res) => {
+  const id_tienda = req.user.id_tienda;
+  const id_producto = req.body.id_producto;
+  const hypervinculo = req.body.hypervinculo;
+  const precio_tienda = req.body.precio_tienda;
+  try {
+    const client = await pool.connect();
+    const result = await client.query('INSERT INTO producto_tienda (id_producto, id_tienda, id_edicion, hypervinculo, precio_tienda) VALUES ($1, $2, $3, $4, $5) RETURNING id_producto', [id_producto, id_tienda, 1, hypervinculo, precio_tienda]);
+    const productoid = result.rows[0].id_producto; // obtener el id del producto insertado
+    res.redirect('/home');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al guardar el producto en la tienda');
+  }
+});
+app.post('/eliminar_producto_tienda', async (req, res) => {
+  const id_tienda = req.user.id_tienda;
+  const id_producto = req.body.id_producto;
+  try {
+    const client = await pool.connect();
+    await client.query('DELETE FROM producto_tienda WHERE id_producto = $1 AND id_tienda = $2', [id_producto, id_tienda]);
+    res.redirect('/home');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al eliminar el producto');
+  }
 });
