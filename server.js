@@ -716,7 +716,7 @@ app.get('/detalles_producto_tienda/:id', checkNotAuthenticated, async (req, res)
     const result = await client.query('SELECT * FROM producto_tienda WHERE id_producto = $1 AND id_tienda = $2', [id_producto, id_tienda]);
     const productoTienda = result.rows[0];
     if (productoTienda) {
-      res.render('detallesProductoTienda', { productoTienda: productoTienda, producto: producto });
+      res.render('detallesProductoTienda', { productoTienda: productoTienda });
     } else {
       res.redirect('/editorTienda/' + id_producto);
     }
