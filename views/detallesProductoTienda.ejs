@@ -23,19 +23,6 @@
 
 <body>
     <div class="container">
-        <% if (producto) { %>
-            <h1>Detalles del producto</h1>
-            <h2><%= producto.nombre %></h2>
-            <p><%= producto.descripcion %></p>
-            <p>Precio: <%= producto.precio %></p>
-            <!-- Agrega aquí más detalles del producto -->
-    
-            <button type="submit">Crear producto para tienda</button>
-          <% } else { %>
-            <p>No se encontraron detalles del producto</p>
-          <% } %>
-        
-        
       <% if (productoTienda) { %>
         <h1>Detalles del producto en la tienda</h1>
        
