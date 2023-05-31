@@ -29,6 +29,10 @@ app.use(passport.session());
 app.use(flash());
 // rutas 
 
+
+app.get("/registroTienda", checkAuthenticated, (req, res)=>{
+  res.render("registroTienda");
+});
 app.get("/registro", checkAuthenticated, (req, res)=>{
     res.render("registro");
 });
@@ -37,6 +41,9 @@ app.get("/home", checkNotAuthenticated, (req, res)=>{
 });
 app.get("/login", checkAuthenticated, (req, res)=>{
     res.render("login");
+});
+app.get("/loginTienda", checkAuthenticated, (req, res)=>{
+  res.render("loginTienda");
 });
 app.get("", checkAuthenticated, (req, res)=>{
   res.render("login");
@@ -50,6 +57,9 @@ app.get("/logout",(req, res)=>{
 })
 app.get("/mazos", checkNotAuthenticated, (req, res)=>{
     res.render("mazos", {user: req.user.id_jugador});
+});
+app.get("/editorTienda", checkNotAuthenticated, (req, res)=>{
+  res.render("editorTienda", {user: req.user.id_tienda});
 });
 
 app.get("/mazoCreado", checkNotAuthenticated, (req, res)=>{
@@ -120,31 +130,101 @@ app.post('/registro', async (req, res)=>{
        )
     };
 });
+app.post('/registroTienda', async (req, res)=>{
+  let { nombre, email, contrasena, contrasena2, direccion, pagina_web }= req.body;
+
+  console.log({
+      nombre,
+      email,
+      contrasena,
+      contrasena2,
+      direccion,
+      pagina_web
+
+  });
+// en caso de error va mandar estos mensajes
+  let errors = [];
+  if (!nombre || !email || !contrasena || !contrasena2 || !direccion || !pagina_web ){
+      errors.push({ message: "falta un campo"});
+  }
+  if (contrasena.length<6){
+      errors.push({ message: "Contrasena debe ser mas larga"});
+  }
+  if (contrasena != contrasena2){
+      errors.push({ message: "contrasenas diferentes"});
+  }
+  if (errors.length >0){
+      res.render("registro", { errors });
+  }else{
+      //con la extension brcypt manda un encriptado de la base de datos de la contrasena
+     let hashedPassword = await bcrypt.hash(contrasena, 10);   
+     console.log(hashedPassword);
+
+     pool.query(
+      'SELECT * FROM tienda WHERE email =$1 ', 
+      [email], (err, results)=>{
+          if (err){
+              throw err
+          }
+
+         console.log(results.rows);
+
+         if(results.rows.length > 0){
+          errors.push({message: " El email ya esta registrado"});
+          res.render('registro', {errors});
+         } else {
+          pool.query(
+              'INSERT INTO tienda (nombre, email, contrasena, direccion, pagina_web) VALUES ($1, $2, $3, $4, $5) RETURNING id_tienda, contrasena',
+              [nombre, email, hashedPassword, direccion, pagina_web ],
+              (err, results)=>{
+                  if (err){
+                      throw err;
+                  }
+                  console.log(results.rows);
+                  req.flash("success_msg", "You are now registered. Please log in");
+                  res.redirect("/login");
+              }
+          )    
+
+         }; 
+      }
+     )
+  };
+});
 app.post(
-    "/login",
-    passport.authenticate("local", {
-      successRedirect: "/home",
-      failureRedirect: "/login",
-      failureFlash: true
-    })
-  );
-  function checkAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-      return res.redirect("/home");
-    }
-    next();
+  "/loginJugador",
+  passport.authenticate("jugadorStrategy", {
+    successRedirect: "/home",
+    failureRedirect: "/login",
+    failureFlash: true
+  })
+);
+app.post(
+  "/loginTienda",
+  passport.authenticate("tiendaStrategy", {
+    successRedirect: "/home",
+    failureRedirect: "/login",
+    failureFlash: true
+  })
+);
+
+function checkAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return res.redirect("/home");
   }
-  function checkNotAuthenticated(req, res, next) {
-    if (req.isAuthenticated()) {
-      return next();
-    }
-    res.redirect("/login");
+  next();
+}
+
+function checkNotAuthenticated(req, res, next) {
+  if (req.isAuthenticated()) {
+    return next();
   }
+  res.redirect("/login");
+}
 
   app.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
   });
-
 
 //CREADOR DE MAZO 
 app.post('/mazos', async (req, res) => {
@@ -612,4 +692,81 @@ app.post('/actualizar', (req, res) => {
       res.redirect('/guiaProductos');
     }
   });
+});
+
+// PRODUCTOS TIENDA 
+app.get('/productosTienda', (req, res) => {
+  pool.query('SELECT * FROM producto WHERE disponible = true', (error, result) => {
+    if (error) {
+      throw error;
+    } else {
+      console.log(result); // Agrega esta línea para verificar los resultados en la consola
+      const producto = result.rows;
+      res.render('productosTienda', { producto });
+    }
+  });
+});
+
+
+app.get('/detalles_producto_tienda/:id', checkNotAuthenticated, async (req, res) => {
+  const id_producto = req.params.id;
+  const id_tienda = req.user.id_tienda;
+  try {
+    const client = await pool.connect();
+    const result = await client.query('SELECT * FROM producto_tienda WHERE id_producto = $1 AND id_tienda = $2', [id_producto, id_tienda]);
+    const productoTienda = result.rows[0];
+    if (productoTienda) {
+      res.render('detallesProductoTienda', { productoTienda: productoTienda });
+    } else {
+      res.redirect('/editorTienda/' + id_producto);
+    }
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al obtener los detalles del producto en la tienda');
+  }
+});
+
+app.get('/editorTienda/:id', checkNotAuthenticated, (req, res) => {
+  const productoId = req.params.id;
+  
+  // Obtener los detalles del producto desde la base de datos utilizando el ID
+  pool.query('SELECT * FROM producto WHERE id_producto = $1', [productoId], (error, result) => {
+    if (error) {
+      console.error(error);
+      res.status(500).send('Error al obtener los detalles del producto');
+    } else {
+      const producto = result.rows[0];
+      res.render('editorTienda', { producto: producto, user: req.user.id_tienda }); // Renderizar la vista de detalles del producto
+    }
+  });
+});
+
+
+
+app.post('/guardar_producto_tienda', async (req, res) => {
+  const id_tienda = req.user.id_tienda;
+  const id_producto = req.body.id_producto;
+  const hypervinculo = req.body.hypervinculo;
+  const precio_tienda = req.body.precio_tienda;
+  try {
+    const client = await pool.connect();
+    const result = await client.query('INSERT INTO producto_tienda (id_producto, id_tienda, id_edicion, hypervinculo, precio_tienda) VALUES ($1, $2, $3, $4, $5) RETURNING id_producto', [id_producto, id_tienda, 1, hypervinculo, precio_tienda]);
+    const productoid = result.rows[0].id_producto; // obtener el id del producto insertado
+    res.redirect('/home');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al guardar el producto en la tienda');
+  }
+});
+app.post('/eliminar_producto_tienda', async (req, res) => {
+  const id_tienda = req.user.id_tienda;
+  const id_producto = req.body.id_producto;
+  try {
+    const client = await pool.connect();
+    await client.query('DELETE FROM producto_tienda WHERE id_producto = $1 AND id_tienda = $2', [id_producto, id_tienda]);
+    res.redirect('/home');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al eliminar el producto');
+  }
 });

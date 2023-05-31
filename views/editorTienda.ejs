@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="utf-8">
+	<head>
+		<meta charset="UTF-8" />
+		
+		<link rel='stylesheet' type="text/css"><link rel="stylesheet" href="/css/estilos.css" >"
+		
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<ul>
+			<li><a href="/home">Inicio</a></li>
+			<li><a href="/mazos">Mazos</a></li>
+			<li><a href="/visualizador">Buscador</a></li>
+			<li><a href="/mazos_publicos">Mazos publicos</a></li>
+				<li><a href="/guiaProductos">Guia productos</a></li>
+		  <li style="float:right"><a class="active" href="/logout">logout</a></li>
+		</ul>
+	  </head>
+	<title>Lista de mazos</title>
+</head>
+<body>
+  <form action="/detalles_producto_tienda/<%= producto.id_producto %>" method="GET">
+    <div class="container">
+      <% if (producto) { %>
+        <h1>Detalles del producto</h1>
+        <h2><%= producto.nombre %></h2>
+        <p><%= producto.descripcion %></p>
+        <p>Precio: <%= producto.precio %></p>
+        <!-- Agrega aquí más detalles del producto -->
+
+        <button type="submit">Crear producto para tienda</button>
+      <% } else { %>
+        <p>No se encontraron detalles del producto</p>
+      <% } %>
+    </div>
+  </form>
+  <form action="/guardar_producto_tienda" method="POST">
+    <div class="container">
+      <% if (producto) { %>
+  
+        <label for="hypervinculo">Hipervínculo:</label>
+        <input type="text" id="hypervinculo" name="hypervinculo" placeholder="Ingrese el hipervínculo">
+  
+        <label for="precio_tienda">Precio en la tienda:</label>
+        <input type="number" id="precio_tienda" name="precio_tienda" placeholder="Ingrese el precio en la tienda">
+  
+        <input type="hidden" name="id_producto" value="<%= producto.id_producto %>">
+  
+        <button type="submit">Guardar información en la tienda</button>
+      <% } else { %>
+      <% } %>
+    </div>
+  </form>
+</body>
+
+</html>
