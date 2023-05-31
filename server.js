@@ -39,6 +39,9 @@ app.get("/registro", checkAuthenticated, (req, res)=>{
 app.get("/home", checkNotAuthenticated, (req, res)=>{
     res.render("home");
 });
+app.get("/homeTienda", checkNotAuthenticated, (req, res)=>{
+  res.render("homeTienda");
+});
 app.get("/login", checkAuthenticated, (req, res)=>{
     res.render("login");
 });
@@ -202,7 +205,7 @@ app.post(
 app.post(
   "/loginTienda",
   passport.authenticate("tiendaStrategy", {
-    successRedirect: "/home",
+    successRedirect: "/homeTienda",
     failureRedirect: "/login",
     failureFlash: true
   })
@@ -626,17 +629,38 @@ app.post('/creador_productos', async (req,res) => {
 app.get('/producto/:id', (req, res) => {
   const productoId = req.params.id;
 
-  // Obtener los detalles del producto desde la base de datos utilizando el ID
-  pool.query('SELECT * FROM producto WHERE id_producto = $1', [productoId], (error, result) => {
+  // Obtener los detalles del producto desde la tabla 'producto'
+  pool.query('SELECT * FROM producto WHERE id_producto = $1', [productoId], (error, productoResult) => {
     if (error) {
       console.error(error);
       res.status(500).send('Error al obtener los detalles del producto');
-    } else {
-      const producto = result.rows[0];
-      res.render('producto', { producto: producto }); // Renderizar la vista de detalles del producto
+      return;
     }
+
+    const producto = productoResult.rows[0];
+
+    if (!producto) {
+      res.send('Producto no encontrado');
+      return;
+    }
+
+    // Obtener todos los registros de 'producto_tienda' asociados al producto desde la tabla 'producto_tienda' y el nombre de la tienda correspondiente desde la tabla 'tienda'
+    pool.query(
+      'SELECT pt.hypervinculo, pt.precio_tienda, t.nombre FROM producto_tienda pt INNER JOIN tienda t ON pt.id_tienda = t.id_tienda WHERE pt.id_producto = $1  ORDER BY pt.precio_tienda ASC',
+      [productoId],
+      (error, productoTiendaResult) => {
+        if (error) {
+          console.error(error);
+          res.status(500).send('Error al obtener los detalles del producto en la tienda');
+          return;
+        }
+
+        const productoTiendas = productoTiendaResult.rows;
+        res.render('producto', { producto: producto, productoTiendas: productoTiendas });
+      }
+    );
   });
-})
+});
 // visualizador de productos 
 app.get('/guiaProductos', (req, res) => {
 
@@ -752,7 +776,7 @@ app.post('/guardar_producto_tienda', async (req, res) => {
     const client = await pool.connect();
     const result = await client.query('INSERT INTO producto_tienda (id_producto, id_tienda, id_edicion, hypervinculo, precio_tienda) VALUES ($1, $2, $3, $4, $5) RETURNING id_producto', [id_producto, id_tienda, 1, hypervinculo, precio_tienda]);
     const productoid = result.rows[0].id_producto; // obtener el id del producto insertado
-    res.redirect('/home');
+    res.redirect('/homeTienda');
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al guardar el producto en la tienda');
@@ -764,7 +788,7 @@ app.post('/eliminar_producto_tienda', async (req, res) => {
   try {
     const client = await pool.connect();
     await client.query('DELETE FROM producto_tienda WHERE id_producto = $1 AND id_tienda = $2', [id_producto, id_tienda]);
-    res.redirect('/home');
+    res.redirect('/homeTienda');
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al eliminar el producto');
