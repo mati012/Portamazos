@@ -31,17 +31,23 @@
       <button type="submit">Buscar</button>
     </form>
     <form>
-      <ol id="lista3">
+      <div id="lista3">
         <% if (producto && producto.length > 0) { %>
           <% producto.forEach(function(producto) { %>
             <li>
+              <% if (producto.imagen) { %>
+                <a href="/producto/<%= producto.id_producto %>">
+                  <img src="data:image/png;base64,<%= producto.imagen.toString('base64') %>" class="producto-imagen">
+                </a>
+              <% } %>
               <h2><a href="/producto/<%= producto.id_producto %>"><%= producto.nombre %></a></h2>
             </li>
           <% }); %>
         <% } else { %>
           <li>No se encontraron productos</li>
         <% } %>
-      </ol>
+      </div>
+      
   </form>
   </div>
 </body>

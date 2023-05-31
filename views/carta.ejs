@@ -19,16 +19,23 @@
   <body>
     <form>
     <div class="container">
-      <h1>Detalles de la carta</h1>
-      <h2><%= carta.nombre %></h2>
-      <% if (carta.imagen) { %>
-        <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-imagen">
-            <% } %>
-      <p><strong>Tipo:</strong> <%= carta.tipo %></p>
-      <p><strong>Coste:</strong> <%= carta.coste %></p>
-      <p><strong>Habilidad:</strong> <%= carta.habilidad %></p>
-      <p><strong>Fuerza:</strong> <%= carta.fuerza %></p>
-      <p><strong>Raza:</strong> <%= carta.raza %></p>
+      <h1><%= carta.nombre %></h1>
+      <div class="carta-ficha">
+        <div class="carta-imagen-ficha">
+          <% if (carta.imagen) { %>
+            <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-imagen-ficha">
+          <% } %>
+        </div>
+        <ol class="carta-datos">
+
+          <p><strong>Tipo:</strong> <%= carta.tipo %></p>
+          <p><strong>Coste:</strong> <%= carta.coste %></p>
+          <p><strong>Fuerza:</strong> <%= carta.fuerza %></p>
+          <p><strong>Raza:</strong> <%= carta.raza %></p>
+          <p><strong>Habilidad:</strong> <%= carta.habilidad %></p>
+        </ol>
+      </div>
+      
     </form>
     
       <form>

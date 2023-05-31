@@ -47,7 +47,7 @@
         <h1>Lista de cartas</h1><div class="card-list">
           <% if (cartasMazo.length > 0) { %>
             <% cartasMazo.forEach(function(carta) { %>
-              <p>Cantidad: <%= cantidades[carta.codigo] %></p>
+              <button class ='cantidad-cartas'><%= cantidades[carta.codigo] %></button>
               <!-- <div class="card"> -->
                 <!-- <h2><%= carta.nombre %></h2> -->
                 <!-- <p>Código: <%= carta.codigo %></p>
@@ -67,7 +67,7 @@
               <!-- </div> -->
             <% }); %>
           <% } else { %>
-            <p>mazo sin cartas</p>
+            <p>Ninguna carta agregada al mazo</p>
           <% } %>
         </div>
         <h1> </h1>

@@ -29,10 +29,14 @@
 			<h2><%= producto.nombre %></h2>
 			<p><%= producto.descripcion %></p>
 			<p>Precio: <%= producto.precio %></p>
+			<% if (producto.imagen) { %>
+				<img src="data:image/png;base64,<%= producto.imagen.toString('base64') %>">
+			  <% } %>
 			<% if (productoTiendas.length > 0) { %>
 				<h1>tiendas con el producto disponible</h1>
 			  <% productoTiendas.forEach(function(productoTienda) { %>
 				<p> <%= productoTienda.hypervinculo %></p>
+
 				<p>Precio en la tienda: <%= productoTienda.precio_tienda %></p>
 				<p>Tienda: <%= productoTienda.nombre %></p>
 				<!-- Agrega aquí más detalles del producto_tienda -->

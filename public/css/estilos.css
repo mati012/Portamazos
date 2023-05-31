@@ -538,3 +538,22 @@ input[type="number"]:focus {
 	left: 100px;
 	z-index: 999; /* Asegura que el logo esté por encima de otros elementos */
   }
+  .carta-ficha {
+    display: flex;
+  }
+  
+  .carta-imagen-ficha {
+    width: 400px;
+    margin-right: 20px;
+  }
+  
+  .carta-datos {
+    flex: 1;
+  }
+  .cantidad-cartas{
+    margin: 50px;
+    margin-right: 0px;
+    font-size:small ;
+    border-radius: 15px;
+    font-weight: bold;
+  }
