@@ -32,19 +32,16 @@
     </form>
     
       <form>
-      <% if (productos && productos.length > 0) { %>
-          <h2>Productos relacionados:</h2>
-          <% productos.forEach(function(prod) { %>
+        <h1>Productos asociados</h1>
+        <% if (producto && producto.length > 0) { %>
+          <% producto.forEach(function(producto) { %>
             <li>
-              <h3><%= prod.nombre %></h3>
-              <p><%= prod.descripcion %></p>
-              <p>Precio: <%= prod.precio %></p>
+              <h2><a href="/producto/<%= producto.id_producto %>"><%= producto.nombre %></a></h2>
             </li>
           <% }); %>
-        
-      <% } else { %>
-        <p>No se encontraron productos relacionados.</p>
-      <% } %>
+        <% } else { %>
+          <li>No se encontraron productos</li>
+        <% } %>
     </div>
     
   </form>

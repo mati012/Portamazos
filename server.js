@@ -424,9 +424,9 @@ app.get('/carta/:codigo', (req, res) => {
         if (error) {
           throw error;
         } else {
-          const productos = result.rows;
+          const producto = result.rows;
           res.set('Content-Type', 'text/html');
-          res.render('carta', { user: req.user, carta: carta, productos: productos });
+          res.render('carta', { user: req.user, carta: carta, producto: producto });
         }
       });
     }
