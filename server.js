@@ -194,16 +194,14 @@ app.post('/registroTienda', async (req, res)=>{
      )
   };
 });
-app.post(
-  "/loginJugador",
+app.post("/loginJugador",
   passport.authenticate("jugadorStrategy", {
     successRedirect: "/home",
     failureRedirect: "/login",
     failureFlash: true
   })
 );
-app.post(
-  "/loginTienda",
+app.post("/loginTienda",
   passport.authenticate("tiendaStrategy", {
     successRedirect: "/homeTienda",
     failureRedirect: "/login",
@@ -225,12 +223,11 @@ function checkNotAuthenticated(req, res, next) {
   res.redirect("/login");
 }
 
-  app.listen(PORT, () => {
+  app.listen(PORT, () => { // levantar la app
     console.log(`Server running on port ${PORT}`);
   });
-
 //CREADOR DE MAZO 
-app.post('/mazos', async (req, res) => {
+app.post('/mazos', async (req, res) => { // crear mazo
   const { nombre, tipo_mazo } = req.body;
   const id_jugador = req.user.id_jugador;
   try {
@@ -246,17 +243,15 @@ app.post('/mazos', async (req, res) => {
    
 });
 
-app.get('/constructorMazo/:mazoId/:id_jugador', async (req, res) => {
+app.get('/constructorMazo/:mazoId/:id_jugador', async (req, res) => { // render constructor 
   const mazoId = req.params.mazoId;
   try {
-    // console.log('constructorMazo GET')
     const cartas = await obtenerCartas();
     const cartasMazo = await obtenerCartasMazo(mazoId);
     const cantidades = await obtenerCantidadesCartasMazo(mazoId);
     const mensajeExito = req.flash('mensajeExito')[0];
     const mensajeError = req.flash('mensajeError')[0];
-    // console.log(cartas);
-    console.log('[GET constructorMazo] cartas mazo: ', cartasMazo);
+    // console.log('[GET constructorMazo] cartas mazo: ', cartasMazo);
     res.render('constructorMazo', { cartas, cartasMazo, mazoId, mensajeExito, cantidades, mensajeError});
   } catch (err) {
     console.error(err);
@@ -264,13 +259,13 @@ app.get('/constructorMazo/:mazoId/:id_jugador', async (req, res) => {
   }
 });
 
-app.post('/agregarcarta', async (req, res) => {
+app.post('/agregarcarta', async (req, res) => { // agregar carta a mazo
   const { codigo_carta } = req.body;
   const mazoId = req.body.mazoId;
-  console.log("agregarCarta: " + codigo_carta, mazoId);
+  console.log("agregarCarta: " + codigo_carta + " al mazo: " + mazoId);
   const id_jugador = req.user.id_jugador;
   try {
-    const cartaAgregada = await agregarCarta(codigo_carta, mazoId, req);
+    const cartaAgregada = await agregarCarta(codigo_carta, mazoId);
     if (cartaAgregada) {
       req.flash('mensajeExito', '¡Carta agregada exitosamente!');
     } else {
@@ -283,8 +278,7 @@ app.post('/agregarcarta', async (req, res) => {
   }
 });
 
-
-app.post('/eliminarCarta', async (req, res) => {
+app.post('/eliminarCarta', async (req, res) => { // eliminar carta de un mazo
   console.log('entro a eliminar carta');
   const { codigo_carta, mazoId } = req.body;
   const id_jugador = req.user.id_jugador;
@@ -298,36 +292,24 @@ app.post('/eliminarCarta', async (req, res) => {
   }
 });
 
+app.get('/mazos/:id', async (req, res) => { // ver mazo sin editar 
+  const mazoId = req.params.id;
+  const id_jugador = req.user.id_jugador;
 
-app.get('/misMazos/:id_jugador', async (req, res) => {
-  const id_jugador = req.params.id_jugador;
-  pool.query('SELECT * FROM mazo WHERE id_jugador = $1', [id_jugador] , (error, result)=> {
-    if (error){
-      throw error;
-    } else {
-      const mazo = result.rows;
-      res.render('misMazos', { mazo });
-    }
-  });
-})
-
-app.get('/mazos/:id', async (req, res) => {
-  const id_mazo = req.params.id;
   try {
-    const client = await pool.connect();
-    const mazoResult = await client.query('SELECT * FROM mazo WHERE id_mazo = $1', [id_mazo]);
-    const mazo = mazoResult.rows[0];
-    const jugadorResult = await client.query('SELECT * FROM jugador WHERE id_jugador = $1', [mazo.id_jugador]);
-    const jugador = jugadorResult.rows[0];
-    const cartasResult = await client.query('SELECT * FROM carta WHERE id_mazo = $1', [id_mazo]);
-    const cartas = cartasResult.rows;
-    res.render('mazos', { mazo, jugador, cartas });
+    const cartas = await obtenerCartas();
+    const cartasMazo = await obtenerCartasMazo(mazoId);
+    const cantidades = await obtenerCantidadesCartasMazo(mazoId);
+
+    res.render('visualizadorMazo', { cartas, cartasMazo, mazoId, cantidades, id_jugador});
+
   } catch (err) {
     console.error(err);
-    res.status(500).send('Error al obtener los detalles del mazo');
+    res.status(500).send('Error al obtener datos de mazo y cartas');
   }
 });
-  function ul(index) {
+
+function ul(index) {
 	console.log('click!' + index)
 	
 	var underlines = document.querySelectorAll(".underline");
@@ -337,10 +319,7 @@ app.get('/mazos/:id', async (req, res) => {
 	}
  }
  
-
-
-
-app.get('/visualizador', (req, res) => {
+app.get('/visualizador', (req, res) => { // buscar cartas
   const search = req.query.search || '';
   const tipo = req.query.tipo || '';
   const raza = req.query.raza || '';
@@ -362,7 +341,7 @@ app.get('/visualizador', (req, res) => {
   });
 });
 
-app.get('/visualizadorParaMazo', async (req, res) => {
+app.get('/visualizadorParaMazo', async (req, res) => { // buscar cartas para agregar al mazo 
   const id_jugador = req.user.id_jugador;
   const mazoId = req.query.mazoId;
   const search = req.query.search || '';
@@ -372,8 +351,6 @@ app.get('/visualizadorParaMazo', async (req, res) => {
   const fuerza = req.query.fuerza || 0;
   const cartasMazo = await obtenerCartasMazo(mazoId);
   const cantidades = await obtenerCantidadesCartasMazo(mazoId);
-
-  
 
   pool.query(`SELECT * FROM carta
               WHERE nombre ILIKE '%${search}%'
@@ -406,8 +383,7 @@ app.get('/visualizadorParaMazo', async (req, res) => {
   });
 });
 
-// RESULTADO BUSQUEDA
-app.get('/carta/:codigo', (req, res) => {
+app.get('/carta/:codigo', (req, res) => { // resultado busqueda, vista de cada carta 
   const codigo = req.params.codigo;
 
   pool.query('SELECT * FROM carta WHERE codigo = $1', [codigo], (error, result) => {
@@ -432,6 +408,7 @@ app.get('/carta/:codigo', (req, res) => {
     }
   });
 });
+
 // AQUI SE ENLISTAN LOS MAZOS PROPIOS YA SEAN PUBLICOS O PRIVADOS
 app.get('/lista_mazos', (req, res) => {
   const id_jugador = req.user.id_jugador;
@@ -474,8 +451,7 @@ async function obtenerCartasMazo(idMazo) { //dejar solo obtener codigos de carta
     const client = await pool.connect();
     const cartaMazoResult = await client.query('SELECT codigo_carta FROM carta_mazo WHERE id_mazo = $1', [idMazo]);
     const codigosCartas = cartaMazoResult.rows.map(row => row.codigo_carta);
-    console.log(codigosCartas);
-
+    // console.log(codigosCartas);
     const cartas = [];
 
     for (const codigoCarta of codigosCartas) {
@@ -485,8 +461,8 @@ async function obtenerCartasMazo(idMazo) { //dejar solo obtener codigos de carta
     }
 
     client.release();
-
     return cartas;
+
   } catch (err) {
     console.error(err);
     throw new Error('Error al obtener las cartas por mazo');
@@ -527,7 +503,7 @@ async function obtenerCartas() {
 };
 
 // EDITOR DE MAZOS 
-async function agregarCarta(codigo_carta, mazoId, req) {
+async function agregarCarta(codigo_carta, mazoId) {
   // Comprobar si la carta ya está en el mazo
   console.log('codigo carta a agregar: ', codigo_carta);
   return new Promise((resolve, reject) => {
@@ -596,16 +572,18 @@ app.post('/buscar_mazo', (req, res) => {
 // Guardar un mazo que este publico que no pertenezca al usuario 
 app.post('/guardar_mazo_publico', (req, res) => {
   const id_jugador = req.user.id_jugador;
-  const id_mazo = req.body.id_mazo; // Obtener el id_mazo desde req.body
+  const id_mazo = req.body.id_mazo; 
 
-  pool.query('INSERT INTO Mazo (nombre, id_jugador, tipo_mazo) SELECT nombre, $1, 2 FROM Mazo WHERE id_mazo = $2 AND tipo_mazo = 2 AND id_jugador != $1 RETURNING id_mazo', [id_jugador, req.params.id_mazo], (error, result) => {
+  pool.query('INSERT INTO Mazo (nombre, id_jugador, tipo_mazo) SELECT nombre, $1, 2 FROM Mazo WHERE id_mazo = $2 AND tipo_mazo = 2 AND id_jugador != $1 RETURNING id_mazo', [id_jugador, id_mazo], (error, result) => {
     if (error) {
-      console.error(error);
+      console.log(error);
       res.sendStatus(500);
     } else if (result.rows.length > 0) {
-      console.log(result.rows);
+      console.log("----------mazo guardado");
+      // console.log(result.rows);
       req.flash("success_msg", "Se ha guardado el mazo correctamente");
       res.redirect('/mazos_publicos');
+
     } else {
       req.flash("error_msg", "No se puede guardar el mazo");
       res.redirect('/mazos_publicos');
@@ -687,8 +665,6 @@ app.get('/buscar_producto', (req, res) => {
     }
   });
 });
-
-
 // RENDERIZA Y OBTIENE LA PAGINA CREADOR PRODUCTO
 app.get('/creadorProducto', async (req, res) => {
   try {
@@ -701,7 +677,6 @@ app.get('/creadorProducto', async (req, res) => {
     res.status(500).send('Error al obtener los productos');
   }
 });
-
 // ACTUALIZAR LA DISPONIBILIDAD DE UN PRODUCTO ( ES DECIR SU CORRESPONDIENTE ELIMINACION )
 app.post('/actualizar', (req, res) => {
   const id_producto = req.body.id_producto;
@@ -717,7 +692,6 @@ app.post('/actualizar', (req, res) => {
     }
   });
 });
-
 // PRODUCTOS TIENDA 
 app.get('/productosTienda', (req, res) => {
   pool.query('SELECT * FROM producto WHERE disponible = true', (error, result) => {
@@ -730,7 +704,6 @@ app.get('/productosTienda', (req, res) => {
     }
   });
 });
-
 
 app.get('/detalles_producto_tienda/:id', checkNotAuthenticated, async (req, res) => {
   const id_producto = req.params.id;
@@ -765,8 +738,6 @@ app.get('/editorTienda/:id', checkNotAuthenticated, (req, res) => {
   });
 });
 
-
-
 app.post('/guardar_producto_tienda', async (req, res) => {
   const id_tienda = req.user.id_tienda;
   const id_producto = req.body.id_producto;
@@ -782,6 +753,7 @@ app.post('/guardar_producto_tienda', async (req, res) => {
     res.status(500).send('Error al guardar el producto en la tienda');
   }
 });
+
 app.post('/eliminar_producto_tienda', async (req, res) => {
   const id_tienda = req.user.id_tienda;
   const id_producto = req.body.id_producto;

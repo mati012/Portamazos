@@ -1,48 +1,68 @@
-<!DOCTYPE html>
-<html>
+<!DOCTYPE html><html>
+
+<head>
+	<meta charset="utf-8">
+
 	<head>
-		<meta charset="utf-8">
-		<head>
-			<meta charset="UTF-8" />
-			
-			<link rel='stylesheet' type="text/css"><link rel="stylesheet" href="/css/estilos.css" >"
-			
-			<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-			<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-			<ul>
-				<li><a href="/home">Inicio</a></li>
-				<li><a href="/mazos">Mazos</a></li>
-				<li><a href="/visualizador">Buscador</a></li>
-				<li><a href="/mazos_publicos">Mazos publicos</a></li>
-					<li><a href="/guiaProductos">Guia productos</a></li>
-				<li style="float:right"><a class="active" href="/logout">logout</a></li>
-			</ul>
-		  </head>
+		<meta charset="UTF-8" />
+
+		<link rel='stylesheet' type="text/css">
+		<link rel="stylesheet" href="/css/estilos.css">"
+
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<ul>
+			<li><a href="/home">Inicio</a></li>
+			<li><a href="/mazos">Mazos</a></li>
+			<li><a href="/visualizador">Buscador</a></li>
+			<li><a href="/mazos_publicos">Mazos publicos</a></li>
+			<li><a href="/guiaProductos">Guia productos</a></li>
+			<li style="float:right"><a class="active" href="/logout">logout</a></li>
+		</ul>
+		<script>
+			function cerrarMensajeExito() {
+			  var mensajeExito = document.getElementById('mensaje-exito');
+			  mensajeExito.style.display = 'none';
+			}
+	  
+			function cerrarMensajeError() {
+			  var mensajeError = document.getElementById('mensaje-error');
+			  mensajeError.style.display = 'none';
+			}
+		  </script>
+	</head>
+
 <body>
-    <section class="mazo_publico">
-	<form action="/buscar_mazo" method="POST">
-		<label for="busqueda">Buscar mazo:</label>
-		<input class="busqueda" name="busqueda" id="busqueda">
-		<button type="submit" id="crear_mazo">Buscar</button>
-		<!-- <div class="container"> -->
-			<% if (typeof mazo !== 'undefined' && mazo.length > 0) { %>
-			  
-			  <ol id="lista2">
-				<% mazo.forEach(function(mazo) { %>
-				  <li>
-					<a href="/mazo/<%= mazo.id_mazo %>"><%= mazo.nombre %></a>
-					<form action="/guardar_mazo_publico" method="POST">
-						<input type="hidden" name="id_mazo" value="<%= mazo.id_mazo %>">
-						<button type="submit" id="crear_mazo" value="<%= mazo.id_mazo %>">Guardar Mazo</button>
-					  </form>
-				  </li>
-				<% }); %>
-			  </ol>
-			<% } else { %>
-			  <h1>No se encontraron resultados</h1>
-			<% } %>
-		  <!-- </div>	 -->
-	  </form>
+
+	<section class="mazo_publico">
+		<form action="/buscar_mazo" method="POST">
+			<label for="busqueda">Buscar mazo:</label>
+			<input class="busqueda" name="busqueda" id="busqueda">
+			<button type="submit" id="crear_mazo">Buscar</button>
+			<!-- <div class="container"> -->
+			<% if (typeof mazo !=='undefined' && mazo.length> 0) { %>
+				<ol id="lista2">
+					<% mazo.forEach(function(mazo) { %>
+						<li>
+							<a href="/mazos/<%= mazo.id_mazo %>">
+								<%= mazo.nombre %>
+							</a>
+							<form action="/guardar_mazo_publico" method="POST">
+								<input type="hidden" name="id_mazo" value="<%= mazo.id_mazo %>">
+								<button class="btn" type="submit" id="crear_mazo" value="<%= mazo.id_mazo %>">Guardar Mazo</button>
+							</form>
+							<form action="/mazos/<%= mazo.id_mazo %>" method="GET"
+								style="display:inline-block;">
+								<input class="btn" type="submit" value="Ver Mazo">
+							</form>
+						</li>
+						<% }); %>
+				</ol>
+				<% } else { %>
+					<h1>No se encontraron resultados</h1>
+					<% } %>
+		</form>
 	</section>
 </body>
+
 </html>

@@ -49,7 +49,7 @@
 		<h1>Lista de mazos</h1>
 		<ol id="lista2">
 			<% mazo.forEach(function(mazo) { %>
-				<li><a href="/constructorMazo/<%= mazo.id_mazo %>/<%= id_jugador %>">
+				<li><a href="/mazos/<%= mazo.id_mazo %>">
 						<%= mazo.nombre %>
 					</a>
 					<form action="/eliminar_mazo" method="POST" style="display:inline-block;">
@@ -60,10 +60,6 @@
 						style="display:inline-block;">
 						<input class="btn" type="submit" value="Editar">
 					</form>
-					<!-- <form action="/eliminar_mazo" method="POST" style="display:inline-block;">
-				<input type="hidden" name="id_mazo" value="<%= mazo.id_mazo %>">
-				<input type="submit" value="Eliminar">
-			  </form> -->
 				</li>
 				<% }); %>
 		</ol>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8" />
+		<link rel='stylesheet' type="text/css"><link rel="stylesheet" href="/css/estilos.css" >"
+		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
+		<ul>
+      <li><a href="/home">Inicio</a></li>
+      <li><a href="/mazos">Mazos</a></li>
+      <li><a href="/visualizador">Buscador</a></li>
+      <li><a href="/mazos_publicos">Mazos publicos</a></li>
+        <li><a href="/guiaProductos">Guia productos</a></li>
+		  <li style="float:right"><a class="active" href="/logout">logout</a></li>
+		</ul>
+            </head>
+            
+          <body>
+      <div class="container">
+        <h1> Mazo <%= mazoId %></h1>
+        <h1>Lista de cartas</h1><div class="card-list">
+          <% if (cartasMazo.length > 0) { %>
+            <% cartasMazo.forEach(function(carta) { %>
+              <button class ='cantidad-cartas'><%= cantidades[carta.codigo] %></button>
+              <!-- <div class="card"> -->
+                <!-- <h2><%= carta.nombre %></h2> -->
+                <!-- <p>Código: <%= carta.codigo %></p>
+                <p>Tipo: <%= carta.tipo %></p>
+                <p>Coste: <%= carta.coste %></p>
+                <p>Habilidad: <%= carta.habilidad %></p>
+                <p>Fuerza: <%= carta.fuerza %></p>
+                <p>Raza: <%= carta.raza %></p> -->
+                <% if (carta.imagen) { %>
+                  <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-imagen">
+                <% } %>
+
+              <!-- </div> -->
+            <% }); %>
+          <% } else { %>
+            <p>Ninguna carta agregada al mazo</p>
+          <% } %>
+        </div>
+    </body>
+</html>
