@@ -70,7 +70,9 @@ app.get("/mazoCreado", checkNotAuthenticated, (req, res) => {
 app.get("/constructor", checkNotAuthenticated, (req, res) => {
   res.render("constructor");
 });
-
+app.get("/cartaSueltas", checkAuthenticated, (req, res) => {
+  res.render("cartaSueltas");
+});
 
 // esto sirve para obtener los datos del registro y pasarlos a la base de datos
 app.post('/registro', async (req, res) => {
@@ -388,6 +390,8 @@ app.get('/visualizadorParaMazo', async (req, res) => { // buscar cartas para agr
     });
   });
 });
+
+// vista carta 
 
 app.get('/carta/:codigo', (req, res) => { // resultado busqueda, vista de cada carta 
   const codigo = req.params.codigo;
@@ -796,3 +800,52 @@ app.post('/eliminar_producto_tienda', async (req, res) => {
     res.status(500).send('Error al eliminar el producto');
   }
 });
+
+// COMPRA VENTA CARTAS SUELTAS
+
+app.post('/buscar_Post', async (req, res) => {
+  const id_carta = req.body.id_carta;
+  const id_jugador = req.user.id_jugador
+
+  try {
+    const client = await pool.connect();
+    await client.query('SELECT * FROM carta_venta WHERE id_carta = $1 AND id_jugador = $2', [id_carta, id_jugador]);
+    res.redirect('/cartaSueltas');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al obtener detalles del producto');
+  }
+});
+
+app.get('/buscar_carta_suelta', (req, res) => {
+  const busqueda = req.query.busqueda;
+
+  pool.query('SELECT * FROM carta_venta WHERE nombre ILIKE $1  AND disponible = true', [`%${busqueda}%`], (error, result) => {
+    if (error) {
+      console.error(error);
+      res.sendStatus(500);
+    } else {
+      const cartas_sueltas = result.rows;
+      res.render('cartaSueltas', { carta_venta: cartas_ventas }); 
+    }
+  });
+});
+
+app.post('/pulicar_carta_suelta ', async (req, res) => {
+  const id_jugador = req.user.id_jugador;
+  const id_carta = req.body.id_carta;
+  const contacto = req.body.descripcion;
+  const precio_carta = req.body.precio_tienda;
+  const descripcion = req.body.descripcion
+  try {
+    const client = await pool.connect();
+    const result = await client.query('INSERT INTO carta_venta (id_carta, id_jugador, contacto, precio_carta, descripcion) VALUES ($1, $2, $3, $4, $5) RETURNING id_carta', [id_carta, id_jugador, contacto, precio_carta, descripcion]);
+    const cartaid = result.rows[0].id_carta; 
+    res.redirect('/homeTienda');
+  } catch (err) {
+    console.error(err);
+    res.status(500).send('Error al guardar la carta para venta');
+  }
+});
+
+
