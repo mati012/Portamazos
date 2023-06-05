@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+	<meta charset="UTF-8" />
+	<script type="module"></script>
+	<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+	<link rel="stylesheet" type="text/css" href="/css/styles.css">
+	<link rel="stylesheet" type="text/css" href="/css/estilos.css">
+	<title>Portamazos</title>
+	<style>
+		header {
+			display: flex;
+			align-items: center;
+			justify-content: space-between;
+			margin-top: 20px;
+			background-color: #000;
+			color: #fff;
+		}
+
+		.logo img {
+			max-width: 100px;
+			height: auto;
+			
+		}
+
+		nav {
+			flex: 1;
+			margin: 0 auto;
+			white-space: nowrap;
+			height: 60px;
+			z-index: 2; 
+		}
+
+		nav ul {
+			list-style-type: none;
+			margin-left: 20px;
+			padding: 0;
+			display: flex;
+			align-items: center;
+			justify-content: center;
+			list-style: none;
+			height: 100%; 
+			
+		}
+
+		nav ul li {
+			margin: 0 10px;
+		}
+
+		nav li {
+			margin-right: 20px;
+		}
+
+		nav a {
+			text-decoration: none;
+			color: #fff;
+			font-weight: 500;
+		}
+
+		nav a:hover {
+			color: #00a0e9;
+		}
+
+		nav .active {
+			color: #00a0e9;
+		}
+
+		.dropdown {
+			position: relative;
+		}
+
+		.dropdown .submenu {
+			display: none;
+			top: 100%;
+			position: absolute;
+			min-width: 100px;
+			background-color: #fff;
+			box-shadow: 0px 8px 16px 0px rgba(0, 0, 0, 0.2);
+			padding: 12px 16px;
+			z-index: 3;
+		}
+
+		.dropdown:hover .submenu {
+			display: block;
+		}
+	</style>
+
+
+	<header>
+		<nav>
+			<ul>
+				<li class="logo">
+					<a href="/home">
+						<img src="/img/logo2.png" alt="Logo de la empresa">
+					</a>
+				</li>
+				<li><a href="/home">Inicio</a></li>
+				<li><a href="/mazos">Crear mazo</a></li>
+				<li><a href="/lista_mazos">Mis mazos</a></li>
+				<li><a href="/visualizador">Buscador</a></li>
+				<li><a href="/mazos_publicos">Mazos públicos</a></li>
+				<li><a href="/guiaProductos">Guía productos</a></li>
+				<li style="float:right"><a class="active" href="/logout">logout</a></li>
+			</ul>
+		</nav>
+	</header>
+</head>

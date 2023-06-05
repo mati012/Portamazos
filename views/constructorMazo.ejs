@@ -1,34 +1,5 @@
-<!DOCTYPE html>
-<html>
-	<head>
-		<meta charset="UTF-8" />
-		
-		<link rel='stylesheet' type="text/css"><link rel="stylesheet" href="/css/estilos.css" >"
-		
-		<meta name="viewport" content="width=device-width, initial-scale=1.0" />
-		<meta http-equiv="X-UA-Compatible" content="ie=edge" />
-    
-    
-		<ul>
-      <li><a href="/home">Inicio</a></li>
-      <li><a href="/mazos">Mazos</a></li>
-      <li><a href="/visualizador">Buscador</a></li>
-      <li><a href="/mazos_publicos">Mazos publicos</a></li>
-        <li><a href="/guiaProductos">Guia productos</a></li>
-		  <li style="float:right"><a class="active" href="/logout">logout</a></li>
-		</ul>
-    <script>
-      function cerrarMensajeExito() {
-        var mensajeExito = document.getElementById('mensaje-exito');
-        mensajeExito.style.display = 'none';
-      }
+<%- include('./components/headerLogged') %>
 
-      function cerrarMensajeError() {
-        var mensajeError = document.getElementById('mensaje-error');
-        mensajeError.style.display = 'none';
-      }
-    </script>
-	  </head>
     <body>
       <% if (mensajeError) { %>
         <div id="mensaje-error" class="mensaje mensaje_error">
@@ -135,6 +106,17 @@
             </ol>
           </form>
         </section>
+        <script>
+          function cerrarMensajeExito() {
+            var mensajeExito = document.getElementById('mensaje-exito');
+            mensajeExito.style.display = 'none';
+          }
+    
+          function cerrarMensajeError() {
+            var mensajeError = document.getElementById('mensaje-error');
+            mensajeError.style.display = 'none';
+          }
+        </script>
         
     </body>
 </html>

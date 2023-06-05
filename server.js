@@ -36,9 +36,7 @@ app.get("/registroTienda", checkAuthenticated, (req, res)=>{
 app.get("/registro", checkAuthenticated, (req, res)=>{
     res.render("registro");
 });
-app.get("/home", checkNotAuthenticated, (req, res)=>{
-    res.render("home");
-});
+
 app.get("/homeTienda", checkNotAuthenticated, (req, res)=>{
   res.render("homeTienda");
 });
@@ -290,6 +288,12 @@ app.post('/eliminarCarta', async (req, res) => { // eliminar carta de un mazo
     console.error(err);
     res.status(500).send('Error al eliminar la carta al mazo');
   }
+});
+
+app.get("/home", checkNotAuthenticated, async (req, res)=>{
+  const cartas = await obtenerCartas();
+
+  res.render("home", { cartas});
 });
 
 app.get('/mazos/:id', async (req, res) => { // ver mazo sin editar 

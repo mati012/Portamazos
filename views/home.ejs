@@ -1,27 +1,27 @@
-<!DOCTYPE html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8">
-    <head>
-      <meta charset="UTF-8" />
-      
-      <link rel='stylesheet' type="text/css"><link rel="stylesheet" href="/css/estilos.css" >"
-      
-      <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-      <meta http-equiv="X-UA-Compatible" content="ie=edge" />
-      <ul>
-				<li><a href="/home">Inicio</a></li>
-				<li><a href="/mazos">Mazos</a></li>
-				<li><a href="/visualizador">Buscador</a></li>
-				<li><a href="/mazos_publicos">Mazos publicos</a></li>
-					<li><a href="/guiaProductos">Guia productos</a></li>
-        <li style="float:right"><a class="active" href="/logout">logout</a></li>
-      </ul>
-      </head>
+<%- include('./components/headerLogged') %>
+
   <body>
-    
+    <style>
+      .cartas {
+        margin-top: 40px;
+        margin-left: 100px;
+        margin-right: 100px;
+        margin-bottom: 10px;
+      }
+    </style>
 
-
-
+    <section class="cartas">
+      <form>
+        <ol id="lista3">
+          <% cartas.forEach(function(carta) { %>
+            <% if (carta.imagen) { %>
+              <a href="/carta/<%= carta.codigo %>">
+                <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-imagen">
+              </a>
+            <% } %>
+          <% }); %>
+        </ol>
+      </form>
+    </section>
   </body>
 </html>
