@@ -1,10 +1,10 @@
-const express = require ('express');
+const express = require('express');
 const app = express();
-const { pool }= require("./dbConfig");
-const bcrypt =  require("bcrypt");
+const { pool } = require("./dbConfig");
+const bcrypt = require("bcrypt");
 const session = require("express-session");
 const flash = require("express-flash");
-const passport = require ('passport');
+const passport = require('passport');
 const path = require('path');
 const fs = require('fs');
 
@@ -20,176 +20,176 @@ app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(session({
-    secret: 'secret',
-    resave: false,
-    saveUninitialized: false
-}) );
+  secret: 'secret',
+  resave: false,
+  saveUninitialized: false
+}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 // rutas 
 
 
-app.get("/registroTienda", checkAuthenticated, (req, res)=>{
+app.get("/registroTienda", checkAuthenticated, (req, res) => {
   res.render("registroTienda");
 });
-app.get("/registro", checkAuthenticated, (req, res)=>{
-    res.render("registro");
+app.get("/registro", checkAuthenticated, (req, res) => {
+  res.render("registro");
 });
 
-app.get("/homeTienda", checkNotAuthenticated, (req, res)=>{
+app.get("/homeTienda", checkNotAuthenticated, (req, res) => {
   res.render("homeTienda");
 });
-app.get("/login", checkAuthenticated, (req, res)=>{
-    res.render("login");
-});
-app.get("/loginTienda", checkAuthenticated, (req, res)=>{
-  res.render("loginTienda");
-});
-app.get("", checkAuthenticated, (req, res)=>{
+app.get("/login", checkAuthenticated, (req, res) => {
   res.render("login");
 });
-app.get("/logout",(req, res)=>{
-    req.logOut(function(err) {
-        if (err) { return next(err); }
-        res.redirect('/login');
-      });;
-   
-})
-app.get("/mazos", checkNotAuthenticated, (req, res)=>{
-    res.render("mazos", {user: req.user.id_jugador});
+app.get("/loginTienda", checkAuthenticated, (req, res) => {
+  res.render("loginTienda");
 });
-app.get("/editorTienda", checkNotAuthenticated, (req, res)=>{
-  res.render("editorTienda", {user: req.user.id_tienda});
+app.get("", checkAuthenticated, (req, res) => {
+  res.render("login");
+});
+app.get("/logout", (req, res) => {
+  req.logOut(function (err) {
+    if (err) { return next(err); }
+    res.redirect('/login');
+  });;
+
+})
+app.get("/mazos", checkNotAuthenticated, (req, res) => {
+  res.render("mazos", { user: req.user.id_jugador });
+});
+app.get("/editorTienda", checkNotAuthenticated, (req, res) => {
+  res.render("editorTienda", { user: req.user.id_tienda });
 });
 
-app.get("/mazoCreado", checkNotAuthenticated, (req, res)=>{
+app.get("/mazoCreado", checkNotAuthenticated, (req, res) => {
   res.render("mazoCreado");
 });
-app.get("/constructor", checkNotAuthenticated, (req, res)=>{
+app.get("/constructor", checkNotAuthenticated, (req, res) => {
   res.render("constructor");
 });
 
 
 // esto sirve para obtener los datos del registro y pasarlos a la base de datos
-app.post('/registro', async (req, res)=>{
-    let { nombre, email, contrasena, contrasena2 }= req.body;
-
-    console.log({
-        nombre,
-        email,
-        contrasena,
-        contrasena2,
-
-    });
-// en caso de error va mandar estos mensajes
-    let errors = [];
-    if (!nombre || !email || !contrasena || !contrasena2 ){
-        errors.push({ message: "falta un campo"});
-    }
-    if (contrasena.length<6){
-        errors.push({ message: "Contrasena debe ser mas larga"});
-    }
-    if (contrasena != contrasena2){
-        errors.push({ message: "contrasenas diferentes"});
-    }
-    if (errors.length >0){
-        res.render("registro", { errors });
-    }else{
-        //con la extension brcypt manda un encriptado de la base de datos de la contrasena
-       let hashedPassword = await bcrypt.hash(contrasena, 10);   
-       console.log(hashedPassword);
-
-       pool.query(
-        'SELECT * FROM Jugador WHERE email =$1 ', 
-        [email], (err, results)=>{
-            if (err){
-                throw err
-            }
-
-           console.log(results.rows);
-
-           if(results.rows.length > 0){
-            errors.push({message: " El email ya esta registrado"});
-            res.render('registro', {errors});
-           } else {
-            pool.query(
-                'INSERT INTO Jugador (nombre, email, contrasena) VALUES ($1, $2, $3) RETURNING id_jugador, contrasena',
-                [nombre, email, hashedPassword ],
-                (err, results)=>{
-                    if (err){
-                        throw err;
-                    }
-                    console.log(results.rows);
-                    req.flash("success_msg", "You are now registered. Please log in");
-                    res.redirect("/login");
-                }
-            )    
-
-           }; 
-        }
-       )
-    };
-});
-app.post('/registroTienda', async (req, res)=>{
-  let { nombre, email, contrasena, contrasena2, direccion, pagina_web }= req.body;
+app.post('/registro', async (req, res) => {
+  let { nombre, email, contrasena, contrasena2 } = req.body;
 
   console.log({
-      nombre,
-      email,
-      contrasena,
-      contrasena2,
-      direccion,
-      pagina_web
+    nombre,
+    email,
+    contrasena,
+    contrasena2,
 
   });
-// en caso de error va mandar estos mensajes
+  // en caso de error va mandar estos mensajes
   let errors = [];
-  if (!nombre || !email || !contrasena || !contrasena2 || !direccion || !pagina_web ){
-      errors.push({ message: "falta un campo"});
+  if (!nombre || !email || !contrasena || !contrasena2) {
+    errors.push({ message: "falta un campo" });
   }
-  if (contrasena.length<6){
-      errors.push({ message: "Contrasena debe ser mas larga"});
+  if (contrasena.length < 6) {
+    errors.push({ message: "Contrasena debe ser mas larga" });
   }
-  if (contrasena != contrasena2){
-      errors.push({ message: "contrasenas diferentes"});
+  if (contrasena != contrasena2) {
+    errors.push({ message: "contrasenas diferentes" });
   }
-  if (errors.length >0){
-      res.render("registro", { errors });
-  }else{
-      //con la extension brcypt manda un encriptado de la base de datos de la contrasena
-     let hashedPassword = await bcrypt.hash(contrasena, 10);   
-     console.log(hashedPassword);
+  if (errors.length > 0) {
+    res.render("registro", { errors });
+  } else {
+    //con la extension brcypt manda un encriptado de la base de datos de la contrasena
+    let hashedPassword = await bcrypt.hash(contrasena, 10);
+    console.log(hashedPassword);
 
-     pool.query(
-      'SELECT * FROM tienda WHERE email =$1 ', 
-      [email], (err, results)=>{
-          if (err){
-              throw err
-          }
+    pool.query(
+      'SELECT * FROM Jugador WHERE email =$1 ',
+      [email], (err, results) => {
+        if (err) {
+          throw err
+        }
 
-         console.log(results.rows);
+        console.log(results.rows);
 
-         if(results.rows.length > 0){
-          errors.push({message: " El email ya esta registrado"});
-          res.render('registro', {errors});
-         } else {
+        if (results.rows.length > 0) {
+          errors.push({ message: " El email ya esta registrado" });
+          res.render('registro', { errors });
+        } else {
           pool.query(
-              'INSERT INTO tienda (nombre, email, contrasena, direccion, pagina_web) VALUES ($1, $2, $3, $4, $5) RETURNING id_tienda, contrasena',
-              [nombre, email, hashedPassword, direccion, pagina_web ],
-              (err, results)=>{
-                  if (err){
-                      throw err;
-                  }
-                  console.log(results.rows);
-                  req.flash("success_msg", "You are now registered. Please log in");
-                  res.redirect("/login");
+            'INSERT INTO Jugador (nombre, email, contrasena) VALUES ($1, $2, $3) RETURNING id_jugador, contrasena',
+            [nombre, email, hashedPassword],
+            (err, results) => {
+              if (err) {
+                throw err;
               }
-          )    
+              console.log(results.rows);
+              req.flash("success_msg", "You are now registered. Please log in");
+              res.redirect("/login");
+            }
+          )
 
-         }; 
+        };
       }
-     )
+    )
+  };
+});
+app.post('/registroTienda', async (req, res) => {
+  let { nombre, email, contrasena, contrasena2, direccion, pagina_web } = req.body;
+
+  console.log({
+    nombre,
+    email,
+    contrasena,
+    contrasena2,
+    direccion,
+    pagina_web
+
+  });
+  // en caso de error va mandar estos mensajes
+  let errors = [];
+  if (!nombre || !email || !contrasena || !contrasena2 || !direccion || !pagina_web) {
+    errors.push({ message: "falta un campo" });
+  }
+  if (contrasena.length < 6) {
+    errors.push({ message: "Contrasena debe ser mas larga" });
+  }
+  if (contrasena != contrasena2) {
+    errors.push({ message: "contrasenas diferentes" });
+  }
+  if (errors.length > 0) {
+    res.render("registro", { errors });
+  } else {
+    //con la extension brcypt manda un encriptado de la base de datos de la contrasena
+    let hashedPassword = await bcrypt.hash(contrasena, 10);
+    console.log(hashedPassword);
+
+    pool.query(
+      'SELECT * FROM tienda WHERE email =$1 ',
+      [email], (err, results) => {
+        if (err) {
+          throw err
+        }
+
+        console.log(results.rows);
+
+        if (results.rows.length > 0) {
+          errors.push({ message: " El email ya esta registrado" });
+          res.render('registro', { errors });
+        } else {
+          pool.query(
+            'INSERT INTO tienda (nombre, email, contrasena, direccion, pagina_web) VALUES ($1, $2, $3, $4, $5) RETURNING id_tienda, contrasena',
+            [nombre, email, hashedPassword, direccion, pagina_web],
+            (err, results) => {
+              if (err) {
+                throw err;
+              }
+              console.log(results.rows);
+              req.flash("success_msg", "You are now registered. Please log in");
+              res.redirect("/login");
+            }
+          )
+
+        };
+      }
+    )
   };
 });
 app.post("/loginJugador",
@@ -220,10 +220,11 @@ function checkNotAuthenticated(req, res, next) {
   }
   res.redirect("/login");
 }
+const ipAddress = '0.0.0.0';
 
-  app.listen(PORT, () => { // levantar la app
-    console.log(`Server running on port ${PORT}`);
-  });
+app.listen(PORT, ipAddress, () => { // levantar la app
+  console.log(`Server running on port ${PORT}`);
+});
 //CREADOR DE MAZO 
 app.post('/mazos', async (req, res) => { // crear mazo
   const { nombre, tipo_mazo } = req.body;
@@ -238,7 +239,7 @@ app.post('/mazos', async (req, res) => { // crear mazo
     console.error(err);
     res.status(500).send('Error al crear el mazo');
   }
-   
+
 });
 
 app.get('/constructorMazo/:mazoId/:id_jugador', async (req, res) => { // render constructor 
@@ -250,7 +251,7 @@ app.get('/constructorMazo/:mazoId/:id_jugador', async (req, res) => { // render 
     const mensajeExito = req.flash('mensajeExito')[0];
     const mensajeError = req.flash('mensajeError')[0];
     // console.log('[GET constructorMazo] cartas mazo: ', cartasMazo);
-    res.render('constructorMazo', { cartas, cartasMazo, mazoId, mensajeExito, cantidades, mensajeError});
+    res.render('constructorMazo', { cartas, cartasMazo, mazoId, mensajeExito, cantidades, mensajeError });
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al obtener los detalles del mazo');
@@ -281,7 +282,7 @@ app.post('/eliminarCarta', async (req, res) => { // eliminar carta de un mazo
   const { codigo_carta, mazoId } = req.body;
   const id_jugador = req.user.id_jugador;
   try {
-    await eliminarCarta(codigo_carta, mazoId); 
+    await eliminarCarta(codigo_carta, mazoId);
     req.flash('mensajeExito', '¡Carta eliminada exitosamente!');
     res.redirect(`/constructorMazo/${mazoId}/${id_jugador}`);
   } catch (err) {
@@ -290,10 +291,10 @@ app.post('/eliminarCarta', async (req, res) => { // eliminar carta de un mazo
   }
 });
 
-app.get("/home", checkNotAuthenticated, async (req, res)=>{
+app.get("/home", checkNotAuthenticated, async (req, res) => {
   const cartas = await obtenerCartas();
 
-  res.render("home", { cartas});
+  res.render("home", { cartas });
 });
 
 app.get('/mazos/:id', async (req, res) => { // ver mazo sin editar 
@@ -305,7 +306,7 @@ app.get('/mazos/:id', async (req, res) => { // ver mazo sin editar
     const cartasMazo = await obtenerCartasMazo(mazoId);
     const cantidades = await obtenerCantidadesCartasMazo(mazoId);
 
-    res.render('visualizadorMazo', { cartas, cartasMazo, mazoId, cantidades, id_jugador});
+    res.render('visualizadorMazo', { cartas, cartasMazo, mazoId, cantidades, id_jugador });
 
   } catch (err) {
     console.error(err);
@@ -314,15 +315,15 @@ app.get('/mazos/:id', async (req, res) => { // ver mazo sin editar
 });
 
 function ul(index) {
-	console.log('click!' + index)
-	
-	var underlines = document.querySelectorAll(".underline");
+  console.log('click!' + index)
 
-	for (var i = 0; i < underlines.length; i++) {
-		underlines[i].style.transform = 'translate3d(' + index * 100 + '%,0,0)';
-	}
- }
- 
+  var underlines = document.querySelectorAll(".underline");
+
+  for (var i = 0; i < underlines.length; i++) {
+    underlines[i].style.transform = 'translate3d(' + index * 100 + '%,0,0)';
+  }
+}
+
 app.get('/visualizador', (req, res) => { // buscar cartas
   const search = req.query.search || '';
   const tipo = req.query.tipo || '';
@@ -364,8 +365,8 @@ app.get('/visualizadorParaMazo', async (req, res) => { // buscar cartas para agr
               AND fuerza >= ${fuerza}
               ORDER BY nombre ASC
               LIMIT 5`, (error, results) => {
-                console.log("--------------------------------------------")
-                console.log(results.rows);
+    console.log("--------------------------------------------")
+    console.log(results.rows);
     if (error) {
       throw error;
     }
@@ -421,7 +422,7 @@ app.get('/lista_mazos', (req, res) => {
       throw error;
     } else {
       const mazo = result.rows;
-      res.render('lista_mazos', { mazo , id_jugador});
+      res.render('lista_mazos', { mazo, id_jugador });
     }
   });
 });
@@ -439,8 +440,8 @@ app.post('/eliminar_mazo', (req, res) => {
 // OBTENER MAZOS PUBLICOS
 app.get('/mazos_publicos', (req, res) => {
 
-  pool.query('SELECT * FROM mazo WHERE tipo_mazo = 2', (error, result)=> {
-    if (error){
+  pool.query('SELECT * FROM mazo WHERE tipo_mazo = 2', (error, result) => {
+    if (error) {
       throw error;
     } else {
       const mazo = result.rows;
@@ -576,7 +577,7 @@ app.post('/buscar_mazo', (req, res) => {
 // Guardar un mazo que este publico que no pertenezca al usuario 
 app.post('/guardar_mazo_publico', (req, res) => {
   const id_jugador = req.user.id_jugador;
-  const id_mazo = req.body.id_mazo; 
+  const id_mazo = req.body.id_mazo;
 
   pool.query('INSERT INTO Mazo (nombre, id_jugador, tipo_mazo) SELECT nombre, $1, 2 FROM Mazo WHERE id_mazo = $2 AND tipo_mazo = 2 AND id_jugador != $1 RETURNING id_mazo', [id_jugador, id_mazo], (error, result) => {
     if (error) {
@@ -595,9 +596,9 @@ app.post('/guardar_mazo_publico', (req, res) => {
   });
 });
 //CREADOR DE PRODUCTO
-app.post('/creador_productos', async (req,res) => {
-  const {nombre, precio, descripcion}= req.body;
-  try{
+app.post('/creador_productos', async (req, res) => {
+  const { nombre, precio, descripcion } = req.body;
+  try {
     const client = await pool.connect();
     const result = await client.query('INSERT INTO producto (nombre, precio, descripcion, id_empresa, disponible) VALUES ($1, $2, $3, $4, $5) RETURNING id_producto', [nombre, precio, descripcion, 1, true]);
     const productoid = result.rows[0].id_producto; // obtener el id del producto insertado
@@ -646,8 +647,8 @@ app.get('/producto/:id', (req, res) => {
 // visualizador de productos 
 app.get('/guiaProductos', (req, res) => {
 
-  pool.query('SELECT * FROM producto WHERE disponible = true; ', (error, result)=> {
-    if (error){
+  pool.query('SELECT * FROM producto WHERE disponible = true; ', (error, result) => {
+    if (error) {
       throw error;
     } else {
       const producto = result.rows;
@@ -685,7 +686,7 @@ app.get('/creadorProducto', async (req, res) => {
 app.post('/actualizar', (req, res) => {
   const id_producto = req.body.id_producto;
   const nuevoEstado = req.body.disponible === 'true' ? true : false; // Obtener el nuevo estado de disponibilidad del combobox
-  
+
   // Actualizar la columna de disponibilidad en la tabla producto
   pool.query('UPDATE producto SET disponible = $1 WHERE id_producto =$2 ', [nuevoEstado, id_producto], (error, result) => {
     if (error) {
@@ -729,7 +730,7 @@ app.get('/detalles_producto_tienda/:id', checkNotAuthenticated, async (req, res)
 
 app.get('/editorTienda/:id', checkNotAuthenticated, (req, res) => {
   const productoId = req.params.id;
-  
+
   // Obtener los detalles del producto desde la base de datos utilizando el ID
   pool.query('SELECT * FROM producto WHERE id_producto = $1', [productoId], (error, result) => {
     if (error) {
