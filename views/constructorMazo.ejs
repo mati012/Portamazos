@@ -1,48 +1,52 @@
 <%- include('./components/headerLogged') %>
 
-    <body>
-      <% if (mensajeError) { %>
-        <div id="mensaje-error" class="mensaje mensaje_error">
-          <span class="cerrar" onclick="cerrarMensajeError()"> &nbsp; x</span>
-          <%= mensajeError %>
-        </div>
+  <body>
+    <% if (mensajeError) { %>
+      <div id="mensaje-error" class="mensaje mensaje_error">
+        <span class="cerrar" onclick="cerrarMensajeError()"> &nbsp; x</span>
+        <%= mensajeError %>
+      </div>
       <% } %>
-      <% if (mensajeExito) { %>
-        <div id="mensaje-exito" class="mensaje mensaje_exito">
-          <span class="cerrar" onclick="cerrarMensajeExito()"> &nbsp; x</span>
-          <%= mensajeExito %>
-        </div>
-      <% } %>
-      <div class="container">
-        <h1> Mazo <%= mazoId %></h1>
-        <h1>Lista de cartas</h1><div class="card-list">
-          <% if (cartasMazo.length > 0) { %>
-            <% cartasMazo.forEach(function(carta) { %>
-              <button class ='cantidad-cartas'><%= cantidades[carta.codigo] %></button>
-              <!-- <div class="card"> -->
-                <!-- <h2><%= carta.nombre %></h2> -->
-                <!-- <p>Código: <%= carta.codigo %></p>
+        <% if (mensajeExito) { %>
+          <div id="mensaje-exito" class="mensaje mensaje_exito">
+            <span class="cerrar" onclick="cerrarMensajeExito()"> &nbsp; x</span>
+            <%= mensajeExito %>
+          </div>
+          <% } %>
+            <div class="container">
+              <h1> Mazo <%= mazoId %>
+              </h1>
+              <h1>Lista de cartas</h1>
+              <div class="card-list">
+                <% if (cartasMazo.length> 0) { %>
+                  <% cartasMazo.forEach(function(carta) { %>
+                    <button class='cantidad-cartas'>
+                      <%= cantidades[carta.codigo] %>
+                    </button>
+                    <!-- <div class="card"> -->
+                    <!-- <h2><%= carta.nombre %></h2> -->
+                    <!-- <p>Código: <%= carta.codigo %></p>
                 <p>Tipo: <%= carta.tipo %></p>
                 <p>Coste: <%= carta.coste %></p>
                 <p>Habilidad: <%= carta.habilidad %></p>
                 <p>Fuerza: <%= carta.fuerza %></p>
                 <p>Raza: <%= carta.raza %></p> -->
-                <% if (carta.imagen) { %>
-                  <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-imagen">
-                <% } %>
-                <form action="/eliminarCarta" method="POST">
-                  <input type="hidden" name="mazoId" value="<%= mazoId %>">
-                  <input type="hidden" name="codigo_carta" value="<%= carta.codigo %>">
-                  <button type="submit">X</button>
-                </form>
-              <!-- </div> -->
-            <% }); %>
-          <% } else { %>
-            <p>Ninguna carta agregada al mazo</p>
-          <% } %>
-        </div>
-        <h1> </h1>
-        <!-- <form action="/agregarCarta" method="POST">
+                    <% if (carta.imagen) { %>
+                      <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-imagen">
+                      <% } %>
+                        <form action="/eliminarCarta" method="POST">
+                          <input type="hidden" name="mazoId" value="<%= mazoId %>">
+                          <input type="hidden" name="codigo_carta" value="<%= carta.codigo %>">
+                          <button type="submit">X</button>
+                        </form>
+                        <!-- </div> -->
+                        <% }); %>
+                          <% } else { %>
+                            <p>Ninguna carta agregada al mazo</p>
+                            <% } %>
+              </div>
+              <h1> </h1>
+              <!-- <form action="/agregarCarta" method="POST">
           <input type="hidden" name="mazoId" value="<%= mazoId %>">
           <select id="carta_agregar" name="codigo_carta">
             <% cartas.forEach(function(carta) { %>
@@ -52,71 +56,81 @@
           <button type="submit">Agregar Carta</button>
         </form>  -->
 
-        <section class="buscadorm">
-          <form action="/visualizadorParaMazo" method="GET">
-            <h1>Cartas </h1>
-            <div class="form-group">
-              <input class="nombre_mazo" name="search" placeholder="Buscar por nombre...">
-            </div>
-            <div class="form-group">
-              <label for="tipo">Tipo:</label>
-              <select id="tipo_mazo" name="tipo">
-                <option value="">Todos</option>
-                <option value="oro">Oro</option>
-                <option value="Aliado">Aliado</option>
-                <option value="Talismán">Talisman</option>
-                <option value="Totem">Totem</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="raza">Raza:</label>
-              <select id="tipo_mazo" name="raza">
-                <option value="">Todas</option>
-                <option value="Eterno">Eterno</option>
-                <option value="Bestia">Bestia</option>
-                <option value="Caballero">Caballero</option>
-                <option value="Sacerdote">Sacerdote</option>
-                <option value="Sombra">Sombra</option>
-                <option value="Faerie">Faerie</option>
-                <option value="Guerrero">Guerrero</option>
-                <option value="Heroe">Heroe</option>
-              </select>
-            </div>
-            <div class="form-group">
-              <label for="coste">Coste:</label>
-              <input type="number" id="coste" name="coste" min="0" max="5">
-            </div>
-            <div class="form-group">
-              <label for="fuerza">Fuerza:</label>
-              <input type="number" id="fuerza" name="fuerza" min="0" max="10">
-            </div>
-            <div class="form-group">
-              <input type="hidden" name="mazoId" value="<%= mazoId %>">
-              <button type="submit">Buscar</button>
-            </div>
-          </form>
-          <form action="/agregarCarta" method="POST">
-            <input type="hidden" name="mazoId" value="<%= mazoId %>"> 
-            <ol id="lista3">
-              <% for (var i = 0; i < cartas.length; i++) { %>
-                <li>
-                  <a href="/carta/<%= cartas[i].codigo %>"><%= cartas[i].nombre %></a>
-                  <button type="submit" class="agregar-carta-btn" name="codigo_carta" value="<%= cartas[i].codigo %>">Agregar</button>                </li>
-              <% } %>
-            </ol>
-          </form>
-        </section>
-        <script>
-          function cerrarMensajeExito() {
-            var mensajeExito = document.getElementById('mensaje-exito');
-            mensajeExito.style.display = 'none';
-          }
-    
-          function cerrarMensajeError() {
-            var mensajeError = document.getElementById('mensaje-error');
-            mensajeError.style.display = 'none';
-          }
-        </script>
-        
-    </body>
-</html>
+              <section class="buscadorm">
+                <form action="/visualizadorParaMazo" method="GET">
+                  <h1>Cartas </h1>
+                  <div class="form-group">
+                    <input class="nombre_mazo" name="search" placeholder="Buscar por nombre...">
+                  </div>
+                  <div class="form-group">
+                    <label for="tipo">Tipo:</label>
+                    <select id="tipo_mazo" name="tipo">
+                      <option value="">Todos</option>
+                      <option value="oro">Oro</option>
+                      <option value="Aliado">Aliado</option>
+                      <option value="Talismán">Talisman</option>
+                      <option value="Totem">Totem</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="raza">Raza:</label>
+                    <select id="tipo_mazo" name="raza">
+                      <option value="">Todas</option>
+                      <option value="Eterno">Eterno</option>
+                      <option value="Bestia">Bestia</option>
+                      <option value="Caballero">Caballero</option>
+                      <option value="Sacerdote">Sacerdote</option>
+                      <option value="Sombra">Sombra</option>
+                      <option value="Faerie">Faerie</option>
+                      <option value="Guerrero">Guerrero</option>
+                      <option value="Heroe">Heroe</option>
+                    </select>
+                  </div>
+                  <div class="form-group">
+                    <label for="coste">Coste:</label>
+                    <input type="number" id="coste" name="coste" min="0" max="5">
+                  </div>
+                  <div class="form-group">
+                    <label for="fuerza">Fuerza:</label>
+                    <input type="number" id="fuerza" name="fuerza" min="0" max="10">
+                  </div>
+                  <div class="form-group">
+                    <input type="hidden" name="mazoId" value="<%= mazoId %>">
+                    <button type="submit">Buscar</button>
+                  </div>
+                </form>
+                <form action="/agregarcarta" method="POST">
+                  <ol id="lista3">
+                    <% cartas.forEach(function(carta) { %>
+                      <li>
+                        <% if (carta.imagen) { %>
+                          <a href="/carta/<%= carta.codigo %>">
+                            <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-imagen">
+                          </a>
+                          <form action="/agregarcarta" method="POST">
+                            <input type="hidden" name="mazoId" value="<%= mazoId %>">
+                            <button style="display: block; margin: 0 auto;" type="submit" class="agregar-carta-btn" name="codigo_carta" value="<%= carta.codigo %>">Agregar</button>
+
+                          </form> 
+
+                        <% } %>
+                      </li>
+                    <% }); %>
+                  </ol>
+                </form>
+              </section>
+              <script>
+                function cerrarMensajeExito() {
+                  var mensajeExito = document.getElementById('mensaje-exito');
+                  mensajeExito.style.display = 'none';
+                }
+
+                function cerrarMensajeError() {
+                  var mensajeError = document.getElementById('mensaje-error');
+                  mensajeError.style.display = 'none';
+                }
+              </script>
+
+  </body>
+
+  </html>

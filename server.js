@@ -16,6 +16,7 @@ app.use(express.json());
 let imagenIndex = 1;
 const PORT = process.env.PORT || 4000;
 // aqui se declaran o se usan las extensiones
+app.set('views', path.join(__dirname, 'views'));
 app.set("view engine", "ejs");
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static(path.join(__dirname, 'public')));
@@ -251,6 +252,7 @@ app.get('/constructorMazo/:mazoId/:id_jugador', async (req, res) => { // render 
     const mensajeExito = req.flash('mensajeExito')[0];
     const mensajeError = req.flash('mensajeError')[0];
     // console.log('[GET constructorMazo] cartas mazo: ', cartasMazo);
+    // console.log(cartas);
     res.render('constructorMazo', { cartas, cartasMazo, mazoId, mensajeExito, cantidades, mensajeError });
   } catch (err) {
     console.error(err);
@@ -524,7 +526,7 @@ async function agregarCarta(codigo_carta, mazoId) {
               if (error) {
                 reject(error);
               } else {
-                console.log(`Se ha actualizado la cantidad de la carta ${codigo_carta} en el mazo ${mazoId}`);
+                console.log(`Mazo: ${mazoId}, Carta :${codigo_carta}, Nueva cantidad: ${nuevaCantidad} `);
                 resolve(true);
               }
             });
