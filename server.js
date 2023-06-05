@@ -76,13 +76,12 @@ app.get("/constructor", checkNotAuthenticated, (req, res) => {
 app.post('/registro', async (req, res) => {
   let { nombre, email, contrasena, contrasena2 } = req.body;
 
-  console.log({
-    nombre,
-    email,
-    contrasena,
-    contrasena2,
-
-  });
+  // console.log({
+  //   nombre,
+  //   email,
+  //   contrasena,
+  //   contrasena2,
+  // });
   // en caso de error va mandar estos mensajes
   let errors = [];
   if (!nombre || !email || !contrasena || !contrasena2) {
@@ -108,7 +107,7 @@ app.post('/registro', async (req, res) => {
           throw err
         }
 
-        console.log(results.rows);
+        // console.log(results.rows);
 
         if (results.rows.length > 0) {
           errors.push({ message: " El email ya esta registrado" });
@@ -553,11 +552,35 @@ async function agregarCarta(codigo_carta, mazoId) {
 
 // Eliminar una carta de un mazo
 function eliminarCarta(codigo_carta, id_mazo) {
-  pool.query('DELETE FROM carta_mazo WHERE codigo_carta = $1 AND id_mazo = $2', [codigo_carta, id_mazo], (error, result) => {
+  // Consultar la cantidad de la carta en el mazo
+  pool.query('SELECT cantidad FROM carta_mazo WHERE codigo_carta = $1 AND id_mazo = $2', [codigo_carta, id_mazo], (error, result) => {
     if (error) {
       throw error;
     } else {
-      console.log(`Se ha eliminado la carta ${codigo_carta} del mazo ${id_mazo}`);
+      // Obtener la cantidad de la carta en el mazo
+      const cantidad = result.rows[0].cantidad;
+
+      if (cantidad > 1) {
+        // Actualizar la cantidad de la carta en el mazo
+        pool.query('UPDATE carta_mazo SET cantidad = $1 WHERE codigo_carta = $2 AND id_mazo = $3', [cantidad - 1, codigo_carta, id_mazo], (error, result) => {
+          if (error) {
+            throw error;
+          } else {
+            console.log(`Se ha actualizado la carta ${codigo_carta}(${cantidad})-1 = ${cantidad-1} en el mazo ${id_mazo}`);
+          }
+        });
+      } else if (cantidad === 1) {
+        // Eliminar la carta del mazo
+        pool.query('DELETE FROM carta_mazo WHERE codigo_carta = $1 AND id_mazo = $2', [codigo_carta, id_mazo], (error, result) => {
+          if (error) {
+            throw error;
+          } else {
+            console.log(`Se ha eliminado la carta ${codigo_carta} del mazo ${id_mazo}`);
+          }
+        });
+      } else {
+        console.log(`La carta ${codigo_carta} no se encuentra en el mazo ${id_mazo}`);
+      }
     }
   });
 }

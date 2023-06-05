@@ -4,10 +4,10 @@ const bcrypt = require("bcrypt");
 
 
 function initialize(passport) {
-  console.log("Initialized");
+  console.log("Init passaport");
 
   const authenticateUser = (email, password, done) => {
-    console.log(email, password);
+    // console.log(email, password);
     pool.query(
       `SELECT * FROM Jugador WHERE email = $1`,
       [email],
@@ -15,7 +15,7 @@ function initialize(passport) {
         if (err) {
           throw err;
         }
-        console.log(results.rows);
+        // console.log(results.rows);
 
         if (results.rows.length > 0) {
           const user = results.rows[0];
@@ -107,7 +107,7 @@ function initialize(passport) {
           if (err) {
             return done(err);
           }
-          console.log(`ID is ${results.rows[0].id_jugador}`);
+          // console.log(`ID is ${results.rows[0].id_jugador}`);
           return done(null, results.rows[0]);
         }
       );
@@ -120,7 +120,7 @@ function initialize(passport) {
             return done(err);
           }
           console.log(`ID is ${results.rows[0].id_tienda}`);
-          return done(null, results.rows[0]);
+          return done(null, results.rows[0]);s
         }
       );
     } else {
