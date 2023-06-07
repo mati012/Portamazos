@@ -58,11 +58,6 @@ app.get("/logout", (req, res) => {
 
 })
 
-
-app.get('crearPublicacion', checkNotAuthenticated, (req, res) => {
-  res.render('crearPublicacion', { user: req.user.id_jugador });
-});
-
 app.get("/mazos", checkNotAuthenticated, (req, res) => {
   res.render("mazos", { user: req.user.id_jugador });
 });
@@ -807,6 +802,24 @@ app.post('/eliminar_producto_tienda', async (req, res) => {
 
 // AQUI EN ADELANTE SE CREA EL FORO Y SUS FUNCIONALIDADES
 
+app.get('/crearPublicacion', checkNotAuthenticated, (req, res) => {
+  const id_jugador = req.user.id_jugador;
+
+  // Obtener todas las publicaciones del usuario activo
+  pool.query(
+    'SELECT * FROM publicacion_foro WHERE id_jugador = $1 ORDER BY fecha_publicacion DESC',
+    [id_jugador],
+    (error, result) => {
+      if (error) {
+        console.error(error);
+        res.status(500).send('Error al obtener las publicaciones del usuario');
+      } else {
+        const publicaciones = result.rows;
+        res.render('crearPublicacion', { publicaciones: publicaciones });
+      }
+    }
+  );
+});
 
 
 // Ruta para la página principal del foro (muestra todas las publicaciones)
@@ -897,6 +910,22 @@ app.post('/foro/publicacion/:id/comentarios', (req, res) => {
         res.status(500).send('Error al agregar el comentario');
       } else {
         res.redirect(`/foro/publicacion/${id_publicacion}`);
+      }
+    }
+  );
+});
+app.post('/foro/publicacion/:id/eliminar', (req, res) => {
+  const id_publicacion = req.params.id;
+
+  pool.query(
+    'DELETE FROM publicacion_foro WHERE id_publicacion = $1',
+    [id_publicacion],
+    (error) => {
+      if (error) {
+        console.error(error);
+        res.status(500).send('Error al eliminar la publicación');
+      } else {
+        res.redirect('/crearPublicacion');
       }
     }
   );

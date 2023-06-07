@@ -1,17 +1,6 @@
 <%- include('./components/headerLogged') %>
 <div class="container">
     <h1>Foro</h1>
-    <!-- <form action="/foro/crear-publicacion" method="POST">
-        <div class="container">
-          <h1>Crear nueva publicación</h1>
-          <label for="titulo">Título:</label>
-          <input type="text" id="titulo" name="titulo" placeholder="Ingresa el título" required>
-          <label for="contenido">Contenido:</label>
-          <textarea id="contenido" name="contenido" placeholder="Escribe el contenido" required></textarea>
-       
-          <button type="submit">Crear publicación</button>
-        </div>
-      </form> -->
     <% for (const publicacion of publicaciones) { %>
       <div class="publicacion">
         <h2><%= publicacion.titulo %></h2>
@@ -21,3 +10,4 @@
       </div>
     <% } %>
   </div>
+ 
