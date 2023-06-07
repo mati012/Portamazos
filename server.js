@@ -421,12 +421,13 @@ app.get('/carta/:codigo', (req, res) => { // resultado busqueda, vista de cada c
 // AQUI SE ENLISTAN LOS MAZOS PROPIOS YA SEAN PUBLICOS O PRIVADOS
 app.get('/lista_mazos', (req, res) => {
   const id_jugador = req.user.id_jugador;
+  const mensajeExito = req.flash('mensajeExito')[0];
   pool.query('SELECT * FROM mazo WHERE id_jugador = $1', [id_jugador], (error, result) => {
     if (error) {
       throw error;
     } else {
       const mazo = result.rows;
-      res.render('lista_mazos', { mazo, id_jugador });
+      res.render('lista_mazos', { mazo, id_jugador, mensajeExito });
     }
   });
 });
@@ -437,6 +438,7 @@ app.post('/eliminar_mazo', (req, res) => {
     if (error) {
       throw error;
     } else {
+      req.flash('mensajeExito', '¡Mazo eliminado exitosamente!'); // Mensaje de éxito
       res.redirect('/lista_mazos');
     }
   });

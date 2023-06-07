@@ -1,44 +1,59 @@
 <%- include('./components/headerLogged') %>
+	<script>
+		function cerrarMensajeExito() {
+			var mensajeExito = document.getElementById('mensaje-exito');
+			mensajeExito.style.display = 'none';
+		}
+
+	</script>
+
 	<body>
-		<section class="lista_mazos">
-			<h1>Lista de mazos</h1>
-			<ol id="lista2">
-				<% mazo.forEach(function(mazo) { %>
-					<li><a href="/mazos/<%= mazo.id_mazo %>">
-							<%= mazo.nombre %>
-						</a>
-						<form action="/eliminar_mazo" method="POST" style="display:inline-block;">
-							<input type="hidden" name="id_mazo" value="<%= mazo.id_mazo %>">
-							<input class="btn btn-delete" type="submit" value="Eliminar">
-						</form>
-						<form action="/constructorMazo/<%= mazo.id_mazo %>/<%= id_jugador %>" method="GET"
-							style="display:inline-block;">
-							<input class="btn" type="submit" value="Editar">
-						</form>
-					</li>
-					<% }); %>
-			</ol>
-		</section>
-		<style>
-			section.lista_mazos {
-				height: fit-content;
-				margin-top: -150px;
-			}
-	
-			section.lista_mazos .btn {
-				padding: 8px 16px;
-				background-color: #007bff;
-				color: #fff;
-				border: none;
-				cursor: pointer;
-				width: 100px;
-				height: 40px;
-			}
-	
-			section.lista_mazos .btn-delete {
-				background-color: #c91c1c;
-			}
-		</style>	
+		<% if (mensajeExito) { %>
+			<div id="mensaje-exito" class="mensaje mensaje_exito">
+				<span class="cerrar" onclick="cerrarMensajeExito()"> &nbsp; x</span>
+				<%= mensajeExito %>
+			</div>
+			<% } %>
+				<section class="lista_mazos">
+					<h1>Lista de mazos</h1>
+					<ol id="lista2">
+						<% mazo.forEach(function(mazo) { %>
+							<li><a href="/mazos/<%= mazo.id_mazo %>">
+									<%= mazo.nombre %>
+								</a>
+								<form action="/eliminar_mazo" method="POST" style="display:inline-block;"
+									onsubmit="return confirm('¿Estás seguro de que deseas eliminar este mazo?');">
+									<input type="hidden" name="id_mazo" value="<%= mazo.id_mazo %>">
+									<input class="btn btn-delete" type="submit" value="Eliminar">
+								</form>
+								<form action="/constructorMazo/<%= mazo.id_mazo %>/<%= id_jugador %>" method="GET"
+									style="display:inline-block;">
+									<input class="btn" type="submit" value="Editar">
+								</form>
+							</li>
+							<% }); %>
+					</ol>
+				</section>
+				<style>
+					section.lista_mazos {
+						height: fit-content;
+						margin-top: -150px;
+					}
+
+					section.lista_mazos .btn {
+						padding: 8px 16px;
+						background-color: #007bff;
+						color: #fff;
+						border: none;
+						cursor: pointer;
+						width: 100px;
+						height: 40px;
+					}
+
+					section.lista_mazos .btn-delete {
+						background-color: #c91c1c;
+					}
+				</style>
 	</body>
-	
+
 	</html>
