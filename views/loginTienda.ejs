@@ -5,6 +5,7 @@
   <script type="module" ></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <link rel='stylesheet' type="text/css"><link rel="stylesheet" href="css/style.css" >
+  <link rel="stylesheet" type="text/css" href="/css/estilos.css">
   <meta http-equiv="X-UA-Compatible" content="ie=edege">
 
   <title>Document</title>     
@@ -25,18 +26,12 @@
   </head>
 <body>
     
-    <ul>
-      <% if(messages.success_msg) { %>
-      <li><%= messages.success_msg %></li>
-      <% } %>
-    </ul>
- 
-
-    <ul>
-      <% if (messages.error) { %>
-      <li><%= messages.error %></li>
-      <% } %>
-    </ul>
+  <% if (mensajeError) { %>
+    <div id="mensaje-error" class="mensaje mensaje_error">
+      <span class="cerrar" onclick="cerrarMensajeError()"> &nbsp; x</span>
+      <%= mensajeError %>
+    </div>
+    <% } %>
 
     <img src="/public/img/logo.png" width="300" alt="">
     
@@ -59,4 +54,10 @@
      
  
 </body>
+<script>
+  function cerrarMensajeError() {
+    var mensajeError = document.getElementById('mensaje-error');
+    mensajeError.style.display = 'none';
+  }
+</script>
 </html>

@@ -1,78 +1,100 @@
 <!DOCTYPE html>
-<html lang="en" >
+<html lang="en">
+
 <head>
   <meta charset="UTF-8">
-  <script type="module" ></script>
+  <script type="module"></script>
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <link rel='stylesheet' type="text/css"><link rel="stylesheet" href="css/style.css" >
+  <link rel='stylesheet' type="text/css">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" type="text/css" href="/css/estilos.css">
   <meta http-equiv="X-UA-Compatible" content="ie=edege">
 
-  <title>Document</title>     
+  <title>Document</title>
 </head>
+
 <head>
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <meta http-equiv="X-UA-Compatible" content="ie=edge" />
 
-<header>
-  <div class="logo">
-    <img src="img/logo2.png" alt="Logo de la empresa">
-  </div>
-   <nav>
-    <ul>
-      <!-- <a href="/" class="logo">
+  <header>
+    <div class="logo">
+      <img src="img/logo2.png" alt="Logo de la empresa">
+    </div>
+    <nav>
+      <ul>
+        <!-- <a href="/" class="logo">
         <img src='/img/logo2.png' alt="Logo">
       </a> -->
-      <li><a href="/home">Inicio</a></li>
-      <li class="dropdown">
-        <a href="/mazos">Mazos</a>
-        <ul class="submenu">
-          <li><a href="/lista_mazos">Mis mazos</a></li>
-        </ul>
-      </li>
-      <li><a href="/visualizador">Buscador</a></li>
-      <li><a href="/mazos_publicos">Mazos públicos</a></li>
-      <li><a href="/guiaProductos">Guía productos</a></li>
-      <li style="float:right"><a class="active" href="/login">Iniciar sesión</a></li>
-    </ul>
-  </nav>
-</header>   
-  
-  </head>
+        <li><a href="/home">Inicio</a></li>
+        <li class="dropdown">
+          <a href="/mazos">Mazos</a>
+          <ul class="submenu">
+            <li><a href="/lista_mazos">Mis mazos</a></li>
+          </ul>
+        </li>
+        <li><a href="/visualizador">Buscador</a></li>
+        <li><a href="/mazos_publicos">Mazos públicos</a></li>
+        <li><a href="/guiaProductos">Guía productos</a></li>
+        <li style="float:right"><a class="active" href="/login">Iniciar sesión</a></li>
+      </ul>
+    </nav>
+  </header>
+
+</head>
+
 <body>
-    
-    <ul>
-      <% if(messages.success_msg) { %>
-      <li><%= messages.success_msg %></li>
-      <% } %>
-    </ul>
- 
+  <% if (mensajeError) { %>
+    <div id="mensaje-error" class="mensaje mensaje_error">
+      <span class="cerrar" onclick="cerrarMensajeError()"> &nbsp; x</span>
+      <%= mensajeError %>
+    </div>
+    <% } %>
 
-    <ul>
-      <% if (messages.error) { %>
-      <li><%= messages.error %></li>
-      <% } %>
-    </ul>
+      <!-- <ul>
+        <% if(messages.success_msg) { %>
+          <li>
+            <%= messages.success_msg %>
+          </li>
+          <% } %>
+      </ul>
 
-    <img src="/public/img/logo.png" width="300" alt="">
 
-    <form action="/loginJugador" method="POST">
-      <section class="form-login">
-        <div class="titulo"> Inicia Sesión</div>
-        <div class="email">
-          <input class="controls" id="email" type="email" name="email" placeholder="Correo" required>
-        </div>
-        <div class="password">
-          <input class="controls" id="contrasena" type="password" name="password" placeholder="Contraseña" required>
-        </div>
-        <input class="buttons" type="submit" value="Ingresar">
-        <a href="#"> ¿Olvidaste tu Contraseña?</a> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-        
-        <span class="separator"></span>
-        <a href="/registro">Registrarse</a>
-        <a href="/registroTienda">Registrarse como tienda</a>
-        <a href="/loginTienda">Iniciar sesion como tienda</a>
-      </section>
-    </form>
-  
+      <ul>
+        <% if (messages.error) { %>
+          <li>
+            <%= messages.error %>
+          </li>
+          <% } %>
+      </ul> -->
+
+      <img src="/public/img/logo.png" width="300" alt="">
+
+      <form action="/loginJugador" method="POST">
+        <section class="form-login">
+          <div class="titulo"> Inicia Sesión</div>
+          <div class="email">
+            <input class="controls" id="email" type="email" name="email" placeholder="Correo" required>
+          </div>
+          <div class="password">
+            <input class="controls" id="contrasena" type="password" name="password" placeholder="Contraseña" required>
+          </div>
+          <input class="buttons" type="submit" value="Ingresar">
+          <a href="#"> ¿Olvidaste tu Contraseña?</a> 
+
+          <span class="separator"></span>
+          <a href="/registro">Registrarse</a>
+          <a href="/registroTienda">Registrarse como tienda</a>
+          <a href="/loginTienda">Iniciar sesion como tienda</a>
+        </section>
+      </form>
+
 </body>
+<script>
+  function cerrarMensajeError() {
+    var mensajeError = document.getElementById('mensaje-error');
+    mensajeError.style.display = 'none';
+  }
+</script>
+
 </html>

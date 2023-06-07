@@ -42,10 +42,12 @@ app.get("/homeTienda", checkNotAuthenticated, (req, res) => {
   res.render("homeTienda");
 });
 app.get("/login", checkAuthenticated, (req, res) => {
-  res.render("login");
+  const mensajeError = req.flash("error")[0]; // Obtiene el primer mensaje de error de la sesión flash
+  res.render("login", {mensajeError});
 });
 app.get("/loginTienda", checkAuthenticated, (req, res) => {
-  res.render("loginTienda");
+  const mensajeError = req.flash("error")[0]; // Obtiene el primer mensaje de error de la sesión flash
+  res.render("loginTienda", {mensajeError});
 });
 app.get("", checkAuthenticated, (req, res) => {
   res.render("login");
@@ -193,20 +195,56 @@ app.post('/registroTienda', async (req, res) => {
     )
   };
 });
-app.post("/loginJugador",
-  passport.authenticate("jugadorStrategy", {
-    successRedirect: "/home",
-    failureRedirect: "/login",
-    failureFlash: true
-  })
-);
-app.post("/loginTienda",
-  passport.authenticate("tiendaStrategy", {
-    successRedirect: "/homeTienda",
-    failureRedirect: "/login",
-    failureFlash: true
-  })
-);
+app.post("/loginJugador", (req, res, next) => {
+  passport.authenticate("jugadorStrategy", (err, user, info) => {
+    if (err) {
+      // Manejo del error
+      return next(err);
+    }
+    if (!user) {
+      // No se pudo iniciar sesión, mostrar mensaje de datos incorrectos
+      req.flash("error", "Datos incorrectos");
+      return res.redirect("/login");
+    }
+    // Usuario autenticado correctamente, redirigir a la página de inicio
+    req.logIn(user, (err) => {
+      if (err) {
+        // Manejo del error
+        return next(err);
+      }
+      return res.redirect("/home");
+    });
+  })(req, res, next);
+});
+app.post("/loginTienda", (req, res, next) => {
+  passport.authenticate("jugadorStrategy", (err, user, info) => {
+    if (err) {
+      // Manejo del error
+      return next(err);
+    }
+    if (!user) {
+      // No se pudo iniciar sesión, mostrar mensaje de datos incorrectos
+      req.flash("error", "Datos incorrectos");
+      return res.redirect("/loginTienda");
+    }
+    // Usuario autenticado correctamente, redirigir a la página de inicio
+    req.logIn(user, (err) => {
+      if (err) {
+        // Manejo del error
+        return next(err);
+      }
+      return res.redirect("/homeTienda");
+    });
+  })(req, res, next);
+});
+
+// app.post("/loginTienda",
+//   passport.authenticate("tiendaStrategy", {
+//     successRedirect: "/homeTienda",
+//     failureRedirect: "/login",
+//     failureFlash: true
+//   })
+// );
 
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
