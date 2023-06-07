@@ -57,6 +57,12 @@ app.get("/logout", (req, res) => {
   });;
 
 })
+
+
+app.get('crearPublicacion', checkNotAuthenticated, (req, res) => {
+  res.render('crearPublicacion', { user: req.user.id_jugador });
+});
+
 app.get("/mazos", checkNotAuthenticated, (req, res) => {
   res.render("mazos", { user: req.user.id_jugador });
 });
@@ -70,9 +76,7 @@ app.get("/mazoCreado", checkNotAuthenticated, (req, res) => {
 app.get("/constructor", checkNotAuthenticated, (req, res) => {
   res.render("constructor");
 });
-app.get("/cartaSueltas", checkAuthenticated, (req, res) => {
-  res.render("cartaSueltas");
-});
+
 
 // esto sirve para obtener los datos del registro y pasarlos a la base de datos
 app.post('/registro', async (req, res) => {
@@ -801,51 +805,99 @@ app.post('/eliminar_producto_tienda', async (req, res) => {
   }
 });
 
-// COMPRA VENTA CARTAS SUELTAS
+// AQUI EN ADELANTE SE CREA EL FORO Y SUS FUNCIONALIDADES
 
-app.post('/buscar_Post', async (req, res) => {
-  const id_carta = req.body.id_carta;
-  const id_jugador = req.user.id_jugador
 
-  try {
-    const client = await pool.connect();
-    await client.query('SELECT * FROM carta_venta WHERE id_carta = $1 AND id_jugador = $2', [id_carta, id_jugador]);
-    res.redirect('/cartaSueltas');
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al obtener detalles del producto');
-  }
-});
 
-app.get('/buscar_carta_suelta', (req, res) => {
-  const busqueda = req.query.busqueda;
-
-  pool.query('SELECT * FROM carta_venta WHERE nombre ILIKE $1  AND disponible = true', [`%${busqueda}%`], (error, result) => {
-    if (error) {
-      console.error(error);
-      res.sendStatus(500);
-    } else {
-      const cartas_sueltas = result.rows;
-      res.render('cartaSueltas', { carta_venta: cartas_ventas }); 
+// Ruta para la página principal del foro (muestra todas las publicaciones)
+app.get('/foro', (req, res) => {
+  pool.query(
+    'SELECT * FROM publicacion_foro ORDER BY fecha_publicacion DESC',
+    (error, result) => {
+      if (error) {
+        console.error(error);
+        res.status(500).send('Error al obtener las publicaciones del foro');
+      } else {
+        const publicaciones = result.rows;
+        res.render('foro', { publicaciones: publicaciones });
+      }
     }
-  });
+  );
 });
 
-app.post('/pulicar_carta_suelta ', async (req, res) => {
+// Ruta para ver una publicación específica y agregar comentarios
+app.get('/foro/publicacion/:id', (req, res) => {
+  const id_publicacion = req.params.id;
+  pool.query(
+    'SELECT p.*, c.nombre AS carta_nombre, c.imagen AS carta_imagen FROM publicacion_foro p INNER JOIN carta c ON p.id_carta = c.codigo WHERE p.id_publicacion = $1',
+    [id_publicacion],
+    (error, publicacionResult) => {
+      if (error) {
+        console.error(error);
+        res.status(500).send('Error al obtener la publicación del foro');
+        return;
+      }
+
+      const publicacion = publicacionResult.rows[0];
+
+      if (!publicacion) {
+        res.send('Publicación no encontrada');
+        return;
+      }
+
+      pool.query(
+        'SELECT c.*, j.nombre AS autor_nombre FROM comentario_foro c INNER JOIN jugador j ON c.id_jugador = j.id_jugador WHERE c.id_publicacion = $1 ORDER BY c.fecha_comentario ASC',
+        [id_publicacion],
+        (error, comentarioResult) => {
+          if (error) {
+            console.error(error);
+            res.status(500).send('Error al obtener los comentarios de la publicación');
+            return;
+          }
+      
+          const comentarios = comentarioResult.rows;
+          res.render('publicacion', { publicacion: publicacion, comentarios: comentarios });
+        }
+      );
+    }
+  );
+});
+
+// Ruta para procesar el formulario de creación de una nueva publicación
+app.post('/foro/crear-publicacion', (req, res) => {
   const id_jugador = req.user.id_jugador;
-  const id_carta = req.body.id_carta;
-  const contacto = req.body.descripcion;
-  const precio_carta = req.body.precio_tienda;
-  const descripcion = req.body.descripcion
-  try {
-    const client = await pool.connect();
-    const result = await client.query('INSERT INTO carta_venta (id_carta, id_jugador, contacto, precio_carta, descripcion) VALUES ($1, $2, $3, $4, $5) RETURNING id_carta', [id_carta, id_jugador, contacto, precio_carta, descripcion]);
-    const cartaid = result.rows[0].id_carta; 
-    res.redirect('/homeTienda');
-  } catch (err) {
-    console.error(err);
-    res.status(500).send('Error al guardar la carta para venta');
-  }
+  const { titulo, contenido } = req.body;
+  const id_carta = 1; // ID de la carta por defecto
+
+  pool.query(
+    'INSERT INTO publicacion_foro (id_jugador, id_carta, id_edicion, titulo, contenido) VALUES ($1, $2, $3, $4, $5)',
+    [id_jugador, id_carta, 1, titulo, contenido],
+    (error) => {
+      if (error) {
+        console.error(error);
+        res.status(500).send('Error al crear la nueva publicación');
+      } else {
+        res.redirect('/foro');
+      }
+    }
+  );
 });
 
+app.post('/foro/publicacion/:id/comentarios', (req, res) => {
+  const id_publicacion = req.params.id;
+  const { contenido } = req.body;
+  const id_jugador = req.user.id_jugador;
 
+  pool.query(
+    'INSERT INTO comentario_foro (id_publicacion, id_jugador, contenido, fecha_comentario) VALUES ($1, $2, $3, NOW())',
+    [id_publicacion, id_jugador, contenido],
+    (error) => {
+      if (error) {
+        console.error(error);
+        res.status(500).send('Error al agregar el comentario');
+      } else {
+        res.redirect(`/foro/publicacion/${id_publicacion}`);
+      }
+    }
+  );
+});
