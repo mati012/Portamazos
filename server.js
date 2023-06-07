@@ -196,6 +196,32 @@ app.post('/registroTienda', async (req, res) => {
   };
 });
 app.post("/loginJugador", (req, res, next) => {
+  const validarUsuarioExistente = async (req, res, next) => {
+    const { email } = req.body;
+
+    try {
+      // Conexión a la base de datos
+      const client = await pool.connect();
+
+      // Consulta a la base de datos para verificar si el email existe en la tabla "jugador"
+      const result = await client.query('SELECT * FROM jugador WHERE email = $1', [email]);
+
+      // Verificar si el resultado de la consulta contiene alguna fila
+      if (result.rows.length === 0) {
+        req.flash("error", "Usuario no existe");
+        return res.redirect("/login");
+      }
+
+      client.release();
+      next();
+    } catch (err) {
+      // Manejo del error de la consulta
+      return next(err);
+    }
+  };
+
+  // Agregar el middleware de validación antes de passport.authenticate
+  app.use(validarUsuarioExistente);
   passport.authenticate("jugadorStrategy", (err, user, info) => {
     if (err) {
       // Manejo del error
