@@ -1,27 +1,2 @@
 <%- include('./components/headerLogged') %>
 
-  <body>
-    <style>
-      .cartas {
-        margin-top: 40px;
-        margin-left: 100px;
-        margin-right: 100px;
-        margin-bottom: 10px;
-      }
-    </style>
-
-    <section class="cartas">
-      <form>
-        <ol id="lista3">
-          <% cartas.forEach(function(carta) { %>
-            <% if (carta.imagen) { %>
-              <a href="/carta/<%= carta.codigo %>">
-                <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-imagen">
-              </a>
-            <% } %>
-          <% }); %>
-        </ol>
-      </form>
-    </section>
-  </body>
-</html>

@@ -1,0 +1,13 @@
+<%- include('./components/headerLogged') %>
+<div class="container">
+    <h1>Foro</h1>
+    <% for (const publicacion of publicaciones) { %>
+      <div class="publicacion">
+        <h2><%= publicacion.titulo %></h2>
+        <p><%= publicacion.contenido %></p>
+        <p>Fecha de publicación: <%= publicacion.fecha_publicacion %></p>
+        <a href="/foro/publicacion/<%= publicacion.id_publicacion %>">Ver publicación</a>
+      </div>
+    <% } %>
+  </div>
+ 

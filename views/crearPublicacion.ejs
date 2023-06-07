@@ -1,0 +1,29 @@
+<%- include('./components/headerLogged') %>
+
+
+
+
+<form action="/foro/crear-publicacion" method="POST">
+    <div class="container">
+      <h1>Crear nueva publicación</h1>
+      <label for="titulo">Título:</label>
+      <input type="text" id="titulo" name="titulo" placeholder="Ingresa el título" required>
+      <label for="contenido">Contenido:</label>
+      <textarea id="contenido" name="contenido" placeholder="Escribe el contenido" required></textarea>
+    
+      <button type="submit">Crear publicación</button>
+    </form>
+      <!-- Mostrar las publicaciones del usuario activo -->
+      <% publicaciones.forEach(publicacion => { %>
+        <div class="publicacion">
+          <h2><%= publicacion.titulo %></h2>
+          <p><%= publicacion.contenido %></p>
+          <!-- Mostrar otros detalles de la publicación -->
+    
+          <!-- Agregar enlace para eliminar la publicación -->
+          <form action="/foro/publicacion/<%= publicacion.id_publicacion %>/eliminar" method="POST">
+            <button type="submit">Eliminar</button>
+          </form>
+        </div>
+      <% }); %>
+    </div>
