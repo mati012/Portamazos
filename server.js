@@ -444,16 +444,19 @@ app.post('/eliminar_mazo', (req, res) => {
 });
 // OBTENER MAZOS PUBLICOS
 app.get('/mazos_publicos', (req, res) => {
+  const mensajeExito = req.flash('mensajeExito')[0];
+  const mensajeError = req.flash('mensajeError')[0];
 
   pool.query('SELECT * FROM mazo WHERE tipo_mazo = 2', (error, result) => {
     if (error) {
       throw error;
     } else {
       const mazo = result.rows;
-      res.render('mazos_publicos', { mazo });
+      res.render('mazos_publicos', { mazo, mensajeExito, mensajeError });
     }
   });
 });
+
 
 // constructorMazo usa esta func
 async function obtenerCartasMazo(idMazo) { //dejar solo obtener codigos de cartas, los valores de las cartas se obtendran en el get constructorMazo
@@ -608,18 +611,20 @@ app.post('/guardar_mazo_publico', (req, res) => {
   const id_jugador = req.user.id_jugador;
   const id_mazo = req.body.id_mazo;
 
-  pool.query('INSERT INTO Mazo (nombre, id_jugador, tipo_mazo) SELECT nombre, $1, 2 FROM Mazo WHERE id_mazo = $2 AND tipo_mazo = 2 AND id_jugador != $1 RETURNING id_mazo', [id_jugador, id_mazo], (error, result) => {
+  pool.query(
+    'INSERT INTO Mazo (nombre, id_jugador, tipo_mazo) SELECT nombre, $1, 1 FROM Mazo WHERE id_mazo = $2 AND tipo_mazo = 2 AND id_jugador != $1 RETURNING id_mazo',
+    [id_jugador, id_mazo],
+    (error, result) => {
+    console.log("Mazo guardado con el id de mazo : " + JSON.stringify(result.rows) + " al jugador : " + id_jugador);
     if (error) {
       console.log(error);
       res.sendStatus(500);
     } else if (result.rows.length > 0) {
       console.log("----------mazo guardado");
-      // console.log(result.rows);
-      req.flash("success_msg", "Se ha guardado el mazo correctamente");
+      req.flash("mensajeExito", "Se ha guardado el mazo correctamente"); // Mensaje de éxito
       res.redirect('/mazos_publicos');
-
     } else {
-      req.flash("error_msg", "No se puede guardar el mazo");
+      req.flash("mensajeError", "No se puede guardar el mazo"); // Mensaje de error
       res.redirect('/mazos_publicos');
     }
   });
