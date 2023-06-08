@@ -11,7 +11,8 @@
         <p>Precio en la tienda: <%= productoTienda.precio_tienda %></p>
         <!-- Agrega aquí más detalles del producto en la tienda -->
   
-        <form action="/eliminar_producto_tienda" method="POST">
+        <form action="/eliminar_producto_tienda" method="POST"
+          onsubmit="return confirm('¿Estás seguro de que deseas eliminar este producto?');">
           <input type="hidden" name="id_producto" value="<%= productoTienda.id_producto %>">
           <button type="submit">Eliminar producto de la tienda</button>
         </form>

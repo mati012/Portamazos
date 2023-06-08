@@ -39,7 +39,8 @@ app.get("/registro", checkAuthenticated, (req, res) => {
 });
 
 app.get("/homeTienda", checkNotAuthenticated, (req, res) => {
-  res.render("homeTienda");
+  const mensajeExito = req.flash('mensajeExito')[0];
+  res.render("homeTienda", {mensajeExito});
 });
 app.get("/login", checkAuthenticated, (req, res) => {
   const mensajeError = req.flash("error")[0]; // Obtiene el primer mensaje de error de la sesión flash
@@ -864,6 +865,7 @@ app.post('/eliminar_producto_tienda', async (req, res) => {
   try {
     const client = await pool.connect();
     await client.query('DELETE FROM producto_tienda WHERE id_producto = $1 AND id_tienda = $2', [id_producto, id_tienda]);
+    req.flash('mensajeExito', 'Producto eliminado exitosamente!'); // Mensaje de éxito
     res.redirect('/homeTienda');
   } catch (err) {
     console.error(err);
