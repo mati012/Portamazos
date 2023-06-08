@@ -296,8 +296,8 @@ app.post('/eliminarCarta', async (req, res) => { // eliminar carta de un mazo
 
 app.get("/home", checkNotAuthenticated, async (req, res) => {
   const cartas = await obtenerCartas();
-
-  res.render("home", { cartas });
+  const mensajeExito = req.flash('mensajeExito')[0];
+  res.render("home", { cartas,mensajeExito });
 });
 
 app.get('/mazos/:id', async (req, res) => { // ver mazo sin editar 
@@ -632,7 +632,7 @@ app.post('/creador_productos', async (req, res) => {
     const result = await client.query('INSERT INTO producto (nombre, precio, descripcion, id_empresa, disponible) VALUES ($1, $2, $3, $4, $5) RETURNING id_producto', [nombre, precio, descripcion, 1, true]);
     const productoid = result.rows[0].id_producto; // obtener el id del producto insertado
     req.flash('mensajeExito', 'Producto creado exitosamente!'); // Mensaje de éxito
-    res.redirect('/homeTienda');
+    res.redirect('/home');
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al crear el producto');
@@ -782,6 +782,7 @@ app.post('/guardar_producto_tienda', async (req, res) => {
     const client = await pool.connect();
     const result = await client.query('INSERT INTO producto_tienda (id_producto, id_tienda, id_edicion, hypervinculo, precio_tienda) VALUES ($1, $2, $3, $4, $5) RETURNING id_producto', [id_producto, id_tienda, 1, hypervinculo, precio_tienda]);
     const productoid = result.rows[0].id_producto; // obtener el id del producto insertado
+    req.flash('mensajeExito', 'Producto guardado exitosamente!'); // Mensaje de éxito
     res.redirect('/homeTienda');
   } catch (err) {
     console.error(err);
