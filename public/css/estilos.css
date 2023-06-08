@@ -520,7 +520,8 @@ input[type="number"]:focus {
 
 .card-list {
   display: flex;
-  /* Utilizamos flexbox para alinear las imágenes en línea */
+  flex-wrap: wrap; /* Permite que las cartas se envuelvan en nuevas filas */
+  justify-content: flex-start; /* Alinea las cartas hacia el inicio del contenedor */
   background-color: lightblue;
   border-radius: 15px;
   border: 4px solid black;
@@ -540,6 +541,12 @@ input[type="number"]:focus {
   background-color: black;
   color: red;
   font-weight: bold;
+}
+@media screen and (max-width: 800px) {
+  /* Estilos adicionales para pantallas más pequeñas */
+  .card-list {
+    justify-content: center; /* Centra las cartas en pantallas más pequeñas */
+  }
 }
 
 .buscadorm {
