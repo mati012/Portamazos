@@ -807,22 +807,31 @@ app.post('/eliminar_producto_tienda', async (req, res) => {
 app.get('/crearPublicacion', checkNotAuthenticated, (req, res) => {
   const id_jugador = req.user.id_jugador;
 
-  // Obtener todas las publicaciones del usuario activo
-  pool.query(
-    'SELECT * FROM publicacion_foro WHERE id_jugador = $1 ORDER BY fecha_publicacion DESC',
-    [id_jugador],
-    (error, result) => {
-      if (error) {
-        console.error(error);
-        res.status(500).send('Error al obtener las publicaciones del usuario');
-      } else {
-        const publicaciones = result.rows;
-        res.render('crearPublicacion', { publicaciones: publicaciones });
-      }
-    }
-  );
-});
+  // Obtener todas las cartas desde la base de datos
+  pool.query('SELECT codigo, nombre FROM carta', (error, result) => {
+    if (error) {
+      console.error(error);
+      res.status(500).send('Error al obtener las cartas');
+    } else {
+      const cartas = result.rows;
 
+      // Obtener todas las publicaciones del usuario activo
+      pool.query(
+        'SELECT * FROM publicacion_foro WHERE id_jugador = $1 ORDER BY fecha_publicacion DESC',
+        [id_jugador],
+        (error, result) => {
+          if (error) {
+            console.error(error);
+            res.status(500).send('Error al obtener las publicaciones del usuario');
+          } else {
+            const publicaciones = result.rows;
+            res.render('crearPublicacion', { publicaciones, cartas });
+          }
+        }
+      );
+    }
+  });
+});
 
 // Ruta para la página principal del foro (muestra todas las publicaciones)
 app.get('/foro', (req, res) => {
@@ -881,12 +890,12 @@ app.get('/foro/publicacion/:id', (req, res) => {
 // Ruta para procesar el formulario de creación de una nueva publicación
 app.post('/foro/crear-publicacion', (req, res) => {
   const id_jugador = req.user.id_jugador;
-  const { titulo, contenido } = req.body;
-  const id_carta = 1; // ID de la carta por defecto
+  const { titulo, contenido, carta } = req.body; // Obtener el ID de la carta seleccionada
+  const id_edicion = 1; // ID de la edición por defecto
 
   pool.query(
     'INSERT INTO publicacion_foro (id_jugador, id_carta, id_edicion, titulo, contenido) VALUES ($1, $2, $3, $4, $5)',
-    [id_jugador, id_carta, 1, titulo, contenido],
+    [id_jugador, carta, id_edicion, titulo, contenido], // Usar el ID de la carta seleccionada
     (error) => {
       if (error) {
         console.error(error);

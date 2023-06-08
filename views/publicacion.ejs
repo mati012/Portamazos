@@ -3,12 +3,13 @@
 <!-- Mostrar una publicación específica y permitir agregar comentarios -->
 <div class="container">
   <h1><%= publicacion.titulo %></h1>
+
+ 
+  <p>Nombre de la carta: <%= publicacion.carta_nombre %></p>
+ 
+  <img src="data:image/png;base64,<%= publicacion.carta_imagen.toString('base64') %>" class="carta-imagen">
   <p><%= publicacion.contenido %></p>
   <p>Fecha de publicación: <%= publicacion.fecha_publicacion %></p>
-  
-  <h2>Carta asociada</h2>
-  <p>Nombre de la carta: <%= publicacion.carta_nombre %></p>
-  <img src="<%= publicacion.carta_imagen %>" alt="Imagen de la carta">
   
   <h2>Comentarios</h2>
   <% for (const comentario of comentarios) { %>
