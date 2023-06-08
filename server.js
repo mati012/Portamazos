@@ -631,7 +631,8 @@ app.post('/creador_productos', async (req, res) => {
     const client = await pool.connect();
     const result = await client.query('INSERT INTO producto (nombre, precio, descripcion, id_empresa, disponible) VALUES ($1, $2, $3, $4, $5) RETURNING id_producto', [nombre, precio, descripcion, 1, true]);
     const productoid = result.rows[0].id_producto; // obtener el id del producto insertado
-    res.redirect('/home');
+    req.flash('mensajeExito', 'Producto creado exitosamente!'); // Mensaje de éxito
+    res.redirect('/homeTienda');
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al crear el producto');
