@@ -252,9 +252,12 @@ app.get('/constructorMazo/:mazoId/:id_jugador', async (req, res) => { // render 
     const cantidades = await obtenerCantidadesCartasMazo(mazoId);
     const mensajeExito = req.flash('mensajeExito')[0];
     const mensajeError = req.flash('mensajeError')[0];
+    const noCartas = [{
+      "cartas": null
+    }]
     // console.log('[GET constructorMazo] cartas mazo: ', cartasMazo);
     // console.log(cartas);
-    res.render('constructorMazo', { cartas, cartasMazo, mazoId, mensajeExito, cantidades, mensajeError });
+    res.render('constructorMazo', { cartas: noCartas, cartasMazo, mazoId, mensajeExito, cantidades, mensajeError });
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al obtener los detalles del mazo');
@@ -632,7 +635,7 @@ app.post('/creador_productos', async (req, res) => {
     const result = await client.query('INSERT INTO producto (nombre, precio, descripcion, id_empresa, disponible) VALUES ($1, $2, $3, $4, $5) RETURNING id_producto', [nombre, precio, descripcion, 1, true]);
     const productoid = result.rows[0].id_producto; // obtener el id del producto insertado
     req.flash('mensajeExito', 'Producto creado exitosamente!'); // Mensaje de éxito
-    res.redirect('/home');
+    res.redirect('/homeTienda');
   } catch (err) {
     console.error(err);
     res.status(500).send('Error al crear el producto');
