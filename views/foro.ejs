@@ -1,17 +1,25 @@
 <%- include('./components/headerLogged') %>
+
 <div class="container">
   <h1>Foro</h1>
-  <div class="grilla">
-    
-  <% for (const publicacion of publicaciones) { %>
-    <div  class="tarjeta">
-      <h2><%= publicacion.titulo %></h2>
-      <% const carta = publicacion.carta; %> 
-      <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-foro">
-      <p><%= publicacion.contenido %></p>
-      <p>Fecha de publicación: <%= publicacion.fecha_publicacion %></p>
-      <a href="/foro/publicacion/<%= publicacion.id_publicacion %>">Ver publicación</a>
-    </div>
-  <% } %>
+  <form id="searchForm" action="/foro-busqueda" method="GET">
+    <label for="search">Buscar por nombre de publicación:</label>
+    <input type="text" id="search" name="search">
+    <button type="submit">Buscar</button>
+  </form>
+
+  <div class="grilla"> 
+    <% for (const publicacion of publicaciones) { %>
+      <div class="tarjeta">
+        <h2><%= publicacion.titulo %></h2>
+        <% const carta = publicacion.carta; %> 
+        <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-foro">
+        <p><%= publicacion.contenido %></p>
+        <p>Fecha de publicación: <%= publicacion.fecha_publicacion %></p>
+        <a href="/foro/publicacion/<%= publicacion.id_publicacion %>">Ver publicación</a>
+      </div>
+      <br>
+    <% } %>
+  </div>
 </div>
-</div>
+

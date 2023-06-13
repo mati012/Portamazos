@@ -23,16 +23,16 @@
     </div>
   </div>
   </form>
-
+  
+  <div class="grilla">
+    <div class="tarjeta">
       <!-- Mostrar las publicaciones del usuario activo -->
       <% publicaciones.forEach(publicacion => { %>
-        <div class="grilla">
-          <div class="tarjeta">
+        
           <h2><%= publicacion.titulo %></h2>
           <p><%= publicacion.contenido %></p>
-          <!-- Mostrar otros detalles de la publicación -->
     
-          <!-- Agregar enlace para eliminar la publicación -->
+
           <form action="/foro/publicacion/<%= publicacion.id_publicacion %>/eliminar" method="POST">
             <button type="submit">Eliminar</button>
           </form>

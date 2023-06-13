@@ -607,9 +607,10 @@ input[type="number"]:focus {
 
 .tarjeta {
   border-radius: 1rem;
-  box-shadow: rgba(0, 0, 0, 0.08) 0 0 2rem;
+  box-shadow:   rgba(0, 0, 0, 0.568) 0 0 2rem;
   grid-column-end: span 4;
   padding: 2rem;
+ 
 }
 
 

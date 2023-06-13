@@ -955,3 +955,26 @@ app.post('/foro/publicacion/:id/eliminar', (req, res) => {
     }
   );
 });
+app.get('/foro-busqueda', (req, res) => {
+  const busqueda = req.query.search;
+
+  pool.query('SELECT publicacion_foro.*, carta.imagen FROM publicacion_foro LEFT JOIN carta ON publicacion_foro.id_carta = carta.codigo WHERE publicacion_foro.titulo ILIKE $1', [`%${busqueda}%`], (error, result) => {
+    if (error) {
+      console.error(error);
+      res.sendStatus(500);
+    } else {
+      const publicaciones = result.rows.map(row => {
+        return {
+          id_publicacion: row.id_publicacion,
+          titulo: row.titulo,
+          contenido: row.contenido,
+          fecha_publicacion: row.fecha_publicacion,
+          carta: {
+            imagen: row.imagen
+          }
+        };
+      });
+      res.render('foro', { publicaciones: publicaciones });
+    }
+  });
+});
