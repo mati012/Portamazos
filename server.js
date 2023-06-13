@@ -841,19 +841,28 @@ app.get('/crearPublicacion', checkNotAuthenticated, (req, res) => {
 // Ruta para la página principal del foro (muestra todas las publicaciones)
 app.get('/foro', (req, res) => {
   pool.query(
-    'SELECT * FROM publicacion_foro ORDER BY fecha_publicacion DESC',
+    'SELECT publicacion_foro.*, carta.imagen FROM publicacion_foro LEFT JOIN carta ON publicacion_foro.id_carta = carta.codigo ORDER BY publicacion_foro.fecha_publicacion DESC',
     (error, result) => {
       if (error) {
         console.error(error);
         res.status(500).send('Error al obtener las publicaciones del foro');
       } else {
-        const publicaciones = result.rows;
+        const publicaciones = result.rows.map(row => {
+          return {
+            id_publicacion: row.id_publicacion,
+            titulo: row.titulo,
+            contenido: row.contenido,
+            fecha_publicacion: row.fecha_publicacion,
+            carta: {
+              imagen: row.imagen
+            }
+          };
+        });
         res.render('foro', { publicaciones: publicaciones });
       }
     }
   );
 });
-
 // Ruta para ver una publicación específica y agregar comentarios
 app.get('/foro/publicacion/:id', (req, res) => {
   const id_publicacion = req.params.id;

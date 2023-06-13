@@ -14,7 +14,7 @@
 			<% if (productoTiendas.length > 0) { %>
 				<h1>tiendas con el producto disponible</h1>
 			  <% productoTiendas.forEach(function(productoTienda) { %>
-				<p> <%= productoTienda.hypervinculo %></p>
+				<a href="<%= productoTienda.hypervinculo %>"><%= productoTienda.hypervinculo %></a>
 
 				<p>Precio en la tienda: <%= productoTienda.precio_tienda %></p>
 				<p>Tienda: <%= productoTienda.nombre %></p>

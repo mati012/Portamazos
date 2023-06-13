@@ -600,3 +600,26 @@ input[type="number"]:focus {
   border-radius: 15px;
   font-weight: bold;
 }
+.razones {
+  padding: 3rem 0;
+  text-align: center;
+}
+
+.tarjeta {
+  border-radius: 1rem;
+  box-shadow: rgba(0, 0, 0, 0.08) 0 0 2rem;
+  grid-column-end: span 4;
+  padding: 2rem;
+}
+
+
+.grilla {
+  grid-gap: 2rem;
+  padding: 2rem;
+}
+
+.carta-foro {
+  width: 300px;
+  margin-right: 20px;
+
+}

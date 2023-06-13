@@ -2,28 +2,34 @@
 
 <!-- Mostrar una publicación específica y permitir agregar comentarios -->
 <div class="container">
+  <div class="grilla">
   <h1><%= publicacion.titulo %></h1>
 
- 
+  <div  class="tarjeta"> 
   <p>Nombre de la carta: <%= publicacion.carta_nombre %></p>
  
   <img src="data:image/png;base64,<%= publicacion.carta_imagen.toString('base64') %>" class="carta-imagen">
   <p><%= publicacion.contenido %></p>
   <p>Fecha de publicación: <%= publicacion.fecha_publicacion %></p>
-  
+</div>
+
   <h2>Comentarios</h2>
+  <div  class="tarjeta">
   <% for (const comentario of comentarios) { %>
-    <div class="comentario">
+  
       <p><%= comentario.contenido %></p>
       <p>Fecha de comentario: <%= comentario.fecha_comentario %></p>
       <p>Autor: <%= comentario.autor_nombre %></p>
-    </div>
+    
   <% } %>
-  
+</div>
   <!-- Formulario para agregar un nuevo comentario -->
   <form action="/foro/publicacion/<%= publicacion.id_publicacion %>/comentarios" method="POST">
     <h3>Agregar comentario</h3>
+    <div  class="tarjeta">
     <textarea name="contenido" placeholder="Escribe tu comentario" required></textarea>
     <button type="submit">Enviar comentario</button>
+  </div>
   </form>
+</div>
 </div>

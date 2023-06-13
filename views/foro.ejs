@@ -1,13 +1,17 @@
 <%- include('./components/headerLogged') %>
 <div class="container">
-    <h1>Foro</h1>
-    <% for (const publicacion of publicaciones) { %>
-      <div class="publicacion">
-        <h2><%= publicacion.titulo %></h2>
-        <p><%= publicacion.contenido %></p>
-        <p>Fecha de publicación: <%= publicacion.fecha_publicacion %></p>
-        <a href="/foro/publicacion/<%= publicacion.id_publicacion %>">Ver publicación</a>
-      </div>
-    <% } %>
-  </div>
- 
+  <h1>Foro</h1>
+  <div class="grilla">
+    
+  <% for (const publicacion of publicaciones) { %>
+    <div  class="tarjeta">
+      <h2><%= publicacion.titulo %></h2>
+      <% const carta = publicacion.carta; %> 
+      <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-foro">
+      <p><%= publicacion.contenido %></p>
+      <p>Fecha de publicación: <%= publicacion.fecha_publicacion %></p>
+      <a href="/foro/publicacion/<%= publicacion.id_publicacion %>">Ver publicación</a>
+    </div>
+  <% } %>
+</div>
+</div>

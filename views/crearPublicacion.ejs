@@ -4,7 +4,8 @@
 
 <div class="container">
 <form action="/foro/crear-publicacion" method="POST">
- 
+  <div class="grilla">
+    <div class="tarjeta">
     <h1>Crear nueva publicación</h1>
     <label for="titulo">Título:</label>
     <input type="text" id="titulo" name="titulo" placeholder="Ingresa el título" required>
@@ -19,10 +20,14 @@
     </select>
 
     <button type="submit">Crear publicación</button>
+    </div>
+  </div>
   </form>
+
       <!-- Mostrar las publicaciones del usuario activo -->
       <% publicaciones.forEach(publicacion => { %>
-        <div class="publicacion">
+        <div class="grilla">
+          <div class="tarjeta">
           <h2><%= publicacion.titulo %></h2>
           <p><%= publicacion.contenido %></p>
           <!-- Mostrar otros detalles de la publicación -->
@@ -31,9 +36,9 @@
           <form action="/foro/publicacion/<%= publicacion.id_publicacion %>/eliminar" method="POST">
             <button type="submit">Eliminar</button>
           </form>
-        </div>
+        
       <% }); %>
     </div>
-  </div>
-  
+    </div>
 </div>
+
