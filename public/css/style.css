@@ -188,7 +188,7 @@ nav li:not(:last-child) a::after {
 	--bez: cubic-bezier(0, 0, 0.43, 1.49);
 }
 
-#lista3 {
+/* #lista3 {
 	counter-reset: li;
 	list-style: none;
 	*list-style: decimal;
@@ -196,13 +196,13 @@ nav li:not(:last-child) a::after {
 	padding: 0;
 	margin-bottom: 4em;
 	text-shadow: 0 1px 0 rgba(255, 255, 255, .5);
-}
+} */
 
 #lista3 ol {
 	margin: 0 0 0 2em;
 }
 
-#lista3 li {
+/* #lista3 li {
 	position: relative;
 	display: block;
 	padding: .4em .4em .4em .8em;
@@ -212,7 +212,7 @@ nav li:not(:last-child) a::after {
 	color: #444;
 	text-decoration: none;
 	transition: all .3s ease-out;
-}
+} */
 
 #lista3 li:hover {
 	background: #eee;

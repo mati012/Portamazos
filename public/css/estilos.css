@@ -292,6 +292,7 @@ h1 {
   background-color: #cc0000;
 }
 
+
 .mensaje {
   position: fixed;
   top: 20px;
@@ -611,4 +612,8 @@ input[type="number"]:focus {
   width: 300px;
   margin-right: 20px;
 
+}
+p {
+  font-size: 1.25rem;
+  line-height: 150%;
 }
