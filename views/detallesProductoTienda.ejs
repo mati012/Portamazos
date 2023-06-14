@@ -9,14 +9,14 @@
      
       <h1><%= producto.nombre %></h1>
       <p><%= producto.descripcion %></p>
-      <p>Precio en la tienda: <%= producto.precio %></p>
+      <p>Precio en la tienda: $ <%= producto.precio %></p>
       <!-- Agrega aquí más detalles del producto en la tienda -->
     </div>
     <br>
     <div class="tarjeta">
       <h2>Detalles del producto en la tienda</h2>
-      <p><%= productoTienda.hypervinculo %></p>
-      <p>Precio en la tienda: <%= productoTienda.precio_tienda %></p>
+      <a href="<%= productoTienda.hypervinculo %>"><%= productoTienda.hypervinculo %></a>
+      <p>Precio en la tienda: $ <%= productoTienda.precio_tienda %></p>
       <form action="/eliminar_producto_tienda" method="POST">
         <input type="hidden" name="id_producto" value="<%= productoTienda.id_producto %>">
         <button type="submit">Eliminar producto de la tienda</button>
