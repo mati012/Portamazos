@@ -19,10 +19,16 @@
     <div class="grilla">
       <div class="tarjeta">
     <% if (producto) { %>
-     
       <h2><%= producto.nombre %></h2>
+      <div class="ficha-publicacion">
+      <% if (producto.imagen) { %>
+        <img src="data:image/png;base64,<%= producto.imagen.toString('base64') %>">
+        <% } %>
+        <ol class="publicacion-foro">
       <p><%= producto.descripcion %></p>
-      <p>Precio: <%= producto.precio %></p>
+      <p><Strong>Precio:</Strong> <%= producto.precio %></p>
+    </ol>
+  </div>
       <!-- Agrega aquí más detalles del producto -->
     </div>
     <br>

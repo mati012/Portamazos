@@ -12,11 +12,15 @@
     <% for (const publicacion of publicaciones) { %>
       <div class="tarjeta">
         <h2><%= publicacion.titulo %></h2>
+        <div class="ficha-publicacion">
         <% const carta = publicacion.carta; %> 
         <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-foro">
+        <ol class="publicacion-foro">
         <p><%= publicacion.contenido %></p>
-        <p>Fecha de publicación: <%= publicacion.fecha_publicacion %></p>
+        <p><strong>Fecha de publicación:</strong> <%= publicacion.fecha_publicacion %></p>
         <a href="/foro/publicacion/<%= publicacion.id_publicacion %>">Ver publicación</a>
+        </ol>
+      </div>
       </div>
       <br>
     <% } %>

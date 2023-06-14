@@ -8,13 +8,19 @@
     <% if (productoTienda && producto) { %>
      
       <h1><%= producto.nombre %></h1>
-      <p><%= producto.descripcion %></p>
-      <p>Precio en la tienda: $ <%= producto.precio %></p>
-      <!-- Agrega aquí más detalles del producto en la tienda -->
+      <div class="ficha-publicacion">
+        <% if (producto.imagen) { %>
+          <img src="data:image/png;base64,<%= producto.imagen.toString('base64') %>">
+          <% } %>
+          <ol class="publicacion-foro">
+        <p><%= producto.descripcion %></p>
+        <p><Strong>Precio:</Strong> <%= producto.precio %></p>
+      </ol>
+    </div>
     </div>
     <br>
     <div class="tarjeta">
-      <h2>Detalles del producto en la tienda</h2>
+      <h2>Detalles del Producto en la tienda</h2>
       <a href="<%= productoTienda.hypervinculo %>"><%= productoTienda.hypervinculo %></a>
       <p>Precio en la tienda: $ <%= productoTienda.precio_tienda %></p>
       <form action="/eliminar_producto_tienda" method="POST">
