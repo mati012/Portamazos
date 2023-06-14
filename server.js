@@ -748,10 +748,17 @@ app.get('/detalles_producto_tienda/:id', checkNotAuthenticated, async (req, res)
   const id_tienda = req.user.id_tienda;
   try {
     const client = await pool.connect();
-    const result = await client.query('SELECT * FROM producto_tienda WHERE id_producto = $1 AND id_tienda = $2', [id_producto, id_tienda]);
-    const productoTienda = result.rows[0];
+    const productoTiendaQuery = 'SELECT * FROM producto_tienda WHERE id_producto = $1 AND id_tienda = $2';
+    const productoQuery = 'SELECT * FROM producto WHERE id_producto = $1';
+    
+    const productoTiendaResult = await client.query(productoTiendaQuery, [id_producto, id_tienda]);
+    const productoTienda = productoTiendaResult.rows[0];
+
     if (productoTienda) {
-      res.render('detallesProductoTienda', { productoTienda: productoTienda });
+      const productoResult = await client.query(productoQuery, [id_producto]);
+      const producto = productoResult.rows[0];
+
+      res.render('detallesProductoTienda', { productoTienda: productoTienda, producto: producto });
     } else {
       res.redirect('/editorTienda/' + id_producto);
     }

@@ -1,33 +1,46 @@
 <%- include('./components/headerTienda') %>
-  <form action="/detalles_producto_tienda/<%= producto.id_producto %>" method="GET">
-    <div class="container">
-      <% if (producto) { %>
-        <h1>Detalles del producto</h1>
-        <h2><%= producto.nombre %></h2>
-        <p><%= producto.descripcion %></p>
-        <p>Precio: <%= producto.precio %></p>
-        <!-- Agrega aquí más detalles del producto -->
+<form action="/detalles_producto_tienda/<%= producto.id_producto %>" method="GET">
+  <div class="container">
+    <% if (producto) { %>
+ 
+      <h2><%= producto.nombre %></h2>
+      <p><%= producto.descripcion %></p>
+      <p>Precio: <%= producto.precio %></p>
+      <!-- Agrega aquí más detalles del producto -->
 
-        <button type="submit">Crear producto para tienda</button>
-      <% } else { %>
-        <p>No se encontraron detalles del producto</p>
-      <% } %>
+    <% } else { %>
+      <p>No se encontraron detalles del producto</p>
+    <% } %>
+  </div>
+</form>
+
+<form action="/guardar_producto_tienda" method="POST">
+  <div class="container">
+    <div class="grilla">
+      <div class="tarjeta">
+    <% if (producto) { %>
+     
+      <h2><%= producto.nombre %></h2>
+      <p><%= producto.descripcion %></p>
+      <p>Precio: <%= producto.precio %></p>
+      <!-- Agrega aquí más detalles del producto -->
     </div>
-  </form>
-  <form action="/guardar_producto_tienda" method="POST">
-    <div class="container">
-      <% if (producto) { %>
-  
-        <label for="hypervinculo">Hipervínculo:</label>
-        <input type="text" id="hypervinculo" name="hypervinculo" placeholder="Ingrese el hipervínculo">
-  
-        <label for="precio_tienda">Precio en la tienda:</label>
-        <input type="number" id="precio_tienda" name="precio_tienda" placeholder="Ingrese el precio en la tienda">
-  
-        <input type="hidden" name="id_producto" value="<%= producto.id_producto %>">
-  
-        <button type="submit">Guardar información en la tienda</button>
-      <% } else { %>
-      <% } %>
+    <br>
+      <div class="tarjeta">
+      <h3>Editor Tienda</h3>
+      <label for="hypervinculo">Hipervínculo:</label>
+      <input type="text" id="hypervinculo" name="hypervinculo" placeholder="Ingrese el hipervínculo">
+
+      <label for="precio_tienda">Precio en la tienda:</label>
+      <input type="number" id="precio_tienda" name="precio_tienda" placeholder="Ingrese el precio en la tienda">
+
+      <input type="hidden" name="id_producto" value="<%= producto.id_producto %>">
+
+      <button type="submit">Guardar información en la tienda</button>
+    <% } else { %>
+      <p>No se encontraron detalles del producto</p>
+    <% } %>
     </div>
-  </form>
+  </div>
+</div>
+</form>
