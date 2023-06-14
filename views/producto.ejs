@@ -21,9 +21,8 @@
 				<h2>Tiendas con el Producto</h2>
 			<% if (productoTiendas.length > 0) { %>
 			  <% productoTiendas.forEach(function(productoTienda) { %>
-				<a href="<%= productoTienda.hypervinculo %>"><%= productoTienda.hypervinculo %></a>
-
-				<p>Precio en la tienda: <%= productoTienda.precio_tienda %></p>
+				<button onclick="window.location.href='<%= productoTienda.hypervinculo %>'" id="link-tienda">Ir a la tienda</button>
+				<p>Precio en la tienda: $<%= productoTienda.precio_tienda %></p>
 				<p>Tienda: <%= productoTienda.nombre %></p>
 				<!-- Agrega aquí más detalles del producto_tienda -->
 			  <% }); %>

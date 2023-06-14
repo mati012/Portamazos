@@ -5,7 +5,7 @@
   <form id="searchForm" action="/foro-busqueda" method="GET">
     <label for="search">Buscar por nombre de publicación:</label>
     <input type="text" id="search" name="search">
-    <button type="submit">Buscar</button>
+    <button type="submit" id="link-tienda">Buscar</button>
   </form>
 
   <div class="grilla"> 
@@ -18,7 +18,7 @@
         <ol class="publicacion-foro">
         <p><%= publicacion.contenido %></p>
         <p><strong>Fecha de publicación:</strong> <%= publicacion.fecha_publicacion %></p>
-        <a href="/foro/publicacion/<%= publicacion.id_publicacion %>">Ver publicación</a>
+        <button onclick="window.location.href='/foro/publicacion/<%= publicacion.id_publicacion %>'" id="crear_mazo">Ver Publicación</button>
         </ol>
       </div>
       </div>

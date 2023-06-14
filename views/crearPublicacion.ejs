@@ -6,20 +6,20 @@
 <form action="/foro/crear-publicacion" method="POST">
   <div class="grilla">
     <div class="tarjeta">
-    <h1>Crear nueva publicación</h1>
+    <h1>Crear Nueva Publicación</h1>
     <label for="titulo">Título:</label>
-    <input type="text" id="titulo" name="titulo" placeholder="Ingresa el título" required>
+    <input type="text" id="titulo-publicacion" name="titulo" placeholder="Ingresa el título" required>
     <label for="contenido">Contenido:</label>
     <textarea id="contenido" name="contenido" placeholder="Escribe el contenido" required></textarea>
     
     <label for="carta">Carta:</label>
-    <select id="carta" name="carta" required>
+    <select id="carta-foro" name="carta" required>
       <% cartas.forEach(carta => { %>
         <option value="<%= carta.codigo %>"><%= carta.nombre %></option>
       <% }); %>
     </select>
 
-    <button type="submit">Crear publicación</button>
+    <button type="submit" id="link-tienda">Crear publicación</button>
     </div>
   </div>
   </form>
@@ -34,7 +34,7 @@
     
 
           <form action="/foro/publicacion/<%= publicacion.id_publicacion %>/eliminar" method="POST">
-            <button type="submit">Eliminar</button>
+            <button type="submit" id="link-tienda">Eliminar</button>
           </form>
         
       <% }); %>
