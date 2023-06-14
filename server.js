@@ -423,7 +423,7 @@ app.get('/carta/:codigo', (req, res) => { // resultado busqueda, vista de cada c
 });
 
 // AQUI SE ENLISTAN LOS MAZOS PROPIOS YA SEAN PUBLICOS O PRIVADOS
-app.get('/lista_mazos', (req, res) => {
+app.get('/lista_mazos', checkNotAuthenticated, (req, res) => {
   const id_jugador = req.user.id_jugador;
   pool.query('SELECT * FROM mazo WHERE id_jugador = $1', [id_jugador], (error, result) => {
     if (error) {

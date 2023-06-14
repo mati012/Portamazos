@@ -13,12 +13,13 @@
 		}
 	  </script>
 
-<section class="mazo_publico">
+<section class="lista_mazos">
 	<form action="/buscar_mazo" method="POST">
-	  <label for="busqueda">Buscar Mazo:</label>
+	  <label for="busqueda">Buscar mazo:</label>
 	  <input class="busqueda" name="busqueda" id="busqueda">
 	  <button type="submit" id="crear_mazo">Buscar</button>
 	  <% if (typeof mazo !=='undefined' && mazo.length > 0) { %>
+		
 		<ol id="lista2">
 		  <% mazo.forEach(function(mazo) { %>
 			<li>
@@ -40,6 +41,26 @@
 	  <% } %>
 	</form>
   </section>
+</div>
+<style>
+	section.lista_mazos {
+		height: fit-content;
+		margin-top: -150px;
+	}
 
+	section.lista_mazos .btn {
+		padding: 8px 16px;
+		background-color: #007bff;
+		color: #fff;
+		border: none;
+		cursor: pointer;
+		width: 100px;
+		height: 40px;
+	}
+
+	section.lista_mazos .btn-delete {
+		background-color: #c91c1c;
+	}
+</style>
 </body>
 
