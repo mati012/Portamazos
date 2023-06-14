@@ -52,7 +52,7 @@ select {
   border: 1px solid #cccccc;
   border-radius: 4px;
 }
-
+/* 
 input[type="submit"] {
   background-color: #4CAF50;
   color: white;
@@ -64,7 +64,7 @@ input[type="submit"] {
 
 input[type="submit"]:hover {
   background-color: #45a049;
-}
+} */
 
 table {
   border-collapse: collapse;
@@ -145,19 +145,18 @@ input[type="text"] {
   border: 2px solid #ccc;
   border-radius: 4px;
 }
-
-input[type="submit"] {
+.btn{
   background-color: #4CAF50;
   color: white;
   padding: 12px 20px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
-}
 
-input[type="submit"]:hover {
-  background-color: #45a049;
 }
+.btn:hover {
+  background-color: #45a049;
+} 
 
 table {
   border-collapse: collapse;
@@ -685,7 +684,6 @@ p {
 .titulo {
 	font-weight: bold;
 	text-align: center;
-	font-family: Arial, Helvetica, sans-serif;
 	padding: 10px;
 	padding-bottom: 30px;
 	color: black;
@@ -703,7 +701,7 @@ p {
 	/* Color del separador */
 }
 .controls {
-	width: 100%;
+	width: 96%;
 	border: 1px solid #017bab;
 	margin-bottom: 15px;
 	padding: 11px 10px;
