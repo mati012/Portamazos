@@ -3,19 +3,18 @@
   <div class="container">
    
 <form>
-
-  <ol id="lista3">
+  <h1>Productos Disponibles</h1>
+  <div id="lista3">
   <% if (producto.length > 0) { %>
-    <ul>
       <% producto.forEach(producto => { %>
         <li>
+          <img src="data:image/png;base64,<%= producto.imagen.toString('base64') %>" class="producto-imagen">
           <a href="/detalles_producto_tienda/<%= producto.id_producto %>"><%= producto.nombre %></a>
         </li>
       <% }); %>
-    </ul>
   <% } else { %>
     <p>No hay productos disponibles en la tienda.</p>
   <% } %>
-</ol>
+  </div>
 </form>
   </div>
