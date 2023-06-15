@@ -12,13 +12,14 @@
     text-align: center;
   }
   </style>
-  <div class="grilla"> 
+<!-- <div class="home"> -->
+  <div class="grilla-home"> 
     <% for (const publicacion of publicaciones) { %>
-      <div class="tarjeta">
+      <div class="tarjeta-home">
         <h2><%= publicacion.titulo %></h2>
         <div class="ficha-publicacion">
         <% const carta = publicacion.carta; %> 
-        <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-foro">
+        <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-home">
         <ol class="publicacion-foro">
         <p><%= publicacion.contenido %></p>
         <p><strong>Fecha de publicación:</strong> <%= publicacion.fecha_publicacion %></p>
@@ -29,5 +30,6 @@
       <br>
     <% } %>
   </div>
+<!-- </div> -->
 </body>
 </html>
