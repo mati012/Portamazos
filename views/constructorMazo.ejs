@@ -20,9 +20,9 @@
               <div class="card-list">
                 <% if (cartasMazo.length> 0) { %>
                   <% cartasMazo.forEach(function(carta) { %>
-                    <!-- <button class='cantidad-cartas'>
+                    <button class='cantidad-cartas'>
                       <%= cantidades[carta.codigo] %>
-                    </button> -->
+                    </button>
                     <!-- <div class="card"> -->
                     <!-- <h2><%= carta.nombre %></h2> -->
                     <!-- <p>Código: <%= carta.codigo %></p>
@@ -56,7 +56,7 @@
           <button type="submit">Agregar Carta</button>
         </form>  -->
 
-              <section class="buscadorm">
+              <section class="buscadorm" style=" position: absolute;">
                 <form action="/visualizadorParaMazo" method="GET">
                   <h1>Cartas </h1>
                   <div class="form-group">

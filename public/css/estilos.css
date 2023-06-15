@@ -589,6 +589,7 @@ input[type="number"]:focus {
   flex:1;
 }
 .cantidad-cartas {
+  height: 24px;
   margin: 50px;
   margin-right: 0px;
   font-size: small;
