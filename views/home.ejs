@@ -1,20 +1,60 @@
 <%- include('./components/headerLogged') %>
 
-<script>
-    function cerrarMensajeExito() {
-      var mensajeExito = document.getElementById('mensaje-exito');
-      mensajeExito.style.display = 'none';
+<body>
+  <style>
+    .cartas {
+      margin-top: 40px;
+      margin-left: 100px;
+      margin-right: 100px;
+      margin-bottom: 10px;
+    }
+    .centrar-boton {
+    text-align: center;
+  }
+  </style>
+  <script>
+    var cartas = <% JSON.stringify(cartas) %>;
+    var indiceInicio = 10; // Índice de inicio para cargar las siguientes cartas
+    var cantidadPorPagina = 10; // Cantidad de cartas a cargar por página
+  
+    function cargarMasCartas() {
+      var lista = document.getElementById("lista3");
+      var limite = Math.min(indiceInicio + cantidadPorPagina, cartas.length);
+  
+      for (var i = indiceInicio; i < limite; i++) {
+        var carta = cartas[i];
+        if (carta.imagen) {
+          var aElement = document.createElement("a");
+          aElement.href = "/carta/" + carta.codigo;
+          var imgElement = document.createElement("img");
+          imgElement.src = "data:image/png;base64," + carta.imagen.toString('base64');
+          imgElement.classList.add("carta-imagen");
+          aElement.appendChild(imgElement);
+          lista.appendChild(aElement);
+        }
+      }
+  
+      indiceInicio += cantidadPorPagina;
+  
+      if (indiceInicio >= cartas.length) {
+        document.getElementById("verMasCartas").style.display = "none"; // Oculta el botón cuando se han cargado todas las cartas
+      }
     }
   </script>
-<body>
-<% if (mensajeExito) { %>
-        <div id="mensaje-exito" class="mensaje mensaje_exito">
-            <span class="cerrar" onclick="cerrarMensajeExito()"> &nbsp; x</span>
-            <%= mensajeExito %>
-        </div>
-        <% } %>
-
-
-
+  <section class="cartas">
+    <form>
+      <ol id="lista3">
+        <% cartas.forEach(function(carta) { %>
+          <% if (carta.imagen) { %>
+            <a href="/carta/<%= carta.codigo %>">
+              <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-imagen">
+            </a>
+          <% } %>
+        <% }); %>
+      </ol>
+      <div class="centrar-boton">
+        <button id="verMasCartas" onclick="cargarMasCartas()">Ver más cartas</button>
+      </div>    </form>
+  </section>
 </body>
 </html>
