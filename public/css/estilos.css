@@ -544,7 +544,7 @@ input[type="number"]:focus {
 }
 
 .buscadorm {
-
+  height: fit-content;
   top: 200px;
   left: 0;
   right: 0;
