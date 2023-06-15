@@ -44,7 +44,7 @@
   <section class="cartas">
     <form>
       <ol id="lista3">
-        <% cartas.forEach(function(carta) { %>
+        <% cartas.slice(0, 10).forEach(function(carta) { %>
           <% if (carta.imagen) { %>
             <a href="/carta/<%= carta.codigo %>">
               <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-imagen">
