@@ -482,7 +482,7 @@ h1 {
   right: 0;
   background-color: white;
   margin: auto;
-  width: 1500px;
+  width: 90%;
   height: calc(100vh-200px);
   /* Calcula la altura en función de la ventana del navegador y la distancia superior */
   background: rgb(230, 230, 230);
