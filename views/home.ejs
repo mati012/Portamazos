@@ -30,6 +30,25 @@
       <br>
     <% } %>
   </div>
+
+  <div class="grilla-home">
+    <ol id="lista2">
+		  <% mazos.forEach(function(mazo) { %>
+			<li>
+			  <a href="/mazos/<%= mazo.id_mazo %>">
+				<%= mazo.nombre %>
+			  </a>
+			  <form action="/guardar_mazo_publico" method="POST">
+				<input type="hidden" name="id_mazo" value="<%= mazo.id_mazo %>">
+				<button class="btn" type="submit" id="crear_mazo" value="<%= mazo.id_mazo %>">Guardar Mazo</button>
+			  </form>
+			  <form action="/mazos/<%= mazo.id_mazo %>" method="GET" style="display:inline-block;">
+				<input class="btn" type="submit" value="Ver Mazo"> 
+			  </form>
+			</li>
+		  <% }); %>
+		</ol>
+  </div>
 <!-- </div> -->
 </body>
 </html>

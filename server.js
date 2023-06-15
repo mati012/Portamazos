@@ -298,33 +298,38 @@ app.post('/eliminarCarta', async (req, res) => { // eliminar carta de un mazo
 });
 
 app.get("/home", checkNotAuthenticated, async (req, res) => {
-  // const cartas = await obtenerCartas();
-  pool.query(
-    'SELECT publicacion_foro.*, carta.imagen FROM publicacion_foro LEFT JOIN carta ON publicacion_foro.id_carta = carta.codigo ORDER BY publicacion_foro.fecha_publicacion DESC',
-    (error, result) => {
-      if (error) {
-        console.error(error);
-        res.status(500).send('Error al obtener las publicaciones del foro');
-      } else {
-        const publicaciones = result.rows.map(row => {
-          return {
-            id_publicacion: row.id_publicacion,
-            titulo: row.titulo,
-            contenido: row.contenido,
-            fecha_publicacion: row.fecha_publicacion,
-            carta: {
-              imagen: row.imagen
-            }
-          };
-        });
-        // res.render('foro', { publicaciones: publicaciones });
-        const mensajeExito = req.flash('mensajeExito')[0];
-        res.render("home", { publicaciones, mensajeExito });
-      }
+  pool.query('SELECT * FROM mazo WHERE tipo_mazo = 2', (error, result) => {
+    if (error) {
+      throw error;
+    } else {
+      const mazos = result.rows;
+      pool.query(
+        'SELECT publicacion_foro.*, carta.imagen FROM publicacion_foro LEFT JOIN carta ON publicacion_foro.id_carta = carta.codigo ORDER BY publicacion_foro.fecha_publicacion DESC',
+        (error, result) => {
+          if (error) {
+            console.error(error);
+            res.status(500).send('Error al obtener las publicaciones del foro');
+          } else {
+            const publicaciones = result.rows.map(row => {
+              return {
+                id_publicacion: row.id_publicacion,
+                titulo: row.titulo,
+                contenido: row.contenido,
+                fecha_publicacion: row.fecha_publicacion,
+                carta: {
+                  imagen: row.imagen
+                }
+              };
+            });
+            const mensajeExito = req.flash('mensajeExito')[0];
+            res.render("home", { publicaciones, mensajeExito, mazos });
+          }
+        }
+      );
     }
-  );
-  
+  });
 });
+
 
 app.get('/mazos/:id', async (req, res) => { // ver mazo sin editar 
   const mazoId = req.params.id;
