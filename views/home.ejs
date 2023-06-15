@@ -12,42 +12,14 @@
     text-align: center;
   }
   </style>
-  <!-- <script>
-    var cartas = <% JSON.stringify(cartas) %>;
-    var indiceInicio = 10; // Índice de inicio para cargar las siguientes cartas
-    var cantidadPorPagina = 10; // Cantidad de cartas a cargar por página
-  
-    function cargarMasCartas() {
-      var lista = document.getElementById("lista3");
-      var limite = Math.min(indiceInicio + cantidadPorPagina, cartas.length);
-  
-      for (var i = indiceInicio; i < limite; i++) {
-        var carta = cartas[i];
-        if (carta.imagen) {
-          var aElement = document.createElement("a");
-          aElement.href = "/carta/" + carta.codigo;
-          var imgElement = document.createElement("img");
-          imgElement.src = "data:image/png;base64," + carta.imagen.toString('base64');
-          imgElement.classList.add("carta-imagen");
-          aElement.appendChild(imgElement);
-          lista.appendChild(aElement);
-        }
-      }
-  
-      indiceInicio += cantidadPorPagina;
-  
-      if (indiceInicio >= cartas.length) {
-        document.getElementById("verMasCartas").style.display = "none"; // Oculta el botón cuando se han cargado todas las cartas
-      }
-    }
-  </script> -->
-  <div class="grilla"> 
+<!-- <div class="home"> -->
+  <div class="grilla-home"> 
     <% for (const publicacion of publicaciones) { %>
-      <div class="tarjeta">
+      <div class="tarjeta-home">
         <h2><%= publicacion.titulo %></h2>
         <div class="ficha-publicacion">
         <% const carta = publicacion.carta; %> 
-        <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-foro">
+        <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-home">
         <ol class="publicacion-foro">
         <p><%= publicacion.contenido %></p>
         <p><strong>Fecha de publicación:</strong> <%= publicacion.fecha_publicacion %></p>
@@ -58,5 +30,6 @@
       <br>
     <% } %>
   </div>
+<!-- </div> -->
 </body>
 </html>
