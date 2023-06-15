@@ -689,6 +689,17 @@ app.get('/guiaProductos', (req, res) => {
     }
   });
 });
+app.get('/guiaProductosTienda', (req, res) => {
+
+  pool.query('SELECT * FROM producto WHERE disponible = true; ', (error, result) => {
+    if (error) {
+      throw error;
+    } else {
+      const producto = result.rows;
+      res.render('guiaProductosTienda', { producto });
+    }
+  });
+});
 // BUSCAR PRODUCTO
 app.get('/buscar_producto', (req, res) => {
   const busqueda = req.query.busqueda;
