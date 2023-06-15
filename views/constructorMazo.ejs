@@ -104,21 +104,36 @@
                     <% cartas.forEach(function(carta) { %>
                       <li>
                         <% if (carta.imagen) { %>
-                          <a href="/carta/<%= carta.codigo %>">
-                            <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-imagen">
-                          </a>
-                          <form action="/agregarcarta" method="POST">
-                            <input type="hidden" name="mazoId" value="<%= mazoId %>">
-                            <button style="display: block; margin: 0 auto;" type="submit" class="agregar-carta-btn" name="codigo_carta" value="<%= carta.codigo %>">Agregar</button>
-
-                          </form> 
-
+                            <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-imagen" onclick="agregarCarta('<%= mazoId %>', '<%= carta.codigo %>')">
                         <% } %>
                       </li>
                     <% }); %>
                   </ol>
                 </form>
               </section>
+              <script>
+                function agregarCarta(mazoId, codigoCarta) {
+                  var form = document.createElement('form');
+                  form.method = 'POST';
+                  form.action = '/agregarcarta';
+              
+                  var mazoIdInput = document.createElement('input');
+                  mazoIdInput.type = 'hidden';
+                  mazoIdInput.name = 'mazoId';
+                  mazoIdInput.value = mazoId;
+              
+                  var codigoCartaInput = document.createElement('input');
+                  codigoCartaInput.type = 'hidden';
+                  codigoCartaInput.name = 'codigo_carta';
+                  codigoCartaInput.value = codigoCarta;
+              
+                  form.appendChild(mazoIdInput);
+                  form.appendChild(codigoCartaInput);
+              
+                  document.body.appendChild(form);
+                  form.submit();
+                }
+              </script>
               <script>
                 function cerrarMensajeExito() {
                   var mensajeExito = document.getElementById('mensaje-exito');
