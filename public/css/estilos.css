@@ -446,7 +446,7 @@ h1 {
 
 #busqueda {
   width: 100%;
-  border: 1px solid #017bab;
+  border: 1px solid #99e2ff;
   margin-bottom: 15px;
   padding: 11px 10px;
   background: #ffffff;
@@ -532,8 +532,8 @@ input[type="number"]:focus {
 
 .card-list button {
   border-radius: 15px;
-  background-color: black;
-  color: rgb(0, 174, 255);
+  background-color: rgb(95, 65, 8);
+  color: rgb(252, 252, 252);
   font-weight: bold;
   margin-bottom: 10px;
 }
@@ -854,6 +854,9 @@ p {
   background-color: #6ec7eb;
 }
 .botones-container {
+  background-color: #0512548e;
+  height: 52px;
+  border-radius: 10px;
   display: flex;
   flex-direction: column;
   align-items: center;

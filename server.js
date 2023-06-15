@@ -351,6 +351,27 @@ app.get('/visualizador', (req, res) => { // buscar cartas
     res.render('visualizador', { user: req.user, cartas: results.rows, search: search, tipo: tipo, raza: raza, coste: coste, fuerza: fuerza });
   });
 });
+app.get('/visualizadorTienda', (req, res) => { // buscar cartas
+  const search = req.query.search || '';
+  const tipo = req.query.tipo || '';
+  const raza = req.query.raza || '';
+  const coste = req.query.coste || 9999;
+  const fuerza = req.query.fuerza || 0;
+
+  pool.query(`SELECT * FROM carta
+              WHERE nombre ILIKE '%${search}%'
+              ${tipo ? `AND tipo = '${tipo}'` : ''}
+              ${raza ? `AND raza = '${raza}'` : ''}
+              AND coste <= ${coste}
+              AND fuerza >= ${fuerza}
+              ORDER BY nombre ASC
+              LIMIT 5`, (error, results) => {
+    if (error) {
+      throw error;
+    }
+    res.render('visualizadorTienda', { user: req.user, cartas: results.rows, search: search, tipo: tipo, raza: raza, coste: coste, fuerza: fuerza });
+  });
+});
 
 app.get('/visualizadorParaMazo', async (req, res) => { // buscar cartas para agregar al mazo 
   const id_jugador = req.user.id_jugador;
