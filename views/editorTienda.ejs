@@ -26,7 +26,7 @@
         <% } %>
         <ol class="publicacion-foro">
       <p><%= producto.descripcion %></p>
-      <p><Strong>Precio:</Strong> <%= producto.precio %></p>
+      <p><Strong>Precio:</Strong> $<%= producto.precio %></p>
     </ol>
   </div>
       <!-- Agrega aquí más detalles del producto -->
@@ -42,7 +42,7 @@
 
       <input type="hidden" name="id_producto" value="<%= producto.id_producto %>">
 
-      <button type="submit">Guardar información en la tienda</button>
+      <button type="submit" id="buscar">Guardar </button>
     <% } else { %>
       <p>No se encontraron detalles del producto</p>
     <% } %>
