@@ -20,24 +20,17 @@
               <div class="card-list">
                 <% if (cartasMazo.length> 0) { %>
                   <% cartasMazo.forEach(function(carta) { %>
-                    <button class='cantidad-cartas'>
-                      <%= cantidades[carta.codigo] %>
-                    </button>
-                    <!-- <div class="card"> -->
-                    <!-- <h2><%= carta.nombre %></h2> -->
-                    <!-- <p>Código: <%= carta.codigo %></p>
-                <p>Tipo: <%= carta.tipo %></p>
-                <p>Coste: <%= carta.coste %></p>
-                <p>Habilidad: <%= carta.habilidad %></p>
-                <p>Fuerza: <%= carta.fuerza %></p>
-                <p>Raza: <%= carta.raza %></p> -->
+
                     <% if (carta.imagen) { %>
                       <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-imagen">
                       <% } %>
                         <form action="/eliminarCarta" method="POST">
                           <input type="hidden" name="mazoId" value="<%= mazoId %>">
                           <input type="hidden" name="codigo_carta" value="<%= carta.codigo %>">
-                          <button type="submit">X</button>
+                          <div class="botones-container">
+                            <button type="submit">X</button>
+                            <button ><%= cantidades[carta.codigo] %></button>
+                          </div>
                         </form>
                         <!-- </div> -->
                         <% }); %>
@@ -70,6 +63,7 @@
                       <option value="Aliado">Aliado</option>
                       <option value="Talismán">Talisman</option>
                       <option value="Totem">Totem</option>
+                      <option value="Arma">Arma</option>
                     </select>
                   </div>
                   <div class="form-group">
@@ -84,6 +78,8 @@
                       <option value="Faerie">Faerie</option>
                       <option value="Guerrero">Guerrero</option>
                       <option value="Heroe">Heroe</option>
+                      <option value="Faerie">Faerie</option>
+                      <option value="Sin raza">Sin raza</option>
                     </select>
                   </div>
                   <div class="form-group">

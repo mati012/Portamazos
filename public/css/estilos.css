@@ -533,8 +533,9 @@ input[type="number"]:focus {
 .card-list button {
   border-radius: 15px;
   background-color: black;
-  color: red;
+  color: rgb(0, 174, 255);
   font-weight: bold;
+  margin-bottom: 10px;
 }
 @media screen and (max-width: 800px) {
   /* Estilos adicionales para pantallas más pequeñas */
@@ -851,4 +852,10 @@ p {
 #buscar:hover {
   /* Estilos cuando el cursor se sitúa sobre el botón */
   background-color: #6ec7eb;
+}
+.botones-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 10px; /* Espacio entre los botones */
 }
