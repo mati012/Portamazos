@@ -1,0 +1,34 @@
+<%- include('./components/headerTienda') %>
+
+
+<body>
+  <div class="container">
+   
+    <form action="/buscar_producto" method="GET">
+      <h1>Guía de Productos</h1>
+      <label for="busqueda">Buscar producto:</label>
+      <input type="text" name="busqueda" id="busqueda">
+      <button type="submit">Buscar</button>
+    </form>
+    <form>
+      <div id="lista3">
+        <% if (producto && producto.length > 0) { %>
+          <% producto.forEach(function(producto) { %>
+            <li>
+              <% if (producto.imagen) { %>
+                <a href="/producto/<%= producto.id_producto %>">
+                  <img src="data:image/png;base64,<%= producto.imagen.toString('base64') %>" class="producto-imagen">
+                </a>
+              <% } %>
+              <h2><a href="/producto/<%= producto.id_producto %>"><%= producto.nombre %></a></h2>
+            </li>
+          <% }); %>
+        <% } else { %>
+          <li>No se encontraron productos</li>
+        <% } %>
+      </div>
+      
+  </form>
+  </div>
+</body>
+</html>
