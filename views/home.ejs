@@ -41,21 +41,22 @@
       }
     }
   </script> -->
-  <section class="cartas">
-    <form>
-      <ol id="lista3">
-        <% cartas.slice(0, 30).forEach(function(carta) { %>
-          <% if (carta.imagen) { %>
-            <a href="/carta/<%= carta.codigo %>">
-              <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-imagen">
-            </a>
-          <% } %>
-        <% }); %>
-      </ol>
-      <!-- <div class="centrar-boton">
-        <button id="verMasCartas" onclick="cargarMasCartas()">Ver más cartas</button>
-      </div>     -->
-    </form>
-  </section>
+  <div class="grilla"> 
+    <% for (const publicacion of publicaciones) { %>
+      <div class="tarjeta">
+        <h2><%= publicacion.titulo %></h2>
+        <div class="ficha-publicacion">
+        <% const carta = publicacion.carta; %> 
+        <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-foro">
+        <ol class="publicacion-foro">
+        <p><%= publicacion.contenido %></p>
+        <p><strong>Fecha de publicación:</strong> <%= publicacion.fecha_publicacion %></p>
+        <button onclick="window.location.href='/foro/publicacion/<%= publicacion.id_publicacion %>'" id="crear_mazo">Ver Publicación</button>
+        </ol>
+      </div>
+      </div>
+      <br>
+    <% } %>
+  </div>
 </body>
 </html>
