@@ -838,3 +838,17 @@ p {
   /* Estilos cuando el cursor se sitúa sobre el botón */
   background-color: #6ec7eb;
 }
+#buscar {
+  width: 7%;
+  height: 40px;
+  background: #017bab;
+  border: none;
+  color: rgb(0, 0, 0);
+  margin-bottom: 5px;
+  font-weight: bold;
+  border-radius: 10px;
+}
+#buscar:hover {
+  /* Estilos cuando el cursor se sitúa sobre el botón */
+  background-color: #6ec7eb;
+}
