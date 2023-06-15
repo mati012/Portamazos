@@ -482,7 +482,7 @@ h1 {
   right: 0;
   background-color: white;
   margin: auto;
-  width: 90%;
+  width: 1500px;
   height: calc(100vh-200px);
   /* Calcula la altura en función de la ventana del navegador y la distancia superior */
   background: rgb(230, 230, 230);
@@ -888,10 +888,10 @@ p {
   grid-column-end: span 4;
   padding: 2rem;
   background-color: white;
-  width: 50%;
+  width: 80%;
   margin-top:20px;
   margin-left:200px;
-  }
+   }
 .grilla-home {
   grid-gap: 2rem;
   padding: 2rem;
