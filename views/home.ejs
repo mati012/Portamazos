@@ -12,7 +12,7 @@
     text-align: center;
   }
   </style>
-  <script>
+  <!-- <script>
     var cartas = <% JSON.stringify(cartas) %>;
     var indiceInicio = 10; // Índice de inicio para cargar las siguientes cartas
     var cantidadPorPagina = 10; // Cantidad de cartas a cargar por página
@@ -40,11 +40,11 @@
         document.getElementById("verMasCartas").style.display = "none"; // Oculta el botón cuando se han cargado todas las cartas
       }
     }
-  </script>
+  </script> -->
   <section class="cartas">
     <form>
       <ol id="lista3">
-        <% cartas.slice(0, 10).forEach(function(carta) { %>
+        <% cartas.slice(0, 30).forEach(function(carta) { %>
           <% if (carta.imagen) { %>
             <a href="/carta/<%= carta.codigo %>">
               <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-imagen">
@@ -52,9 +52,10 @@
           <% } %>
         <% }); %>
       </ol>
-      <div class="centrar-boton">
+      <!-- <div class="centrar-boton">
         <button id="verMasCartas" onclick="cargarMasCartas()">Ver más cartas</button>
-      </div>    </form>
+      </div>     -->
+    </form>
   </section>
 </body>
 </html>
