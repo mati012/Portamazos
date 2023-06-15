@@ -1,0 +1,60 @@
+<%- include('./components/headerTienda') %>   
+  <body>
+    <section class="buscador">  
+    <form action="/visualizador" method="GET">
+      <h1>Cartas</h1>
+      <div class="form-group">
+        <input class="nombre_mazo" name="search" placeholder="Buscar por nombre...">
+      </div>
+      <div class="form-group">
+        <label for="tipo">Tipo:</label>
+        <select id="tipo_mazo" name="tipo">
+          <option value="">Todos</option>
+          <option value="oro">Oro</option>
+          <option value="Aliado">Aliado</option>
+          <option value="Talisman">Talismán</option>
+          <option value="Totem">Totem</option>
+          <option value="Arma">Arma</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="raza">Raza:</label>
+        <select id="tipo_mazo" name="raza">
+          <option value="">Todas</option>
+          <option value="Eterno">Eterno</option>
+          <option value="Bestia">Bestia</option>
+          <option value="Caballero">Caballero</option>
+          <option value="Sacerdote">Sacerdote</option>
+          <option value="Sombra">Sombra</option>
+          <option value="Faerie">Faerie</option>
+          <option value="Guerrero">Guerrero</option>
+          <option value="Heroe">Heroe</option>
+          <option value="Sin raza">Sin raza</option>
+        </select>
+      </div>
+      <div class="form-group">
+        <label for="coste">Coste:</label>
+        <input type="number" id="coste" name="coste" min="0" max="5">
+      </div>
+      <div class="form-group">
+        <label for="fuerza">Fuerza:</label>
+        <input type="number" id="fuerza" name="fuerza"  min="0" max="10">
+      </div>
+      <div class="form-group">
+        <button type="submit">Buscar</button>
+      </div>
+    </form>
+    <form>
+    <ol id="lista3">
+      <% cartas.forEach(function(carta) { %>
+        <% if (carta.imagen) { %>
+          <a href="/carta/<%= carta.codigo %>">
+            <img src="data:image/png;base64,<%= carta.imagen.toString('base64') %>" class="carta-imagen">
+          </a>
+        <% } %>
+      <% }); %>
+      </ol>
+    </form>
+  </section>  
+  </body>
+</html>
