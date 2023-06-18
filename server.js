@@ -43,10 +43,13 @@ app.get("/homeTienda", checkNotAuthenticated, (req, res) => {
   res.render("homeTienda", {mensajeExito});
 });
 app.get("/login", checkAuthenticated, (req, res) => {
-  res.render("login");
+  const mensajeError = req.flash("error");
+  console.log(mensajeError);
+  res.render("login", {mensajeError});
 });
 app.get("/loginTienda", checkAuthenticated, (req, res) => {
-  res.render("loginTienda");
+  const mensajeError = req.flash("error");
+  res.render("loginTienda", {mensajeError});
 });
 app.get("", checkAuthenticated, (req, res) => {
   res.render("login");
@@ -194,20 +197,42 @@ app.post('/registroTienda', async (req, res) => {
     )
   };
 });
-app.post("/loginJugador",
-  passport.authenticate("jugadorStrategy", {
-    successRedirect: "/home",
-    failureRedirect: "/login",
-    failureFlash: true
-  })
-);
-app.post("/loginTienda",
-  passport.authenticate("tiendaStrategy", {
-    successRedirect: "/homeTienda",
-    failureRedirect: "/login",
-    failureFlash: true
-  })
-);
+app.post("/loginJugador", (req, res, next) => {
+  passport.authenticate("jugadorStrategy", (err, usuario, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!usuario) {
+      req.flash("error", "Credenciales inválidas. Inténtalo de nuevo."); 
+      return res.redirect("/login");
+    }
+    req.logIn(usuario, (err) => {
+      if (err) {
+        return next(err);
+      }
+      req.flash("mensajeExito", "Inicio de sesión exitoso."); 
+      return res.redirect("/home");
+    });
+  })(req, res, next);
+});
+app.post("/loginTienda", (req, res, next) => {
+  passport.authenticate("tiendaStrategy", (err, tienda, info) => {
+    if (err) {
+      return next(err);
+    }
+    if (!tienda) {
+      req.flash("error", "Credenciales inválidas. Inténtalo de nuevo."); // Mensaje de error personalizado
+      return res.redirect("/loginTienda");
+    }
+    req.logIn(tienda, (err) => {
+      if (err) {
+        return next(err);
+      }
+      req.flash("mensajeExito", "Inicio de sesión exitoso."); // Mensaje de éxito personalizado
+      return res.redirect("/homeTienda");
+    });
+  })(req, res, next);
+});
 
 function checkAuthenticated(req, res, next) {
   if (req.isAuthenticated()) {
@@ -321,7 +346,7 @@ app.get("/home", checkNotAuthenticated, async (req, res) => {
                 }
               };
             });
-            const mensajeExito = req.flash('mensajeExito')[0];
+            const mensajeExito = req.flash('mensajeExito');
             res.render("home", { publicaciones, mensajeExito, mazos });
           }
         }

@@ -302,12 +302,14 @@ h1 {
 }
 
 .mensaje_error {
-  background-color: #f2dede;
-  color: #a94442;
-  border: 1px solid #ebccd1;
+  transition: opacity 0.5s, transform 0.5s; /* Transición de 0.5 segundos para opacity y transform */
+  background-color: #d26969;
+  color: #e6e6e6;
+  border: 1px solid #cd4c62;
 }
 
 .mensaje_exito {
+  transition: opacity 0.5s, transform 0.5s; 
   background-color: #dff0d8;
   color: #3c763d;
   border: 1px solid #d6e9c6;
@@ -708,7 +710,7 @@ p {
 	border: 1px solid #017bab;
 	margin-bottom: 15px;
 	padding: 11px 10px;
-	background: #252323;
+	background: #ffffff;
 	font-size: 14px;
 	font-weight: bold;
 	border-radius: 10px;

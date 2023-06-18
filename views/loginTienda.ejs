@@ -1,18 +1,25 @@
 <%- include('./components/headerUnlogged') %>   
 <body>
     
-    <ul>
-      <% if(messages.success_msg) { %>
-      <li><%= messages.success_msg %></li>
-      <% } %>
-    </ul>
- 
-
-    <ul>
-      <% if (messages.error) { %>
-      <li><%= messages.error %></li>
-      <% } %>
-    </ul>
+  <script>
+    function cerrarMensajeError() {
+      var mensajeError = document.getElementById('mensaje-error');
+      mensajeError.style.opacity = '0'; // Establecer la opacidad a 0
+      mensajeError.style.transform = 'translateX(100%)'; // Deslizar hacia la derecha
+      setTimeout(function() {
+        mensajeError.style.display = 'none'; // Ocultar el mensaje después de la transición
+      }, 500); // Esperar 500 milisegundos antes de ocultar el mensaje
+    }
+  
+    // Ocultar el mensaje de error después de 6 segundos
+    setTimeout(cerrarMensajeError, 6000);
+  </script>
+  <% if (mensajeError && mensajeError.length > 0) { %>
+    <div id="mensaje-error" class="mensaje mensaje_error">
+      <span class="cerrar" onclick="cerrarMensajeError()"> &nbsp; x</span>
+      <%= mensajeError %>
+    </div>
+    <% } %>
 
     <img src="/public/img/logo.png" width="300" alt="">
     

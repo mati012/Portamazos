@@ -12,6 +12,23 @@
     text-align: center;
   }
   </style>
+  <script>
+    function cerrarMensajeExito() {
+		  var mensajeExito = document.getElementById('mensaje-exito');
+		  mensajeExito.style.opacity = '0'; // Establecer la opacidad a 0
+      mensajeExito.style.transform = 'translateX(100%)'; // Deslizar hacia la derecha
+      setTimeout(function() {
+        mensajeExito.style.display = 'none'; // Ocultar el mensaje después de la transición
+      }, 500); // Esperar 500 milisegundos antes de ocultar el mensaje
+    }
+    setTimeout(cerrarMensajeExito, 3000);
+  </script>
+  <% if (mensajeExito && mensajeExito.length > 0) { %>
+    <div id="mensaje-exito" class="mensaje mensaje_exito">
+      <span class="cerrar" onclick="cerrarMensajeExito()"> &nbsp; x</span>
+      <%= mensajeExito %>
+    </div>
+    <% } %>
 <!-- <div class="home"> -->
   <div class="grilla-home"> 
     <% for (const publicacion of publicaciones) { %>
