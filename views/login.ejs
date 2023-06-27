@@ -13,7 +13,7 @@
     // Ocultar el mensaje de error después de 6 segundos
     setTimeout(cerrarMensajeError, 6000);
   </script>
-  <% if (mensajeError && mensajeError.length > 0) { %>
+  <% if (typeof mensajeError !== 'undefined' && mensajeError && mensajeError.length > 0) { %>
     <div id="mensaje-error" class="mensaje mensaje_error">
       <span class="cerrar" onclick="cerrarMensajeError()"> &nbsp; x</span>
       <%= mensajeError %>
