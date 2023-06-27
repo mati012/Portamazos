@@ -19,14 +19,20 @@
 				</div>
 				
 				<h2>Tiendas con el Producto</h2>
+
 			<% if (productoTiendas.length > 0) { %>
+
 			  <% productoTiendas.forEach(function(productoTienda) { %>
+				<div class="tarjeta">
 				<a href="<%= productoTienda.hypervinculo %>">Ir a la tienda</a>
 
 				<p>Precio en la tienda: $<%= productoTienda.precio_tienda %></p>
 				<p>Tienda: <%= productoTienda.nombre %></p>
+			</div>
+			<br>	
 				<!-- Agrega aquí más detalles del producto_tienda -->
 			  <% }); %>
+
 			<% } else { %>
 			  <p>No se encontraron detalles del producto en la tienda</p>
 			<% } %>
@@ -34,6 +40,7 @@
 		  <% } else { %>
 			<p>No se encontraron detalles del producto</p>
 		  <% } %>
+		</div>
 		</div>
 	  </form>
   </body>

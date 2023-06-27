@@ -405,14 +405,14 @@ h1 {
 }
 
 .buscador {
+  height: fit-content;
   position: absolute;
   top: 200px;
   left: 0;
   right: 0;
   bottom: 0;
   margin: auto;
-  width: 42%;
-  height: 800px;
+  width: 55%;
   background: rgb(230, 230, 230);
   box-shadow: 7px 13px 37px #000;
   padding: 20px 30px;
@@ -515,6 +515,7 @@ input[type="number"]:focus {
 }
 
 .card-list {
+  width:fit-content;
   display: flex;
   flex-wrap: wrap; /* Permite que las cartas se envuelvan en nuevas filas */
   justify-content: flex-start; /* Alinea las cartas hacia el inicio del contenedor */
